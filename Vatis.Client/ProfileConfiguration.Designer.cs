@@ -725,6 +725,7 @@ namespace Vatsim.Vatis.Client
             // TreeMenu
             // 
             this.TreeMenu.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TreeMenu.ContextMenuStrip = this.ctxOptions;
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TreeMenu.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.TreeMenu.FullRowSelect = true;
