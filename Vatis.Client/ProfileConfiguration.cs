@@ -1159,7 +1159,14 @@ namespace Vatsim.Vatis.Client
                         {
                             existing.Name = profile.Name;
                             existing.Identifier = profile.ID;
-                            existing.AtisFrequency = profile.Frequency;
+                            if (!string.IsNullOrEmpty(profile.AtisFrequency))
+                            {
+                                existing.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
+                            }
+                            else
+                            {
+                                existing.AtisFrequency = profile.Frequency;
+                            }
                             existing.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
                             existing.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
 
@@ -1245,7 +1252,14 @@ namespace Vatsim.Vatis.Client
                         var composite = new AtisComposite();
                         composite.Name = profile.Name;
                         composite.Identifier = profile.ID;
-                        composite.AtisFrequency = profile.Frequency;
+                        if (!string.IsNullOrEmpty(profile.AtisFrequency))
+                        {
+                            composite.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
+                        }
+                        else
+                        {
+                            composite.AtisFrequency = profile.Frequency;
+                        }
                         composite.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
                         composite.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
 

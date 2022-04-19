@@ -12,6 +12,7 @@ namespace Vatsim.Vatis.Client.Config
         [XmlAttribute] public string Name { get; set; }
         [XmlAttribute] public DateTime UpdatedOn { get; set; }
         public int Frequency { get; set; }
+        public string AtisFrequency { get; set; }
         public string VoiceServer { get; set; }
         public string InformationDisplaySystemEndpoint { get; set; }
         public bool VoiceRecordEnabled { get; set; }
