@@ -17,7 +17,9 @@ namespace Vatsim.Vatis.Client.Config
         public string IDSEndpoint { get; set; }
         public List<AtisPreset> Presets { get; set; } = new List<AtisPreset>();
         public List<DefinedText> AirportConditionDefinitions { get; set; } = new List<DefinedText>();
+        public bool AirportConditionsBeforeFreeText { get; set; }
         public List<DefinedText> NotamDefinitions { get; set; } = new List<DefinedText>();
+        public bool NotamsBeforeFreeText { get; set; }
         public List<TransitionLevel> TransitionLevels { get; set; } = new List<TransitionLevel>();
 
         [JsonIgnore] public DecodedMetar DecodedMetar { get; set; }

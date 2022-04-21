@@ -56,7 +56,7 @@ namespace Vatsim.Vatis.Client.Atis
                 throw new Exception($"{composite.Identifier} not found in airport database.");
             }
 
-            StringBuilder atisString = new StringBuilder();
+            StringBuilder voiceString = new StringBuilder();
 
             var metar = composite.DecodedMetar;
 
@@ -70,135 +70,129 @@ namespace Vatsim.Vatis.Client.Atis
             var dew = DoParse(metar, new DewpointMeta());
             var pressure = DoParse(metar, new PressureMeta());
 
-            var notams = "";
-            if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
-            {
-                notams = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
-                notams += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
-            }
+            var atisLetter = char.Parse(composite.CurrentAtisLetter).LetterToPhonetic();
+
+            var completeWxStringVoice = $"{surfaceWind.TextToSpeech} {visibility.TextToSpeech} {rvr.TextToSpeech} {presentWeather.TextToSpeech} {clouds.TextToSpeech} {temp.TextToSpeech} {dew.TextToSpeech} {pressure.TextToSpeech}";
+            var completeWxStringAcars = $"{surfaceWind.Acars} {visibility.Acars} {rvr.Acars} {presentWeather.Acars} {clouds.Acars} {temp.Acars}/{dew.Acars} {pressure.Acars}";
 
             var airportConditions = "";
             if (!string.IsNullOrEmpty(composite.CurrentPreset.AirportConditions) || composite.AirportConditionDefinitions.Any(t => t.Enabled))
             {
-                airportConditions = string.Join(" ", new[] { composite.CurrentPreset.AirportConditions, string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
-            }
-
-            var atisLetter = char.Parse(composite.CurrentAtisLetter).LetterToPhonetic();
-
-            atisString.Append(composite.CurrentPreset.Template);
-            atisString.Replace("[FACILITY]", mAirport.Name);
-            atisString.Replace("[ATIS_LETTER]", atisLetter);
-            atisString.Replace("[ATIS_CODE]", atisLetter);
-            atisString.Replace("[TIME]", time.TextToSpeech);
-            atisString.Replace("[OBS_TIME]", time.TextToSpeech);
-            atisString.Replace("[WIND]", surfaceWind.TextToSpeech);
-            atisString.Replace("[SURFACE_WIND]", surfaceWind.TextToSpeech);
-            atisString.Replace("[RVR]", rvr.TextToSpeech);
-            atisString.Replace("[VIS]", visibility.TextToSpeech);
-            atisString.Replace("[PREVAILING_VISIBILITY]", visibility.TextToSpeech);
-            atisString.Replace("[PRESENT_WX]", presentWeather.TextToSpeech);
-            atisString.Replace("[PRESENT_WEATHER]", presentWeather.TextToSpeech);
-            atisString.Replace("[CLOUDS]", clouds.TextToSpeech);
-            atisString.Replace("[TEMP]", temp.TextToSpeech);
-            atisString.Replace("[DEW]", dew.TextToSpeech);
-            atisString.Replace("[PRESSURE]", pressure.TextToSpeech);
-            atisString.Replace("[WX]", $"{surfaceWind.TextToSpeech} {visibility.TextToSpeech} {rvr.TextToSpeech} {presentWeather.TextToSpeech} {clouds.TextToSpeech} {temp.TextToSpeech} {dew.TextToSpeech} {pressure.TextToSpeech}");
-            atisString.Replace("[FULL_WX_STRING]", $"{surfaceWind.TextToSpeech} {visibility.TextToSpeech} {rvr.TextToSpeech} {presentWeather.TextToSpeech} {clouds.TextToSpeech} {temp.TextToSpeech} {dew.TextToSpeech} {pressure.TextToSpeech}");
-            atisString.Replace("[ARPT_COND]", airportConditions.Trim(' '));
-            atisString.Replace("[NOTAMS]", notams.Trim(' '));
-
-            if (metar.IsInternational)
-            {
-                if (composite.TransitionLevels != null)
+                if (composite.AirportConditionsBeforeFreeText)
                 {
-                    var transitionLevel = composite.TransitionLevels.FirstOrDefault(t => metar.Pressure.ActualValue >= t.Low && metar.Pressure.ActualValue <= t.High);
-
-                    if (transitionLevel != null)
-                    {
-                        atisString.Replace("[TL]", "Transition level flight level " + transitionLevel.Altitude.NumberToSingular());
-                    }
-                    else
-                    {
-                        atisString.Replace("[TL]", "Transition level not determined");
-                    }
+                    airportConditions = string.Join(" ", new[] { string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.AirportConditions });
                 }
                 else
                 {
-                    atisString.Replace("[TL]", "Transition level not determined");
+                    airportConditions = string.Join(" ", new[] { composite.CurrentPreset.AirportConditions, string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                }
+            }
+
+            var notamVoice = "";
+            var notamText = "";
+            if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
+            {
+                notamVoice = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
+                if (composite.NotamsBeforeFreeText)
+                {
+                    notamText = "NOTAMS... " + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                    notamVoice += string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                }
+                else
+                {
+                    notamText = "NOTAMS..." + string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                    notamVoice += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                }
+            }
+
+            var transitionLevelVoice = "";
+            var transitionLevelText = "";
+            if (metar.IsInternational)
+            {
+                transitionLevelText = "TL N/A";
+                transitionLevelVoice = "Transition level not determined";
+                if (composite.TransitionLevels != null)
+                {
+                    var tlValue = composite.TransitionLevels.FirstOrDefault(t => metar.Pressure.ActualValue >= t.Low && metar.Pressure.ActualValue <= t.High);
+
+                    if (tlValue != null)
+                    {
+                        transitionLevelText = "Transition level FL " + tlValue.Altitude;
+                        transitionLevelVoice = "Transition level flight level " + tlValue.Altitude.NumberToSingular();
+                    }
+                }
+            }
+
+            var variables = new List<Variable>
+            {
+                new Variable("FACILITY", mAirport.ID, mAirport.Name),
+                new Variable("ATIS_LETTER", composite.CurrentAtisLetter, atisLetter,  new [] {"LETTER","ATIS_CODE"}),
+                new Variable("TIME", time.Acars, time.TextToSpeech, new []{"OBS_TIME"}),
+                new Variable("WIND", surfaceWind.Acars, surfaceWind.TextToSpeech, new[]{"SURFACE_WIND"}),
+                new Variable("RVR", rvr.Acars, rvr.TextToSpeech),
+                new Variable("VIS", visibility.Acars, visibility.TextToSpeech, new[]{"PREVAILING_VISIBILITY"}),
+                new Variable("PRESENT_WX", presentWeather.Acars, presentWeather.TextToSpeech, new[]{"PRESENT_WEATHER"}),
+                new Variable("CLOUDS", clouds.Acars, clouds.TextToSpeech),
+                new Variable("TEMP", temp.Acars, temp.TextToSpeech),
+                new Variable("DEW", dew.Acars, dew.TextToSpeech),
+                new Variable("PRESSURE", pressure.Acars, pressure.TextToSpeech, new[]{"QNH"}),
+                new Variable("WX", completeWxStringAcars, completeWxStringVoice, new[]{"FULL_WX_STRING"}),
+                new Variable("ARPT_COND", airportConditions, airportConditions),
+                new Variable("NOTAMS", notamText, notamVoice),
+                new Variable("TL", transitionLevelText, transitionLevelVoice)
+            };
+
+            voiceString.Append(composite.CurrentPreset.Template);
+
+            foreach (var variable in variables)
+            {
+                voiceString.Replace($"[{variable.Find}]", variable.VoiceReplace);
+                voiceString.Replace($"${variable.Find}", variable.VoiceReplace);
+
+                if (variable.Aliases != null)
+                {
+                    foreach (var alias in variable.Aliases)
+                    {
+                        voiceString.Replace($"[{alias}]", variable.VoiceReplace);
+                        voiceString.Replace($"${alias}", variable.VoiceReplace);
+                    }
                 }
             }
 
             if (!metar.IsInternational)
             {
-                atisString.Append($"ADVISE ON INITIAL CONTACT, YOU HAVE INFORMATION {atisLetter}.");
+                voiceString.Append($"ADVISE ON INITIAL CONTACT, YOU HAVE INFORMATION {atisLetter}.");
+            }
+
+            StringBuilder acarsText = new StringBuilder(composite.CurrentPreset.Template);
+
+            foreach (var variable in variables)
+            {
+                acarsText.Replace($"[{variable.Find}]", variable.TextReplace);
+                acarsText.Replace($"${variable.Find}", variable.TextReplace);
+
+                if (variable.Aliases != null)
+                {
+                    foreach (var alias in variable.Aliases)
+                    {
+                        acarsText.Replace($"[{alias}]", variable.TextReplace);
+                        acarsText.Replace($"${alias}", variable.TextReplace);
+                    }
+                }
             }
 
             if (!metar.IsInternational)
             {
-                List<string> acarsWxString = new()
-                {
-                    surfaceWind.Acars,
-                    visibility.Acars,
-                    rvr.Acars,
-                    presentWeather.Acars,
-                    clouds.Acars,
-                    $"{temp.Acars}/{dew.Acars}",
-                    pressure.Acars
-                };
-
-                var acarsNotams = "";
-                if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
-                {
-                    acarsNotams = "NOTAMS... " + string.Concat(composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)));
-                }
-
-                StringBuilder acarsText = new StringBuilder();
-                acarsText.Append(composite.CurrentPreset.Template);
-                acarsText.Replace("[FACILITY]", mAirport.ID);
-                acarsText.Replace("[ATIS_LETTER]", composite.CurrentAtisLetter);
-                acarsText.Replace("[ATIS_CODE]", composite.CurrentAtisLetter);
-                acarsText.Replace("[TIME]", time.Acars);
-                acarsText.Replace("[OBS_TIME]", time.Acars);
-                acarsText.Replace("[WIND]", surfaceWind.Acars);
-                acarsText.Replace("[SURFACE_WIND]", surfaceWind.Acars);
-                acarsText.Replace("[RVR]", rvr.Acars);
-                acarsText.Replace("[VIS]", visibility.Acars);
-                acarsText.Replace("[PREVAILING_VISIBILITY]", visibility.Acars);
-                acarsText.Replace("[PRESENT_WX]", presentWeather.Acars);
-                acarsText.Replace("[PRESENT_WEATHER]", presentWeather.Acars);
-                acarsText.Replace("[CLOUDS]", clouds.Acars);
-                acarsText.Replace("[TEMP]", temp.Acars);
-                acarsText.Replace("[DEW]", dew.Acars);
-                acarsText.Replace("[PRESSURE]", pressure.Acars);
-                acarsText.Replace("[WX]",
-                    string.Join(" ", acarsWxString.Where(t => !string.IsNullOrEmpty(t))));
-                acarsText.Replace("[FULL_WX_STRING]",
-                    string.Join(" ", acarsWxString.Where(t => !string.IsNullOrEmpty(t))));
-                acarsText.Replace("[ARPT_COND]", airportConditions);
-                acarsText.Replace("[NOTAMS]", acarsNotams);
                 acarsText.Append($" ...ADVS YOU HAVE INFO { composite.CurrentAtisLetter }.");
-
-                var str = acarsText.ToString();
-                str = Regex.Replace(str, @"\s+", " ");
-                composite.AcarsText = str.Replace("*", "")
-                    .Replace("+", "")
-                    .ToUpper();
-            }
-            else
-            {
-                var str = atisString.ToString();
-                str = Regex.Replace(str, @"\s\.", ".");
-                str = Regex.Replace(str, @"\s\,", ",");
-                str = Regex.Replace(str, @"\s+", " ");
-                str = Regex.Replace(str, @"\.+", ".");
-                str = Regex.Replace(str, @"\&", "and");
-                str = Regex.Replace(str, @"\*", "");
-                composite.AcarsText = str.Replace("*", "")
-                    .Replace("+", "")
-                    .ToUpper();
             }
 
-            var tts = FormatForTextToSpeech(atisString.ToString().ToUpper(), composite);
+            var str = acarsText.ToString();
+            str = Regex.Replace(str, @"\s+", " ");
+            composite.AcarsText = str.Replace("*", "")
+                .Replace("+", "")
+                .ToUpper();
+
+            var tts = FormatForTextToSpeech(voiceString.ToString().ToUpper(), composite);
 
             try
             {
@@ -647,5 +641,21 @@ namespace Vatsim.Vatis.Client.Atis
         public string Notams { get; set; }
         public DateTime Timestamp { get; set; }
         public string Version { get; set; }
+    }
+
+    internal class Variable
+    {
+        public string Find { get; set; }
+        public string TextReplace { get; set; }
+        public string VoiceReplace { get; set; }
+        public string[] Aliases { get; set; }
+
+        public Variable(string find, string textReplace, string voiceReplace, string[] aliases = null)
+        {
+            Find = find;
+            TextReplace = textReplace;
+            VoiceReplace = voiceReplace;
+            Aliases = aliases;
+        }
     }
 }

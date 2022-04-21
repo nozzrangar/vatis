@@ -34,6 +34,7 @@
             this.btnNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.chkBeforeFreeForm = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lstConditions
@@ -105,11 +106,23 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // chkBeforeFreeForm
+            // 
+            this.chkBeforeFreeForm.AutoSize = true;
+            this.chkBeforeFreeForm.Location = new System.Drawing.Point(240, 246);
+            this.chkBeforeFreeForm.Name = "chkBeforeFreeForm";
+            this.chkBeforeFreeForm.Size = new System.Drawing.Size(229, 19);
+            this.chkBeforeFreeForm.TabIndex = 6;
+            this.chkBeforeFreeForm.Text = "Include before free-form ARPT CONDs";
+            this.chkBeforeFreeForm.UseVisualStyleBackColor = true;
+            this.chkBeforeFreeForm.CheckedChanged += new System.EventHandler(this.chkBeforeFreeForm_CheckedChanged);
+            // 
             // AirportConditionsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(504, 301);
+            this.Controls.Add(this.chkBeforeFreeForm);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnNew);
@@ -125,6 +138,7 @@
             this.Text = "Airport Condition Definitions";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AirportConditionsDialog_FormClosing);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -136,5 +150,6 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.CheckBox chkBeforeFreeForm;
     }
 }

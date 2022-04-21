@@ -8,7 +8,9 @@ namespace Vatsim.Vatis.Client.Config
         string Identifier { get; set; }
         List<ContractionMeta> Contractions { get; set; }
         List<DefinedText> AirportConditionDefinitions { get; set; }
+        bool AirportConditionsBeforeFreeText { get; set; }
         List<DefinedText> NotamDefinitions { get; set; }
+        bool NotamsBeforeFreeText { get; set; }
         List<TransitionLevel> TransitionLevels { get; set; }
         int AtisFrequency { get; set; }
         ObservationTimeMeta ObservationTime { get; set; }

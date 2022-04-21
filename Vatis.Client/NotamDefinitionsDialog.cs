@@ -23,6 +23,8 @@ namespace Vatsim.Vatis.Client
             btnMoveDown.Text = char.ConvertFromUtf32(8595);
             btnMoveUp.Text = char.ConvertFromUtf32(8593);
 
+            chkBeforeFreeForm.Checked = mComposite.NotamsBeforeFreeText;
+
             PopulateList();
         }
 
@@ -195,6 +197,11 @@ namespace Vatsim.Vatis.Client
             {
                 configDefinition.Enabled = e.NewValue == CheckState.Checked;
             }
+        }
+
+        private void chkBeforeFreeForm_CheckedChanged(object sender, EventArgs e)
+        {
+            mComposite.NotamsBeforeFreeText = chkBeforeFreeForm.Checked;
         }
     }
 }
