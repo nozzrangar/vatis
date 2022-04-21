@@ -361,7 +361,7 @@
             this.btnRecord.Text = "RECORD ATIS";
             this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
-            // btnTransmit
+            // btnConnect
             // 
             this.btnConnect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.btnConnect.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
@@ -375,7 +375,7 @@
             this.btnConnect.ForeColor = System.Drawing.Color.White;
             this.btnConnect.Location = new System.Drawing.Point(871, 3);
             this.btnConnect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnConnect.Name = "btnTransmit";
+            this.btnConnect.Name = "btnConnect";
             this.btnConnect.Pushed = false;
             this.btnConnect.PushedColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.btnConnect.Size = new System.Drawing.Size(120, 32);

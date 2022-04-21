@@ -185,8 +185,11 @@ namespace Vatsim.Vatis.Client
 
             foreach (var connection in mConnections)
             {
-                mAudioManager.RemoveBot(connection.Callsign);
-                connection.Disconnect();
+                if (connection.IsConnected)
+                {
+                    mAudioManager.RemoveBot(connection.Callsign);
+                    connection.Disconnect();
+                }
             }
 
             Close();
