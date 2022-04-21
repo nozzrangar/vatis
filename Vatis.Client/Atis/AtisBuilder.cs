@@ -188,9 +188,11 @@ namespace Vatsim.Vatis.Client.Atis
 
             var str = acarsText.ToString();
             str = Regex.Replace(str, @"\s+", " ");
-            composite.AcarsText = str.Replace("*", "")
-                .Replace("+", "")
-                .ToUpper();
+            str = Regex.Replace(str, @"(?<=\*)(-?[\,0-9]+)", "$1");
+            str = Regex.Replace(str, @"(?<=\#)(-?[\,0-9]+)", "$1");
+            str = Regex.Replace(str, @"(?<=\+)([A-Z]{3})", "$1");
+            str = Regex.Replace(str, @"(?<=\+)([A-Z]{4})", "$1");
+            composite.AcarsText = str.ToUpper();
 
             var tts = FormatForTextToSpeech(voiceString.ToString().ToUpper(), composite);
 
@@ -313,6 +315,9 @@ namespace Vatsim.Vatis.Client.Atis
 
             // format vhf frequencies
             input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value).DecimalToWordString(composite.DecodedMetar.IsInternational));
+
+            // read numbers as singular
+            input = Regex.Replace(input, @"\#(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
 
             // format numbers to singluar words
             input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
