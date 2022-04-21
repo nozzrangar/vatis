@@ -436,7 +436,8 @@ namespace Vatsim.Vatis.Client.Atis
                     AtisLetter = composite.CurrentAtisLetter,
                     AirportConditions = composite.CurrentPreset.AirportConditions,
                     Notams = composite.CurrentPreset.Notams,
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.UtcNow,
+                    Version = "4.0.0"
                 };
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
                 await client.ExecuteAsync(request);
@@ -645,5 +646,6 @@ namespace Vatsim.Vatis.Client.Atis
         public string AirportConditions { get; set; }
         public string Notams { get; set; }
         public DateTime Timestamp { get; set; }
+        public string Version { get; set; }
     }
 }
