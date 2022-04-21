@@ -3,6 +3,7 @@ using Appccelerate.EventBroker.Handlers;
 using RestSharp;
 using System;
 using System.Reflection;
+using Vatsim.Vatis.Client.Config;
 
 namespace Vatsim.Vatis.Client.Core
 {
@@ -11,11 +12,13 @@ namespace Vatsim.Vatis.Client.Core
         private const string VersionCheckUrl = "https://vatis.clowd.io/api/v4/VersionCheck";
         private readonly IEventBroker mEventBroker;
         private readonly IUserInterface mUserInterface;
+        private readonly IAppConfig mAppConfig;
 
-        public VersionCheck(IEventBroker eventBroker, IUserInterface userInterface)
+        public VersionCheck(IEventBroker eventBroker, IAppConfig appConfig, IUserInterface userInterface)
         {
             mEventBroker = eventBroker;
             mEventBroker.Register(this);
+            mAppConfig = appConfig;
             mUserInterface = userInterface;
         }
 
@@ -39,6 +42,7 @@ namespace Vatsim.Vatis.Client.Core
                     if (v > Assembly.GetExecutingAssembly().GetName().Version)
                     {
                         using var dlg = mUserInterface.CreateVersionCheckForm();
+                        dlg.TopMost = mAppConfig.WindowProperties.TopMost;
                         dlg.NewVersion = response.Data.LatestProductVersion;
                         dlg.DownloadUrl = response.Data.LatestVersionUrl;
                         dlg.ShowDialog();

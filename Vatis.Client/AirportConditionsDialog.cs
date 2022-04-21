@@ -11,12 +11,14 @@ namespace Vatsim.Vatis.Client
     internal partial class AirportConditionsDialog : Form
     {
         private AtisComposite mComposite;
+        private bool mKeepOnTop = false;
 
-        public AirportConditionsDialog(AtisComposite composite)
+        public AirportConditionsDialog(AtisComposite composite, bool onTop = false)
         {
             InitializeComponent();
 
             mComposite = composite;
+            mKeepOnTop = onTop;
 
             btnMoveDown.Text = char.ConvertFromUtf32(8595);
             btnMoveUp.Text = char.ConvertFromUtf32(8593);
@@ -139,6 +141,7 @@ namespace Vatsim.Vatis.Client
         {
             using (var dlg = new TextDefinitionDialog())
             {
+                dlg.TopMost = mKeepOnTop;
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     if (string.IsNullOrEmpty(dlg.TextValue))
@@ -169,6 +172,7 @@ namespace Vatsim.Vatis.Client
         {
             using (var dlg = new TextDefinitionDialog())
             {
+                dlg.TopMost = mKeepOnTop;
                 var selectedDefinition = lstConditions.SelectedItem as DefinedText;
                 dlg.TextValue = selectedDefinition.Text;
 

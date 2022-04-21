@@ -862,7 +862,6 @@ namespace Vatsim.Vatis.Client
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Profile Configuration";
-            this.TopMost = true;
             this.TlpMain.ResumeLayout(false);
             this.TlpMain.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);

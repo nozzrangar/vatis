@@ -123,7 +123,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Airport Condition Definitions";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AirportConditionsDialog_FormClosing);
             this.ResumeLayout(false);
 

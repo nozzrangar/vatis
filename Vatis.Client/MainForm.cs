@@ -130,9 +130,10 @@ namespace Vatsim.Vatis.Client
                 DialogResult dialogResult = MessageBox.Show(this, "It looks like this may be the first time you've run vATIS on this computer. Some configuration items are required before you can connect to the network. Would you like to configure vATIS now?", "Configuration Required", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    using (var settings = mUserInterface.CreateSettingsForm())
+                    using (var dlg = mUserInterface.CreateSettingsForm())
                     {
-                        settings.ShowDialog(this);
+                        dlg.TopMost = mAppConfig.WindowProperties.TopMost;
+                        dlg.ShowDialog(this);
                     }
                 }
             }
@@ -204,9 +205,10 @@ namespace Vatsim.Vatis.Client
 
         private void btnManageProfile_Click(object sender, EventArgs e)
         {
-            using (var form = mUserInterface.CreateProfileConfigurationForm())
+            using (var dlg = mUserInterface.CreateProfileConfigurationForm())
             {
-                form.ShowDialog(this);
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
+                dlg.ShowDialog(this);
             }
         }
 
@@ -214,7 +216,8 @@ namespace Vatsim.Vatis.Client
         {
             using (var form = mUserInterface.CreateSettingsForm())
             {
-                form.ShowDialog(this);
+                form.TopMost = mAppConfig.WindowProperties.TopMost;
+                form.ShowDialog();
             }
         }
 

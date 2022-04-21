@@ -383,6 +383,7 @@ namespace Vatsim.Vatis.Client.UI
         {
             using (var dlg = new RecordAtisDialog(mAppConfig))
             {
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     if (dlg.AtisMemoryStream != null)
@@ -395,8 +396,9 @@ namespace Vatsim.Vatis.Client.UI
 
         private void btnAirportConditions_Click(object sender, EventArgs e)
         {
-            using (var dlg = new AirportConditionsDialog(mComposite))
+            using (var dlg = new AirportConditionsDialog(mComposite, mAppConfig.WindowProperties.TopMost))
             {
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     mAppConfig.SaveConfig();
@@ -406,8 +408,9 @@ namespace Vatsim.Vatis.Client.UI
 
         private void btnNotams_Click(object sender, EventArgs e)
         {
-            using (var dlg = new NotamDefinitionsDialog(mComposite))
+            using (var dlg = new NotamDefinitionsDialog(mComposite, mAppConfig.WindowProperties.TopMost))
             {
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     mAppConfig.SaveConfig();

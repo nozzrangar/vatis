@@ -139,7 +139,6 @@ namespace Vatsim.Vatis.Client
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Download Update";
-            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 

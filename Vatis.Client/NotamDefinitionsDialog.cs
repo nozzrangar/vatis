@@ -11,12 +11,14 @@ namespace Vatsim.Vatis.Client
     public partial class NotamDefinitionsDialog : Form
     {
         private AtisComposite mComposite;
+        private bool mKeepOnTop = false;
 
-        public NotamDefinitionsDialog(AtisComposite composite)
+        public NotamDefinitionsDialog(AtisComposite composite, bool onTop = false)
         {
             InitializeComponent();
 
             mComposite = composite;
+            mKeepOnTop = onTop;
 
             btnMoveDown.Text = char.ConvertFromUtf32(8595);
             btnMoveUp.Text = char.ConvertFromUtf32(8593);
@@ -83,6 +85,7 @@ namespace Vatsim.Vatis.Client
         {
             using (var dlg = new TextDefinitionDialog())
             {
+                dlg.TopMost = mKeepOnTop;
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     if (string.IsNullOrEmpty(dlg.TextValue))
@@ -113,6 +116,7 @@ namespace Vatsim.Vatis.Client
         {
             using (var dlg = new TextDefinitionDialog())
             {
+                dlg.TopMost = mKeepOnTop;
                 var selectedDefinition = lstConditions.SelectedItem as DefinedText;
                 dlg.TextValue = selectedDefinition.Text;
 

@@ -246,7 +246,6 @@ namespace Vatsim.Vatis.Client
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "vATIS Settings";
-            this.TopMost = true;
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);

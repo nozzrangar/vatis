@@ -122,7 +122,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NOTAM Definitions";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NotamDefintionsDialog_FormClosing);
             this.ResumeLayout(false);
 
