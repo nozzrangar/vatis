@@ -28,6 +28,7 @@ namespace Vatsim.Vatis.Client
             if (!SingleAppInstance.Exists("vatis4.0"))
             {
                 Application.CurrentCulture = new CultureInfo("en-US");
+                Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
