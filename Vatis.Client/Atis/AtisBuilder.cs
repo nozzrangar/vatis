@@ -187,8 +187,6 @@ namespace Vatsim.Vatis.Client.Atis
             else
             {
                 var str = atisString.ToString();
-                str = Regex.Replace(str, @"(\.+)(\w+)", "$2");
-                str = Regex.Replace(str, @"(\,+)(\w+)", "$2");
                 str = Regex.Replace(str, @"\s\.", ".");
                 str = Regex.Replace(str, @"\s\,", ",");
                 str = Regex.Replace(str, @"\s+", " ");
