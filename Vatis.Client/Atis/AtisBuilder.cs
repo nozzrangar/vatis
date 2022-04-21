@@ -206,7 +206,7 @@ namespace Vatsim.Vatis.Client.Atis
                     {
                         await mAudioManager.AddOrUpdateBot(response.Result, composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
 
-                        PostIdsUpdate(composite);
+                        PostIdsUpdate(composite, token);
                     }
                 }, token);
             }
@@ -301,7 +301,7 @@ namespace Vatsim.Vatis.Client.Atis
                 {
                     await mAudioManager.AddOrUpdateBot(memoryStream, composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
 
-                    PostIdsUpdate(composite);
+                    PostIdsUpdate(composite, token);
                 }
             }
             catch (OperationCanceledException) { }
@@ -410,7 +410,7 @@ namespace Vatsim.Vatis.Client.Atis
             };
         }
 
-        private async void PostIdsUpdate(AtisComposite composite)
+        private async void PostIdsUpdate(AtisComposite composite, CancellationToken token)
         {
             if (Debugger.IsAttached)
                 return;
@@ -439,7 +439,7 @@ namespace Vatsim.Vatis.Client.Atis
                     Version = "4.0.0"
                 };
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
-                await client.ExecuteAsync(request);
+                await client.ExecuteAsync(request, token);
             }
             catch { }
         }
