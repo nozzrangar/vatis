@@ -210,7 +210,7 @@ namespace Vatsim.Vatis.Client
 
         private void ctxNew_Click(object sender, EventArgs e)
         {
-            if (mAppConfig.CurrentProfile.Composites.Count >= Constants.MAX_ALLOWED_COMPOSITES)
+            if (mAppConfig.CurrentProfile.Composites.Count >= Constants.MAX_COMPOSITES)
             {
                 MessageBox.Show("The maximum ATIS composite count has been exceeded for this profile.", "Error");
                 return;
@@ -299,7 +299,7 @@ namespace Vatsim.Vatis.Client
 
         private void ctxCopy_Click(object sender, EventArgs e)
         {
-            if (mAppConfig.CurrentProfile.Composites.Count >= Constants.MAX_ALLOWED_COMPOSITES)
+            if (mAppConfig.CurrentProfile.Composites.Count >= Constants.MAX_COMPOSITES)
             {
                 MessageBox.Show("The maximum ATIS composite count has been exceeded for this profile.", "Error");
                 return;
@@ -1073,7 +1073,13 @@ namespace Vatsim.Vatis.Client
                 };
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    foreach (var file in dialog.FileNames.Take(Constants.MAX_ALLOWED_COMPOSITES))
+                    if (dialog.FileNames.Length > Constants.MAX_COMPOSITES)
+                    {
+                        MessageBox.Show(this, $"A maximum of {Constants.MAX_COMPOSITES} composites can be imported into a single profile", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return;
+                    }
+
+                    foreach (var file in dialog.FileNames.Take(Constants.MAX_COMPOSITES))
                     {
                         var fileInfo = new FileInfo(file);
                         switch (fileInfo.Extension)

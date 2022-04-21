@@ -29,7 +29,7 @@ namespace Vatsim.Vatis.Client.UI
         private readonly AtisComposite mComposite;
         private readonly IAppConfig mAppConfig;
 
-        public event EventHandler<EventArgs> TransmitButtonClicked;
+        public event EventHandler<EventArgs> ConnectButtonClicked;
         public event EventHandler<EventArgs> AtisLetterChanged;
         public event EventHandler<RecordedAtisChangedEventArgs> RecordedAtisMemoryStreamChanged; 
 
@@ -105,13 +105,13 @@ namespace Vatsim.Vatis.Client.UI
                     switch (value)
                     {
                         case ConnectionStatus.Connected:
-                            btnTransmit.Text = "DISCONNECT";
+                            btnConnect.Text = "DISCONNECT";
                             break;
                         case ConnectionStatus.Disconnected:
-                            btnTransmit.Text = "CONNECT";
+                            btnConnect.Text = "CONNECT";
                             break;
                         case ConnectionStatus.Connecting:
-                            btnTransmit.Text = "CONNECTING...";
+                            btnConnect.Text = "CONNECTING...";
                             break;
                     }
                 }, null);
@@ -165,7 +165,7 @@ namespace Vatsim.Vatis.Client.UI
 
             if (ddlPresets.Items.Count == 0)
             {
-                btnTransmit.Enabled = false;
+                btnConnect.Enabled = false;
             }
         }
 
@@ -196,7 +196,7 @@ namespace Vatsim.Vatis.Client.UI
         {
             mSyncContext.Post(o =>
             {
-                btnTransmit.Clicked = false;
+                btnConnect.Clicked = false;
                 mBlinkTimer.Enabled = false;
                 atisLetter.ForeColor = Color.White;
             }, null);
@@ -204,7 +204,7 @@ namespace Vatsim.Vatis.Client.UI
 
         private void OnNetworkConnectedChanged(object sender, EventArgs e)
         {
-            mSyncContext.Post(o => { btnTransmit.Clicked = true; }, null);
+            mSyncContext.Post(o => { btnConnect.Clicked = true; }, null);
         }
 
         private void atisLetter_MouseUp(object sender, MouseEventArgs e)
@@ -251,7 +251,7 @@ namespace Vatsim.Vatis.Client.UI
 
         private void btnTransmit_Click(object sender, EventArgs e)
         {
-            TransmitButtonClicked?.Invoke(this, EventArgs.Empty);
+            ConnectButtonClicked?.Invoke(this, EventArgs.Empty);
         }
 
         private void ddlPresets_SelectedIndexChanged(object sender, EventArgs e)
@@ -294,7 +294,7 @@ namespace Vatsim.Vatis.Client.UI
                         txtArptCond.Text = mSelectedPreset.AirportConditions;
                         txtNotams.Text = mSelectedPreset.Notams;
 
-                        btnTransmit.Enabled = true;
+                        btnConnect.Enabled = true;
                     }
                 }
 

@@ -251,7 +251,7 @@ namespace Vatsim.Vatis.Client
                 return;
             }
 
-            foreach (var composite in mAppConfig.CurrentProfile.Composites.OrderBy(x => x.Identifier).Take(Constants.MAX_ALLOWED_COMPOSITES))
+            foreach (var composite in mAppConfig.CurrentProfile.Composites.OrderBy(x => x.Identifier).Take(Constants.MAX_COMPOSITES))
             {
                 var tab = atisTabs.TabPages[composite.Identifier] as AtisTabPage;
                 if (tab != null)
@@ -278,7 +278,7 @@ namespace Vatsim.Vatis.Client
                         Text = composite.Identifier,
                         Tag = composite
                     };
-                    tabPage.CompositeMeta.TransmitButtonClicked += (sender, args) =>
+                    tabPage.CompositeMeta.ConnectButtonClicked += (sender, args) =>
                     {
                         if (connection.IsConnected)
                         {
@@ -299,6 +299,11 @@ namespace Vatsim.Vatis.Client
                         }
                         else
                         {
+                            if (mConnections.Count(x => x.IsConnected) >= Constants.MAX_CONNECTIONS)
+                            {
+                                tabPage.CompositeMeta.Error = "Maximum ATIS connections exceeded.";
+                                return;
+                            }
                             connection.Connect();
                         }
                     };

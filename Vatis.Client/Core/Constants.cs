@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
-        public const int MAX_ALLOWED_COMPOSITES = 4;
+        public const int MAX_CONNECTIONS = 4;
+        public const int MAX_COMPOSITES = 15;
     }
 }

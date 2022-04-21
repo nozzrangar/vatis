@@ -45,7 +45,7 @@
             this.txtNotams = new System.Windows.Forms.RichTextBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnRecord = new Vatsim.Vatis.Client.UI.ExButton();
-            this.btnTransmit = new Vatsim.Vatis.Client.UI.ExButton();
+            this.btnConnect = new Vatsim.Vatis.Client.UI.ExButton();
             this.ddlPresets = new Vatsim.Vatis.Client.UI.ExComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panelAtisText.SuspendLayout();
@@ -328,7 +328,7 @@
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 128F));
             this.tlpButtons.Controls.Add(this.btnRecord, 0, 0);
-            this.tlpButtons.Controls.Add(this.btnTransmit, 2, 0);
+            this.tlpButtons.Controls.Add(this.btnConnect, 2, 0);
             this.tlpButtons.Controls.Add(this.ddlPresets, 1, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpButtons.Location = new System.Drawing.Point(0, 225);
@@ -363,26 +363,26 @@
             // 
             // btnTransmit
             // 
-            this.btnTransmit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.btnTransmit.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.btnTransmit.Clicked = false;
-            this.btnTransmit.ClickedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(70)))), ((int)(((byte)(150)))));
-            this.btnTransmit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTransmit.DisabledTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.btnTransmit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnTransmit.Enabled = false;
-            this.btnTransmit.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnTransmit.ForeColor = System.Drawing.Color.White;
-            this.btnTransmit.Location = new System.Drawing.Point(871, 3);
-            this.btnTransmit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnTransmit.Name = "btnTransmit";
-            this.btnTransmit.Pushed = false;
-            this.btnTransmit.PushedColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.btnTransmit.Size = new System.Drawing.Size(120, 32);
-            this.btnTransmit.TabIndex = 67;
-            this.btnTransmit.Text = "CONNECT";
-            this.btnTransmit.UseVisualStyleBackColor = false;
-            this.btnTransmit.Click += new System.EventHandler(this.btnTransmit_Click);
+            this.btnConnect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.btnConnect.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnConnect.Clicked = false;
+            this.btnConnect.ClickedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(70)))), ((int)(((byte)(150)))));
+            this.btnConnect.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnConnect.DisabledTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnConnect.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnConnect.Enabled = false;
+            this.btnConnect.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnConnect.ForeColor = System.Drawing.Color.White;
+            this.btnConnect.Location = new System.Drawing.Point(871, 3);
+            this.btnConnect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnConnect.Name = "btnTransmit";
+            this.btnConnect.Pushed = false;
+            this.btnConnect.PushedColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.btnConnect.Size = new System.Drawing.Size(120, 32);
+            this.btnConnect.TabIndex = 67;
+            this.btnConnect.Text = "CONNECT";
+            this.btnConnect.UseVisualStyleBackColor = false;
+            this.btnConnect.Click += new System.EventHandler(this.btnTransmit_Click);
             // 
             // ddlPresets
             // 
@@ -445,7 +445,7 @@
         private System.Windows.Forms.RichTextBox txtNotams;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private ExButton btnRecord;
-        private ExButton btnTransmit;
+        private ExButton btnConnect;
         private ExComboBox ddlPresets;
         private System.Windows.Forms.PictureBox saveAirportConditions;
         private System.Windows.Forms.PictureBox saveNotams;
