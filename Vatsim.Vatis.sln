@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoVR.Shared", "GeoVR\sourc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoVR.Connection", "GeoVR\source\GeoVR.Connection\GeoVR.Connection.csproj", "{3875D649-F3FD-43AC-B634-083AC16DAED5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProfileEditor", "ProfileEditor\ProfileEditor.csproj", "{54DFAA60-4C84-4531-A816-8291E0FCB84E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,14 @@ Global
 		{3875D649-F3FD-43AC-B634-083AC16DAED5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3875D649-F3FD-43AC-B634-083AC16DAED5}.Release|x64.ActiveCfg = Release|Any CPU
 		{3875D649-F3FD-43AC-B634-083AC16DAED5}.Release|x64.Build.0 = Release|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Debug|x64.Build.0 = Debug|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Release|x64.ActiveCfg = Release|Any CPU
+		{54DFAA60-4C84-4531-A816-8291E0FCB84E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
