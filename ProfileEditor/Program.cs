@@ -81,6 +81,9 @@ namespace ProfileEditor
 
             foreach (var type in formTypes)
             {
+                if (type.IsDefined(typeof(IgnoreFormRegistration)))
+                    continue;
+
                 var registration = Lifestyle.Transient.CreateRegistration(type, container);
 
                 registration.SuppressDiagnosticWarning(

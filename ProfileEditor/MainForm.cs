@@ -785,9 +785,9 @@ namespace ProfileEditor
                 if (decimal.TryParse(vhfFrequency.Text, out var frequency))
                 {
                     frequency = frequency.ToVatsimFrequencyFormat();
-                    if (frequency < 18000 || frequency > 36975)
+                    if (frequency < 18000 || frequency > 37000)
                     {
-                        MessageBox.Show(this, "Invalid frequency range. Accepted frequency range: 118.000-136.975 MHz", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        MessageBox.Show(this, "Invalid frequency range. The accepted frequency range is 118.000-137.000 MHz", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                         return false;
                     }
                     else
@@ -1480,6 +1480,30 @@ namespace ProfileEditor
         {
             var pattern = new Regex(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$");
             return pattern.IsMatch(value.Trim());
+        }
+
+        private void airportConditions_Click(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            using var dlg = new AirportConditionsDialog(mCurrentComposite);
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                mAppConfig.SaveConfig();
+            }
+        }
+
+        private void notams_Click(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            using var dlg = new NotamDefinitionsDialog(mCurrentComposite);
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                mAppConfig.SaveConfig();
+            }
         }
     }
 

@@ -34,10 +34,10 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.mainTabControl = new System.Windows.Forms.TabControl();
             this.pagePresets = new System.Windows.Forms.TabPage();
-            this.label6 = new System.Windows.Forms.Label();
+            this.notams = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.txtNotams = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.airportConditions = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.txtAirportCond = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -89,7 +89,6 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.compositeTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.pageStaticMessages = new System.Windows.Forms.TabPage();
             this.TlpMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.mainTabControl.SuspendLayout();
@@ -150,7 +149,6 @@
             // mainTabControl
             // 
             this.mainTabControl.Controls.Add(this.pagePresets);
-            this.mainTabControl.Controls.Add(this.pageStaticMessages);
             this.mainTabControl.Controls.Add(this.pageContractions);
             this.mainTabControl.Controls.Add(this.pageConfiguration);
             this.mainTabControl.Controls.Add(this.pageTransitionLevel);
@@ -165,9 +163,9 @@
             // 
             // pagePresets
             // 
-            this.pagePresets.Controls.Add(this.label6);
+            this.pagePresets.Controls.Add(this.notams);
             this.pagePresets.Controls.Add(this.panel5);
-            this.pagePresets.Controls.Add(this.label4);
+            this.pagePresets.Controls.Add(this.airportConditions);
             this.pagePresets.Controls.Add(this.panel4);
             this.pagePresets.Controls.Add(this.label5);
             this.pagePresets.Controls.Add(this.panel2);
@@ -184,14 +182,16 @@
             this.pagePresets.Text = "Presets";
             this.pagePresets.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // notams
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(365, 202);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(57, 15);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "NOTAMS:";
+            this.notams.AutoSize = true;
+            this.notams.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.notams.Location = new System.Drawing.Point(365, 202);
+            this.notams.Name = "notams";
+            this.notams.Size = new System.Drawing.Size(57, 15);
+            this.notams.TabIndex = 13;
+            this.notams.Text = "NOTAMS:";
+            this.notams.Click += new System.EventHandler(this.notams_Click);
             // 
             // panel5
             // 
@@ -219,14 +219,16 @@
             this.txtNotams.Size = new System.Drawing.Size(318, 106);
             this.txtNotams.TabIndex = 4;
             // 
-            // label4
+            // airportConditions
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 202);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 15);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "ARPT COND:";
+            this.airportConditions.AutoSize = true;
+            this.airportConditions.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.airportConditions.Location = new System.Drawing.Point(14, 202);
+            this.airportConditions.Name = "airportConditions";
+            this.airportConditions.Size = new System.Drawing.Size(75, 15);
+            this.airportConditions.TabIndex = 11;
+            this.airportConditions.Text = "ARPT COND:";
+            this.airportConditions.Click += new System.EventHandler(this.airportConditions_Click);
             // 
             // panel4
             // 
@@ -805,16 +807,6 @@
             this.compositeTooltip.InitialDelay = 250;
             this.compositeTooltip.ReshowDelay = 50;
             // 
-            // pageStaticMessages
-            // 
-            this.pageStaticMessages.Location = new System.Drawing.Point(4, 24);
-            this.pageStaticMessages.Name = "pageStaticMessages";
-            this.pageStaticMessages.Padding = new System.Windows.Forms.Padding(3);
-            this.pageStaticMessages.Size = new System.Drawing.Size(708, 362);
-            this.pageStaticMessages.TabIndex = 4;
-            this.pageStaticMessages.Text = "Static Messages";
-            this.pageStaticMessages.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -914,12 +906,11 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TreeView TreeMenu;
         private System.Windows.Forms.ListBox listComposites;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label airportConditions;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TextBox txtAirportCond;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label notams;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.TextBox txtNotams;
-        private System.Windows.Forms.TabPage pageStaticMessages;
     }
 }
