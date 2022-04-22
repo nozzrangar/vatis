@@ -1485,6 +1485,12 @@ namespace ProfileEditor
             if (mSelectedComposites == null)
                 return;
 
+            if (mSelectedComposites.Count > 15)
+            {
+                MessageBox.Show(this, "A profile cannot contain more than 15 composites.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return;
+            }
+
             bool flag = false;
 
             while (!flag)
