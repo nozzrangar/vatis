@@ -123,8 +123,8 @@ namespace Vatsim.Vatis.Client.Atis
             var variables = new List<Variable>
             {
                 new Variable("FACILITY", mAirport.ID, mAirport.Name),
-                new Variable("ATIS_LETTER", composite.CurrentAtisLetter, atisLetter,  new [] {"LETTER","ATIS_CODE"}),
-                new Variable("TIME", time.Acars, time.TextToSpeech, new []{"OBS_TIME"}),
+                new Variable("ATIS_LETTER", composite.CurrentAtisLetter, atisLetter,  new [] {"LETTER","ATIS_CODE","ID"}),
+                new Variable("TIME", time.Acars, time.TextToSpeech, new []{"OBS_TIME","OBSTIME"}),
                 new Variable("WIND", surfaceWind.Acars, surfaceWind.TextToSpeech, new[]{"SURFACE_WIND"}),
                 new Variable("RVR", rvr.Acars, rvr.TextToSpeech),
                 new Variable("VIS", visibility.Acars, visibility.TextToSpeech, new[]{"PREVAILING_VISIBILITY"}),
@@ -134,7 +134,7 @@ namespace Vatsim.Vatis.Client.Atis
                 new Variable("DEW", dew.Acars, dew.TextToSpeech),
                 new Variable("PRESSURE", pressure.Acars, pressure.TextToSpeech, new[]{"QNH"}),
                 new Variable("WX", completeWxStringAcars, completeWxStringVoice, new[]{"FULL_WX_STRING"}),
-                new Variable("ARPT_COND", airportConditions, airportConditions),
+                new Variable("ARPT_COND", airportConditions, airportConditions, new[]{"ARRDEP"}),
                 new Variable("NOTAMS", notamText, notamVoice),
                 new Variable("TL", transitionLevelText, transitionLevelVoice)
             };
