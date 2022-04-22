@@ -17,7 +17,7 @@ namespace ProfileEditor.Config
         public AppConfig()
         {
             AppPath = Path.GetDirectoryName(Environment.ProcessPath);
-            ConfigPath = Path.Combine(AppPath, "AppConfig.json");
+            ConfigPath = Path.Combine(AppPath, "ProfileEditorConfig.json");
 
             try
             {
