@@ -83,7 +83,11 @@
             this.ctxDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxImportComposite = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxImportLegacyProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxExportToProfile = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxExportSingleComposite = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnApply = new System.Windows.Forms.Button();
@@ -707,12 +711,12 @@
             this.ctxImport,
             this.ctxExport});
             this.ctxOptions.Name = "ctxOptions";
-            this.ctxOptions.Size = new System.Drawing.Size(169, 142);
+            this.ctxOptions.Size = new System.Drawing.Size(120, 142);
             // 
             // ctxNew
             // 
             this.ctxNew.Name = "ctxNew";
-            this.ctxNew.Size = new System.Drawing.Size(168, 22);
+            this.ctxNew.Size = new System.Drawing.Size(119, 22);
             this.ctxNew.Text = "New";
             this.ctxNew.Click += new System.EventHandler(this.ctxNew_Click);
             // 
@@ -720,7 +724,7 @@
             // 
             this.ctxCopy.Enabled = false;
             this.ctxCopy.Name = "ctxCopy";
-            this.ctxCopy.Size = new System.Drawing.Size(168, 22);
+            this.ctxCopy.Size = new System.Drawing.Size(119, 22);
             this.ctxCopy.Text = "Copy";
             this.ctxCopy.Click += new System.EventHandler(this.ctxCopy_Click);
             // 
@@ -728,7 +732,7 @@
             // 
             this.ctxRename.Enabled = false;
             this.ctxRename.Name = "ctxRename";
-            this.ctxRename.Size = new System.Drawing.Size(168, 22);
+            this.ctxRename.Size = new System.Drawing.Size(119, 22);
             this.ctxRename.Text = "Rename";
             this.ctxRename.Click += new System.EventHandler(this.ctxRename_Click);
             // 
@@ -736,29 +740,61 @@
             // 
             this.ctxDelete.Enabled = false;
             this.ctxDelete.Name = "ctxDelete";
-            this.ctxDelete.Size = new System.Drawing.Size(168, 22);
+            this.ctxDelete.Size = new System.Drawing.Size(119, 22);
             this.ctxDelete.Text = "Delete";
             this.ctxDelete.Click += new System.EventHandler(this.ctxDelete_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(116, 6);
             // 
             // ctxImport
             // 
+            this.ctxImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxImportComposite,
+            this.ctxImportLegacyProfile});
             this.ctxImport.Name = "ctxImport";
-            this.ctxImport.Size = new System.Drawing.Size(168, 22);
-            this.ctxImport.Text = "Import Profile...";
-            this.ctxImport.Click += new System.EventHandler(this.ctxImport_Click);
+            this.ctxImport.Size = new System.Drawing.Size(119, 22);
+            this.ctxImport.Text = "Import...";
+            // 
+            // ctxImportComposite
+            // 
+            this.ctxImportComposite.Name = "ctxImportComposite";
+            this.ctxImportComposite.Size = new System.Drawing.Size(205, 22);
+            this.ctxImportComposite.Text = "Composite (.json)";
+            this.ctxImportComposite.Click += new System.EventHandler(this.ctxImportComposite_Click);
+            // 
+            // ctxImportLegacyProfile
+            // 
+            this.ctxImportLegacyProfile.Name = "ctxImportLegacyProfile";
+            this.ctxImportLegacyProfile.Size = new System.Drawing.Size(205, 22);
+            this.ctxImportLegacyProfile.Text = "Legacy vATIS Profile (.gz)";
+            this.ctxImportLegacyProfile.Click += new System.EventHandler(this.ctxImportLegacyProfile_Click);
             // 
             // ctxExport
             // 
+            this.ctxExport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxExportToProfile,
+            this.ctxExportSingleComposite});
             this.ctxExport.Enabled = false;
             this.ctxExport.Name = "ctxExport";
-            this.ctxExport.Size = new System.Drawing.Size(168, 22);
-            this.ctxExport.Text = "Export to Profile...";
-            this.ctxExport.Click += new System.EventHandler(this.ctxExport_Click);
+            this.ctxExport.Size = new System.Drawing.Size(119, 22);
+            this.ctxExport.Text = "Export...";
+            // 
+            // ctxExportToProfile
+            // 
+            this.ctxExportToProfile.Name = "ctxExportToProfile";
+            this.ctxExportToProfile.Size = new System.Drawing.Size(180, 22);
+            this.ctxExportToProfile.Text = "To Profile";
+            this.ctxExportToProfile.Click += new System.EventHandler(this.ctxExportToProfile_Click);
+            // 
+            // ctxExportSingleComposite
+            // 
+            this.ctxExportSingleComposite.Name = "ctxExportSingleComposite";
+            this.ctxExportSingleComposite.Size = new System.Drawing.Size(180, 22);
+            this.ctxExportSingleComposite.Text = "Single Composite";
+            this.ctxExportSingleComposite.Click += new System.EventHandler(this.ctxExportSingleComposite_Click);
             // 
             // label1
             // 
@@ -912,5 +948,9 @@
         private System.Windows.Forms.Label notams;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.TextBox txtNotams;
+        private System.Windows.Forms.ToolStripMenuItem ctxImportLegacyProfile;
+        private System.Windows.Forms.ToolStripMenuItem ctxImportComposite;
+        private System.Windows.Forms.ToolStripMenuItem ctxExportToProfile;
+        private System.Windows.Forms.ToolStripMenuItem ctxExportSingleComposite;
     }
 }

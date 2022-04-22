@@ -79,6 +79,7 @@ namespace ProfileEditor
             ctxRename.Enabled = false;
             ctxCopy.Enabled = false;
             ctxExport.Enabled = false;
+            ctxExportSingleComposite.Enabled = false;
 
             txtAtisTemplate.Text = "";
             txtAirportCond.Text = "";
@@ -426,63 +427,22 @@ namespace ProfileEditor
             }
         }
 
-        private void ctxImport_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var dialog = new OpenFileDialog
-                {
-                    Title = "Import vATIS Composite",
-                    CheckFileExists = true,
-                    CheckPathExists = true,
-                    AddExtension = false,
-                    Multiselect = true,
-                    Filter = "Legacy vATIS Profile (*.gz)|*.gz|vATIS Composite (*.json)|*.json|All Files (*.*)|*.*",
-                    FilterIndex = 1,
-                    DefaultExt = "gz",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    ShowHelp = false
-                };
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    foreach (var file in dialog.FileNames)
-                    {
-                        var fileInfo = new FileInfo(file);
-                        switch (fileInfo.Extension)
-                        {
-                            case ".gz":
-                                ImportLegacyProfile(fileInfo.FullName);
-                                break;
-                            case ".json":
-                                ImportComposite(fileInfo.FullName);
-                                break;
-                            default:
-                                throw new Exception("Unknown file type");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "Composite Import Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-            }
-        }
-
         private void ImportComposite(string fullName)
         {
             try
             {
                 var composite = new AtisComposite();
 
-                using (var fs = new FileStream(fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using var fs = new FileStream(fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (var sr = new StreamReader(fs))
                 {
-                    using (var sr = new StreamReader(fs))
+                    composite = JsonConvert.DeserializeObject<AtisComposite>(sr.ReadToEnd(), new JsonSerializerSettings
                     {
-                        JsonConvert.PopulateObject(sr.ReadToEnd(), composite);
-                    }
+                        MissingMemberHandling = MissingMemberHandling.Error
+                    });
                 }
 
-                if(mAppConfig.Composites.Any(x => x.Identifier == composite.Identifier))
+                if (mAppConfig.Composites.Any(x => x.Identifier == composite.Identifier))
                 {
                     if (MessageBox.Show(this, $"A composite already exists for {composite.Identifier}. Do you want to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.Yes)
                     {
@@ -710,58 +670,7 @@ namespace ProfileEditor
 
         private void ctxExport_Click(object sender, EventArgs e)
         {
-            if (mSelectedComposites == null)
-                return;
 
-            bool flag = false;
-
-            while (!flag)
-            {
-                using (var dlg = mUserInterface.CreateUserInputForm())
-                {
-                    dlg.PromptLabel = "Enter a name for the profile:";
-                    dlg.WindowTitle = "Save Profile As";
-                    dlg.ErrorMessage = "Invalid profile name. It must consist of only letters, numbers, underscores and spaces.";
-                    dlg.RegexExpression = "[A-Za-z0-9_ ]+";
-                    dlg.InitialValue = mPreviousInputValue;
-
-                    DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
-                    {
-                        var profile = new Profile
-                        {
-                            Name = dlg.Value,
-                            Composites = mSelectedComposites
-                        };
-
-                        var saveDialog = new SaveFileDialog
-                        {
-                            FileName = $"vATIS Profile - {dlg.Value}.json",
-                            Filter = "vATIS Composite (*.json)|*.json|All Files (*.*)|*.*",
-                            FilterIndex = 1,
-                            CheckPathExists = true,
-                            DefaultExt = "json",
-                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                            OverwritePrompt = true,
-                            ShowHelp = false,
-                            SupportMultiDottedExtensions = true,
-                            Title = "Export Profile",
-                            ValidateNames = true
-                        };
-
-                        if (saveDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            flag = true;
-                            File.WriteAllText(saveDialog.FileName, JsonConvert.SerializeObject(profile, Formatting.Indented));
-                            MessageBox.Show(this, "Profile exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                        }
-                    }
-                    else
-                    {
-                        flag = true;
-                    }
-                }
-            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -1445,6 +1354,7 @@ namespace ProfileEditor
                     ctxRename.Enabled = true;
                     ctxCopy.Enabled = true;
                     ctxExport.Enabled = true;
+                    ctxExportSingleComposite.Enabled = true;
                     txtAtisTemplate.Text = "";
                     txtAirportCond.Text = "";
                     txtNotams.Text = "";
@@ -1462,7 +1372,9 @@ namespace ProfileEditor
                 if (listComposites.SelectedItems.Count > 1)
                 {
                     ResetUI();
+                    ctxExport.Enabled = true;
                     ctxDelete.Enabled = true;
+                    ctxExportToProfile.Enabled = true;
                 }
 
                 foreach (var selected in listComposites.SelectedItems)
@@ -1503,6 +1415,151 @@ namespace ProfileEditor
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 mAppConfig.SaveConfig();
+            }
+        }
+
+        private void ctxImportLegacyProfile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Title = "Import Legacy vATIS Profile",
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    AddExtension = false,
+                    Multiselect = true,
+                    Filter = "Legacy vATIS Profile (*.gz)|*.gz",
+                    FilterIndex = 1,
+                    DefaultExt = "gz",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    ShowHelp = false
+                };
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    foreach (var file in dialog.FileNames)
+                    {
+                        ImportLegacyProfile(file);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "Legacy Profile Import Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+        }
+
+        private void ctxImportComposite_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Title = "Import vATIS Composite",
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    AddExtension = false,
+                    Multiselect = true,
+                    Filter = "vATIS Composite (*.json)|*.json",
+                    FilterIndex = 1,
+                    DefaultExt = "gz",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    ShowHelp = false
+                };
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    foreach (var file in dialog.FileNames)
+                    {
+                        ImportComposite(file);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "Composite Import Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+        }
+
+        private void ctxExportToProfile_Click(object sender, EventArgs e)
+        {
+            if (mSelectedComposites == null)
+                return;
+
+            bool flag = false;
+
+            while (!flag)
+            {
+                using (var dlg = mUserInterface.CreateUserInputForm())
+                {
+                    dlg.PromptLabel = "Enter a name for the profile:";
+                    dlg.WindowTitle = "Save Profile As";
+                    dlg.ErrorMessage = "Invalid profile name. It must consist of only letters, numbers, underscores and spaces.";
+                    dlg.RegexExpression = "[A-Za-z0-9_ ]+";
+                    dlg.InitialValue = mPreviousInputValue;
+
+                    DialogResult result = dlg.ShowDialog(this);
+                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                    {
+                        var profile = new Profile
+                        {
+                            Name = dlg.Value,
+                            Composites = mSelectedComposites
+                        };
+
+                        var saveDialog = new SaveFileDialog
+                        {
+                            FileName = $"vATIS Profile - {dlg.Value}.json",
+                            Filter = "vATIS Composite (*.json)|*.json|All Files (*.*)|*.*",
+                            FilterIndex = 1,
+                            CheckPathExists = true,
+                            DefaultExt = "json",
+                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                            OverwritePrompt = true,
+                            ShowHelp = false,
+                            SupportMultiDottedExtensions = true,
+                            Title = "Export Profile",
+                            ValidateNames = true
+                        };
+
+                        if (saveDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            flag = true;
+                            File.WriteAllText(saveDialog.FileName, JsonConvert.SerializeObject(profile, Formatting.Indented));
+                            MessageBox.Show(this, "Profile exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        }
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+            }
+        }
+
+        private void ctxExportSingleComposite_Click(object sender, EventArgs e)
+        {
+            if (mCurrentComposite != null)
+            {
+                var saveDialog = new SaveFileDialog
+                {
+                    FileName = $"vATIS Composite - {mCurrentComposite.Name}.json",
+                    Filter = "vATIS Composite (*.json)|*.json|All Files (*.*)|*.*",
+                    FilterIndex = 1,
+                    CheckPathExists = true,
+                    DefaultExt = "json",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    OverwritePrompt = true,
+                    ShowHelp = false,
+                    SupportMultiDottedExtensions = true,
+                    Title = "Export Composite",
+                    ValidateNames = true
+                };
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllText(saveDialog.FileName, JsonConvert.SerializeObject(mCurrentComposite, Formatting.Indented));
+                    MessageBox.Show(this, "Composite exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
             }
         }
     }
