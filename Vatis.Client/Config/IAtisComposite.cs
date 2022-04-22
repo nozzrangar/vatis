@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Vatsim.Vatis.Client.Config
 {
@@ -20,5 +21,6 @@ namespace Vatsim.Vatis.Client.Config
         List<AtisPreset> Presets { get; set; }
         AtisPreset CurrentPreset { get; set; }
         string CurrentAtisLetter { get; set; }
+        MemoryStream MemoryStream { get; set; }
     }
 }

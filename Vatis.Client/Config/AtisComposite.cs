@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Vatsim.Vatis.Client.Config
 {
@@ -28,6 +29,7 @@ namespace Vatsim.Vatis.Client.Config
         [JsonIgnore] public string AcarsText { get; set; }
         [JsonIgnore] public uint AfvFrequency => ((uint)AtisFrequency + 100000) * 1000;
         [JsonIgnore] public string AtisCallsign { get; set; }
+        [JsonIgnore] public MemoryStream MemoryStream { get; set; }
 
         internal AtisComposite Clone()
         {

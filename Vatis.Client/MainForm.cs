@@ -336,7 +336,7 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                mAtisBuilder.BuildAutomaticAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
+                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
                                 {
                                     tabPage.Connection.SendSubscriberNotification();
                                 }, cancellationToken.Token);
@@ -377,7 +377,7 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                mAtisBuilder.BuildAutomaticAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
+                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
                                 {
                                     tabPage.Connection.SendSubscriberNotification();
                                 }, cancellationToken.Token);
@@ -402,7 +402,9 @@ namespace Vatsim.Vatis.Client
 
                             cancellationToken = new CancellationTokenSource();
 
-                            mAtisBuilder.BuildManualAtisAsync(composite, args.AtisMemoryStream.ToArray(), cancellationToken.Token).ContinueWith(t =>
+                            composite.MemoryStream = args.AtisMemoryStream;
+
+                            mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
                             {
                                 mSyncContext.Post(o =>
                                 {

@@ -6,7 +6,6 @@ namespace Vatsim.Vatis.Client.Atis
 {
     public interface IAtisBuilder
     {
-        Task BuildAutomaticAtisAsync(AtisComposite composite, CancellationToken token);
-        Task BuildManualAtisAsync(AtisComposite composite, byte[] memoryStream, CancellationToken token);
+        Task BuildAtisAsync(AtisComposite composite, CancellationToken cancellationToken);
     }
 }
