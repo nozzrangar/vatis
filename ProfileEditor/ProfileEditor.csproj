@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SimpleInjector" Version="5.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="AirportConditionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NotamDefinitionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TextDefinitionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
