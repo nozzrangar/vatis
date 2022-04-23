@@ -324,29 +324,29 @@ namespace Vatsim.Vatis.Client
         {
             var openFileDialog = new OpenFileDialog
             {
-                Title = "Select Profile File to Import From",
+                Title = "Import vATIS Profile",
                 CheckFileExists = true,
                 CheckPathExists = true,
                 AddExtension = false,
-                Filter = "vATIS Profile (*.json)|*.json|All Files (*.*)|*.*",
+                Filter = "vATIS Profile (*.json)|*.json",
                 FilterIndex = 1,
-                DefaultExt = "json",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 ShowHelp = false
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var profile = new Profile();
-
                 try
                 {
-                    using (var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    var profile = new Profile();
+
+                    using var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (var sr = new StreamReader(fs))
                     {
-                        using (var sr = new StreamReader(fs))
+                        profile = JsonConvert.DeserializeObject<Profile>(sr.ReadToEnd(), new JsonSerializerSettings
                         {
-                            JsonConvert.PopulateObject(sr.ReadToEnd(), profile);
-                        }
+                            MissingMemberHandling = MissingMemberHandling.Error
+                        });
                     }
 
                     if (mAppConfig.Profiles.Any(x => x.Name == profile.Name))
@@ -382,10 +382,9 @@ namespace Vatsim.Vatis.Client
                 var saveDialog = new SaveFileDialog
                 {
                     FileName = $"vATIS Profile - {profile.Name}.json",
-                    Filter = "vATIS Profile (*.json)|*.json|All Files (*.*)|*.*",
+                    Filter = "vATIS Profile (*.json)|*.json",
                     FilterIndex = 1,
                     CheckPathExists = true,
-                    DefaultExt = "json",
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                     OverwritePrompt = true,
                     ShowHelp = false,

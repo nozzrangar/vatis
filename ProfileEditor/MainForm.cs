@@ -442,22 +442,25 @@ namespace ProfileEditor
                     });
                 }
 
-                if (mAppConfig.Composites.Any(x => x.Identifier == composite.Identifier))
+                if (composite != null)
                 {
-                    if (MessageBox.Show(this, $"A composite already exists for {composite.Identifier}. Do you want to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.Yes)
+                    if (mAppConfig.Composites.Any(x => x.Identifier == composite.Identifier))
                     {
-                        mAppConfig.Composites.RemoveAll(t => t.Identifier == composite.Identifier);
+                        if (MessageBox.Show(this, $"A composite already exists for {composite.Identifier}. Do you want to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.Yes)
+                        {
+                            mAppConfig.Composites.RemoveAll(t => t.Identifier == composite.Identifier);
+                            mAppConfig.Composites.Add(composite);
+                            mAppConfig.SaveConfig();
+                            RefreshCompositeList();
+                            LoadComposite();
+                        }
+                    }
+                    else
+                    {
                         mAppConfig.Composites.Add(composite);
                         mAppConfig.SaveConfig();
                         RefreshCompositeList();
-                        LoadComposite();
                     }
-                }
-                else
-                {
-                    mAppConfig.Composites.Add(composite);
-                    mAppConfig.SaveConfig();
-                    RefreshCompositeList();
                 }
             }
             catch (Exception ex)
