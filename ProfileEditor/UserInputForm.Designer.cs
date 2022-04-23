@@ -89,7 +89,7 @@ namespace ProfileEditor
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtResponse);
             this.Controls.Add(this.lblPrompt);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "UserInputForm";
             this.Padding = new System.Windows.Forms.Padding(10);
