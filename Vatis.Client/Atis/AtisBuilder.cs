@@ -31,6 +31,65 @@ namespace Vatsim.Vatis.Client.Atis
             mAudioManager = audioManager;
         }
 
+        public void GenerateAcarsText(AtisComposite composite)
+        {
+            if (composite == null)
+            {
+                throw new Exception("Composite is null");
+            }
+
+            if (composite.CurrentPreset == null)
+            {
+                throw new Exception("CurrentPreset is null");
+            }
+
+            if (composite.DecodedMetar == null)
+            {
+                throw new Exception("DecodedMetar is null");
+            }
+
+            mAirport = mNavData.GetAirport(composite.Identifier);
+            if (mAirport == null)
+            {
+                throw new Exception($"{composite.Identifier} not found in airport database.");
+            }
+
+            DecodedMetar metar;
+            string atisLetter;
+            List<Variable> variables;
+            ParseMetar(composite, out metar, out atisLetter, out variables);
+
+            StringBuilder acarsText = new StringBuilder(composite.CurrentPreset.Template);
+
+            foreach (var variable in variables)
+            {
+                acarsText.Replace($"[{variable.Find}]", variable.TextReplace);
+                acarsText.Replace($"${variable.Find}", variable.TextReplace);
+
+                if (variable.Aliases != null)
+                {
+                    foreach (var alias in variable.Aliases)
+                    {
+                        acarsText.Replace($"[{alias}]", variable.TextReplace);
+                        acarsText.Replace($"${alias}", variable.TextReplace);
+                    }
+                }
+            }
+
+            if (!metar.IsInternational)
+            {
+                acarsText.Append($" ...ADVS YOU HAVE INFO { composite.CurrentAtisLetter }.");
+            }
+
+            var str = acarsText.ToString();
+            str = Regex.Replace(str, @"\s+", " ");
+            str = Regex.Replace(str, @"(?<=\*)(-?[\,0-9]+)", "$1");
+            str = Regex.Replace(str, @"(?<=\#)(-?[\,0-9]+)", "$1");
+            str = Regex.Replace(str, @"(?<=\+)([A-Z]{3})", "$1");
+            str = Regex.Replace(str, @"(?<=\+)([A-Z]{4})", "$1");
+            composite.AcarsText = str.ToUpper();
+        }
+
         public async Task BuildAtisAsync(AtisComposite composite, CancellationToken cancellationToken)
         {
             if (composite == null)
@@ -54,92 +113,14 @@ namespace Vatsim.Vatis.Client.Atis
                 throw new Exception($"{composite.Identifier} not found in airport database.");
             }
 
-            StringBuilder voiceString = new StringBuilder();
+            DecodedMetar metar;
+            string atisLetter;
+            List<Variable> variables;
+            ParseMetar(composite, out metar, out atisLetter, out variables);
 
-            var metar = composite.DecodedMetar;
-            var time = DoParse(metar, new ObservationTimeMeta(composite));
-            var surfaceWind = DoParse(metar, new SurfaceWindMeta(composite));
-            var rvr = DoParse(metar, new RunwayVisualRangeMeta());
-            var visibility = DoParse(metar, new VisibilityMeta());
-            var presentWeather = DoParse(metar, new PresentWeatherMeta());
-            var clouds = DoParse(metar, new CloudsMeta());
-            var temp = DoParse(metar, new TemperatureMeta());
-            var dew = DoParse(metar, new DewpointMeta());
-            var pressure = DoParse(metar, new PressureMeta());
+            // Build voice string
 
-            var atisLetter = char.Parse(composite.CurrentAtisLetter).LetterToPhonetic();
-
-            var completeWxStringVoice = $"{surfaceWind.TextToSpeech} {visibility.TextToSpeech} {rvr.TextToSpeech} {presentWeather.TextToSpeech} {clouds.TextToSpeech} {temp.TextToSpeech} {dew.TextToSpeech} {pressure.TextToSpeech}";
-            var completeWxStringAcars = $"{surfaceWind.Acars} {visibility.Acars} {rvr.Acars} {presentWeather.Acars} {clouds.Acars} {temp.Acars}/{dew.Acars} {pressure.Acars}";
-
-            var airportConditions = "";
-            if (!string.IsNullOrEmpty(composite.CurrentPreset.AirportConditions) || composite.AirportConditionDefinitions.Any(t => t.Enabled))
-            {
-                if (composite.AirportConditionsBeforeFreeText)
-                {
-                    airportConditions = string.Join(" ", new[] { string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.AirportConditions });
-                }
-                else
-                {
-                    airportConditions = string.Join(" ", new[] { composite.CurrentPreset.AirportConditions, string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
-                }
-            }
-
-            var notamVoice = "";
-            var notamText = "";
-            if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
-            {
-                notamVoice = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
-                if (composite.NotamsBeforeFreeText)
-                {
-                    notamText = "NOTAMS... " + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
-                    notamVoice += string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
-                }
-                else
-                {
-                    notamText = "NOTAMS..." + string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
-                    notamVoice += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
-                }
-            }
-
-            var transitionLevelVoice = "";
-            var transitionLevelText = "";
-            if (metar.IsInternational)
-            {
-                transitionLevelText = "TL N/A";
-                transitionLevelVoice = "Transition level not determined";
-                if (composite.TransitionLevels != null)
-                {
-                    var tlValue = composite.TransitionLevels.FirstOrDefault(t => metar.Pressure.ActualValue >= t.Low && metar.Pressure.ActualValue <= t.High);
-
-                    if (tlValue != null)
-                    {
-                        transitionLevelText = "Transition level FL " + tlValue.Altitude;
-                        transitionLevelVoice = "Transition level flight level " + tlValue.Altitude.NumberToSingular();
-                    }
-                }
-            }
-
-            var variables = new List<Variable>
-            {
-                new Variable("FACILITY", mAirport.ID, mAirport.Name),
-                new Variable("ATIS_LETTER", composite.CurrentAtisLetter, atisLetter,  new [] {"LETTER","ATIS_CODE","ID"}),
-                new Variable("TIME", time.Acars, time.TextToSpeech, new []{"OBS_TIME","OBSTIME"}),
-                new Variable("WIND", surfaceWind.Acars, surfaceWind.TextToSpeech, new[]{"SURFACE_WIND"}),
-                new Variable("RVR", rvr.Acars, rvr.TextToSpeech),
-                new Variable("VIS", visibility.Acars, visibility.TextToSpeech, new[]{"PREVAILING_VISIBILITY"}),
-                new Variable("PRESENT_WX", presentWeather.Acars, presentWeather.TextToSpeech, new[]{"PRESENT_WEATHER"}),
-                new Variable("CLOUDS", clouds.Acars, clouds.TextToSpeech),
-                new Variable("TEMP", temp.Acars, temp.TextToSpeech),
-                new Variable("DEW", dew.Acars, dew.TextToSpeech),
-                new Variable("PRESSURE", pressure.Acars, pressure.TextToSpeech, new[]{"QNH"}),
-                new Variable("WX", completeWxStringAcars, completeWxStringVoice, new[]{"FULL_WX_STRING"}),
-                new Variable("ARPT_COND", airportConditions, airportConditions, new[]{"ARRDEP"}),
-                new Variable("NOTAMS", notamText, notamVoice),
-                new Variable("TL", transitionLevelText, transitionLevelVoice)
-            };
-
-            voiceString.Append(composite.CurrentPreset.Template);
+            var voiceString = new StringBuilder(composite.CurrentPreset.Template);
 
             foreach (var variable in variables)
             {
@@ -225,6 +206,95 @@ namespace Vatsim.Vatis.Client.Atis
                 }
                 catch (OperationCanceledException) { }
             }
+        }
+
+        private void ParseMetar(AtisComposite composite, out DecodedMetar metar, out string atisLetter, out List<Variable> variables)
+        {
+            metar = composite.DecodedMetar;
+            var time = DoParse(metar, new ObservationTimeMeta(composite));
+            var surfaceWind = DoParse(metar, new SurfaceWindMeta(composite));
+            var rvr = DoParse(metar, new RunwayVisualRangeMeta());
+            var visibility = DoParse(metar, new VisibilityMeta());
+            var presentWeather = DoParse(metar, new PresentWeatherMeta());
+            var clouds = DoParse(metar, new CloudsMeta());
+            var temp = DoParse(metar, new TemperatureMeta());
+            var dew = DoParse(metar, new DewpointMeta());
+            var pressure = DoParse(metar, new PressureMeta());
+
+            atisLetter = char.Parse(composite.CurrentAtisLetter).LetterToPhonetic();
+            var completeWxStringVoice = $"{surfaceWind.TextToSpeech} {visibility.TextToSpeech} {rvr.TextToSpeech} {presentWeather.TextToSpeech} {clouds.TextToSpeech} {temp.TextToSpeech} {dew.TextToSpeech} {pressure.TextToSpeech}";
+            var completeWxStringAcars = $"{surfaceWind.Acars} {visibility.Acars} {rvr.Acars} {presentWeather.Acars} {clouds.Acars} {temp.Acars}/{dew.Acars} {pressure.Acars}";
+
+            var airportConditions = "";
+            if (!string.IsNullOrEmpty(composite.CurrentPreset.AirportConditions) || composite.AirportConditionDefinitions.Any(t => t.Enabled))
+            {
+                if (composite.AirportConditionsBeforeFreeText)
+                {
+                    airportConditions = string.Join(" ", new[] { string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.AirportConditions });
+                }
+                else
+                {
+                    airportConditions = string.Join(" ", new[] { composite.CurrentPreset.AirportConditions, string.Join(". ", composite.AirportConditionDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                }
+            }
+
+            var notamVoice = "";
+            var notamText = "";
+            if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
+            {
+                notamVoice = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
+                if (composite.NotamsBeforeFreeText)
+                {
+                    notamText = "NOTAMS... " + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                    notamVoice += string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                }
+                else
+                {
+                    notamText = "NOTAMS..." + string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                    notamVoice += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                }
+            }
+
+            var transitionLevelVoice = "";
+            var transitionLevelText = "";
+            if (metar.IsInternational)
+            {
+                transitionLevelText = "TL N/A";
+                transitionLevelVoice = "Transition level not determined";
+                if (composite.TransitionLevels != null)
+                {
+                    var myMetar = metar;
+                    var tlValue = composite.TransitionLevels.FirstOrDefault(t =>
+                    {
+                        return myMetar.Pressure.ActualValue >= t.Low && myMetar.Pressure.ActualValue <= t.High;
+                    });
+
+                    if (tlValue != null)
+                    {
+                        transitionLevelText = "Transition level FL " + tlValue.Altitude;
+                        transitionLevelVoice = "Transition level flight level " + tlValue.Altitude.NumberToSingular();
+                    }
+                }
+            }
+
+            variables = new List<Variable>
+            {
+                new Variable("FACILITY", mAirport.ID, mAirport.Name),
+                new Variable("ATIS_LETTER", composite.CurrentAtisLetter, atisLetter,  new [] {"LETTER","ATIS_CODE","ID"}),
+                new Variable("TIME", time.Acars, time.TextToSpeech, new []{"OBS_TIME","OBSTIME"}),
+                new Variable("WIND", surfaceWind.Acars, surfaceWind.TextToSpeech, new[]{"SURFACE_WIND"}),
+                new Variable("RVR", rvr.Acars, rvr.TextToSpeech),
+                new Variable("VIS", visibility.Acars, visibility.TextToSpeech, new[]{"PREVAILING_VISIBILITY"}),
+                new Variable("PRESENT_WX", presentWeather.Acars, presentWeather.TextToSpeech, new[]{"PRESENT_WEATHER"}),
+                new Variable("CLOUDS", clouds.Acars, clouds.TextToSpeech),
+                new Variable("TEMP", temp.Acars, temp.TextToSpeech),
+                new Variable("DEW", dew.Acars, dew.TextToSpeech),
+                new Variable("PRESSURE", pressure.Acars, pressure.TextToSpeech, new[]{"QNH"}),
+                new Variable("WX", completeWxStringAcars, completeWxStringVoice, new[]{"FULL_WX_STRING"}),
+                new Variable("ARPT_COND", airportConditions, airportConditions, new[]{"ARRDEP"}),
+                new Variable("NOTAMS", notamText, notamVoice),
+                new Variable("TL", transitionLevelText, transitionLevelVoice)
+            };
         }
 
         private string FormatForTextToSpeech(string input, AtisComposite composite)

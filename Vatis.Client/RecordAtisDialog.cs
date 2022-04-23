@@ -27,7 +27,7 @@ namespace Vatsim.Vatis.Client
         public MemoryStream AtisMemoryStream => mAtisStream;
         public bool HasAtisStream => mAtisStream.Length > 0;
 
-        public RecordAtisDialog(IAppConfig appConfig)
+        public RecordAtisDialog(IAppConfig appConfig, AtisComposite composite)
         {
             InitializeComponent();
 
@@ -36,6 +36,8 @@ namespace Vatsim.Vatis.Client
             mSyncContext = System.Threading.SynchronizationContext.Current;
 
             mAtisStream = new MemoryStream(20000000);
+
+            txtAtisScript.Text = composite.AcarsText;
 
             var inputDevices = ClientAudioUtilities.GetInputDevices().ToArray();
             ddlInputDeviceName.DataSource = inputDevices;

@@ -347,6 +347,14 @@ namespace Vatsim.Vatis.Client
                                 connection.Disconnect();
                             }
                         }
+                        else
+                        {
+                            mAtisBuilder.GenerateAcarsText(composite);
+                            mSyncContext.Post(o =>
+                            {
+                                tabPage.CompositeMeta.VoiceRecordEnabled = !composite.AtisVoice.UseTextToSpeech;
+                            }, null);
+                        }
 
                         if (args.IsUpdated)
                         {
@@ -363,6 +371,37 @@ namespace Vatsim.Vatis.Client
                             {
                                 FlashTaskbar.Flash(this);
                             }, null);
+                        }
+                    };
+                    tabPage.CompositeMeta.PresetChanged += (sender, args) =>
+                    {
+                        if (composite.DecodedMetar == null)
+                            return;
+
+                        if (composite.AtisVoice.UseTextToSpeech)
+                        {
+                            if (!connection.IsConnected)
+                                return;
+
+                            try
+                            {
+                                // If there's a previous request, cancel it.
+                                if (cancellationToken != null)
+                                    cancellationToken.Cancel();
+
+                                cancellationToken = new CancellationTokenSource();
+
+                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
+                            }
+                            catch (AggregateException ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
+                                connection.Disconnect();
+                            }
+                        }
+                        else
+                        {
+                            mAtisBuilder.GenerateAcarsText(composite);
                         }
                     };
                     tabPage.CompositeMeta.AtisLetterChanged += (sender, args) =>
@@ -465,7 +504,6 @@ namespace Vatsim.Vatis.Client
                             mSyncContext.Post(o =>
                             {
                                 tabPage.CompositeMeta.VoiceRecordedAtisActive = false;
-                                tabPage.CompositeMeta.VoiceRecordEnabled = !composite.AtisVoice.UseTextToSpeech;
                             }, null);
                         }
                     };

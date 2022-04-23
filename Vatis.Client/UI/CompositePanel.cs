@@ -31,6 +31,7 @@ namespace Vatsim.Vatis.Client.UI
 
         public event EventHandler<EventArgs> ConnectButtonClicked;
         public event EventHandler<EventArgs> AtisLetterChanged;
+        public event EventHandler<EventArgs> PresetChanged;
         public event EventHandler<RecordedAtisChangedEventArgs> RecordedAtisMemoryStreamChanged; 
 
         public bool VoiceRecordEnabled
@@ -295,6 +296,8 @@ namespace Vatsim.Vatis.Client.UI
                         txtNotams.Text = mSelectedPreset.Notams;
 
                         btnConnect.Enabled = true;
+
+                        PresetChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
 
@@ -381,7 +384,7 @@ namespace Vatsim.Vatis.Client.UI
 
         private void btnRecord_Click(object sender, EventArgs e)
         {
-            using (var dlg = new RecordAtisDialog(mAppConfig))
+            using (var dlg = new RecordAtisDialog(mAppConfig, mComposite))
             {
                 dlg.TopMost = mAppConfig.WindowProperties.TopMost;
                 if (dlg.ShowDialog() == DialogResult.OK)

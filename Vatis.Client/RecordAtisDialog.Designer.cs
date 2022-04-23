@@ -39,12 +39,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.ddlOutputDeviceName = new System.Windows.Forms.ComboBox();
             this.lblMinRecordingLength = new System.Windows.Forms.Label();
+            this.txtAtisScript = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnRecord
             // 
             this.btnRecord.Enabled = false;
-            this.btnRecord.Location = new System.Drawing.Point(36, 157);
+            this.btnRecord.Location = new System.Drawing.Point(35, 155);
             this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnRecord.Name = "btnRecord";
             this.btnRecord.Size = new System.Drawing.Size(110, 27);
@@ -56,7 +58,7 @@
             // btnListen
             // 
             this.btnListen.Enabled = false;
-            this.btnListen.Location = new System.Drawing.Point(36, 224);
+            this.btnListen.Location = new System.Drawing.Point(35, 222);
             this.btnListen.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnListen.Name = "btnListen";
             this.btnListen.Size = new System.Drawing.Size(110, 27);
@@ -68,7 +70,7 @@
             // recordingLength
             // 
             this.recordingLength.AutoSize = true;
-            this.recordingLength.Location = new System.Drawing.Point(163, 173);
+            this.recordingLength.Location = new System.Drawing.Point(162, 171);
             this.recordingLength.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.recordingLength.Name = "recordingLength";
             this.recordingLength.Size = new System.Drawing.Size(49, 15);
@@ -79,7 +81,7 @@
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(36, 191);
+            this.btnStop.Location = new System.Drawing.Point(35, 189);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(110, 27);
@@ -92,7 +94,7 @@
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Enabled = false;
-            this.btnSave.Location = new System.Drawing.Point(194, 262);
+            this.btnSave.Location = new System.Drawing.Point(193, 260);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(88, 27);
@@ -103,7 +105,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(288, 262);
+            this.btnCancel.Location = new System.Drawing.Point(287, 260);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(88, 27);
@@ -116,7 +118,7 @@
             // 
             this.ddlInputDeviceName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlInputDeviceName.FormattingEnabled = true;
-            this.ddlInputDeviceName.Location = new System.Drawing.Point(36, 53);
+            this.ddlInputDeviceName.Location = new System.Drawing.Point(35, 51);
             this.ddlInputDeviceName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ddlInputDeviceName.Name = "ddlInputDeviceName";
             this.ddlInputDeviceName.Size = new System.Drawing.Size(339, 23);
@@ -126,7 +128,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(36, 35);
+            this.label1.Location = new System.Drawing.Point(35, 33);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(113, 15);
@@ -136,7 +138,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(36, 93);
+            this.label2.Location = new System.Drawing.Point(35, 91);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 15);
@@ -147,7 +149,7 @@
             // 
             this.ddlOutputDeviceName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlOutputDeviceName.FormattingEnabled = true;
-            this.ddlOutputDeviceName.Location = new System.Drawing.Point(36, 111);
+            this.ddlOutputDeviceName.Location = new System.Drawing.Point(35, 109);
             this.ddlOutputDeviceName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ddlOutputDeviceName.Name = "ddlOutputDeviceName";
             this.ddlOutputDeviceName.Size = new System.Drawing.Size(339, 23);
@@ -157,7 +159,7 @@
             // lblMinRecordingLength
             // 
             this.lblMinRecordingLength.ForeColor = System.Drawing.Color.Red;
-            this.lblMinRecordingLength.Location = new System.Drawing.Point(190, 218);
+            this.lblMinRecordingLength.Location = new System.Drawing.Point(189, 216);
             this.lblMinRecordingLength.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMinRecordingLength.Name = "lblMinRecordingLength";
             this.lblMinRecordingLength.Size = new System.Drawing.Size(186, 32);
@@ -165,12 +167,36 @@
             this.lblMinRecordingLength.Text = "Recording must be at least 5 seconds long.";
             this.lblMinRecordingLength.Visible = false;
             // 
+            // txtAtisScript
+            // 
+            this.txtAtisScript.BackColor = System.Drawing.Color.White;
+            this.txtAtisScript.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtAtisScript.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtAtisScript.Location = new System.Drawing.Point(409, 51);
+            this.txtAtisScript.Multiline = true;
+            this.txtAtisScript.Name = "txtAtisScript";
+            this.txtAtisScript.ReadOnly = true;
+            this.txtAtisScript.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtAtisScript.Size = new System.Drawing.Size(370, 236);
+            this.txtAtisScript.TabIndex = 11;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(409, 33);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 15);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "ATIS Script:";
+            // 
             // RecordAtisDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 324);
+            this.ClientSize = new System.Drawing.Size(814, 321);
             this.ControlBox = false;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtAtisScript);
             this.Controls.Add(this.lblMinRecordingLength);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ddlOutputDeviceName);
@@ -208,5 +234,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox ddlOutputDeviceName;
         private System.Windows.Forms.Label lblMinRecordingLength;
+        private System.Windows.Forms.TextBox txtAtisScript;
+        private System.Windows.Forms.Label label3;
     }
 }
