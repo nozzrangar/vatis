@@ -26,6 +26,10 @@ namespace Vatsim.Vatis.Client
         private AtisComposite mCurrentComposite = null;
         private AtisPreset mCurrentPreset = null;
         private bool mFrequencyChanged = false;
+        private bool mObservationTimeChanged = false;
+        private bool mMagneticVariationChanged = false;
+        private bool mVoiceOptionsChanged = false;
+        private bool mIdsEndpointChanged = false;
         private bool mContractionsChanged = false;
         private bool mTransitionLevelsChanged = false;
 
@@ -45,13 +49,7 @@ namespace Vatsim.Vatis.Client
             mEventBroker = eventBroker;
             mEventBroker.Register(this);
 
-            vhfFrequency.TextChanged += vhfFrequency_ValueChanged;
-            observationTime.TextChanged += observationTime_ValueChanged;
-            magneticVar.TextChanged += magneticVar_ValueChanged;
-
             RefreshCompositeList();
-
-            btnApply.Enabled = false;
         }
 
         private TreeNode CreateTreeMenuNode(string name, string tag)
@@ -93,7 +91,7 @@ namespace Vatsim.Vatis.Client
 
         private void LoadComposite()
         {
-            vhfFrequency.Value = (decimal)((mCurrentComposite.AtisFrequency + 100000) / 1000.0);
+            vhfFrequency.Text = ((mCurrentComposite.AtisFrequency + 100000) / 1000.0).ToString("000.000");
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -442,7 +440,7 @@ namespace Vatsim.Vatis.Client
             ctxCopy.Enabled = false;
             ctxExport.Enabled = false;
 
-            vhfFrequency.Value = 118.000m;
+            vhfFrequency.Text = "118.000";
             observationTime.Value = 0;
             magneticVar.Value = 0;
             chkMagneticVar.Checked = false;
@@ -501,8 +499,55 @@ namespace Vatsim.Vatis.Client
 
             if (mFrequencyChanged)
             {
-                mCurrentComposite.AtisFrequency = (int)((vhfFrequency.Value - 100m) * 1000m);
-                mFrequencyChanged = false;
+                if (decimal.TryParse(vhfFrequency.Text, out var frequency))
+                {
+                    frequency = frequency.ToVatsimFrequencyFormat();
+                    if (frequency < 18000 || frequency > 37000)
+                    {
+                        MessageBox.Show(this, "Invalid frequency range. The accepted frequency range is 118.000-137.000 MHz", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return false;
+                    }
+                    else
+                    {
+                        mCurrentComposite.AtisFrequency = (int)frequency;
+                        mFrequencyChanged = false;
+                    }
+                }
+            }
+
+            if (mObservationTimeChanged)
+            {
+                var meta = new ObservationTimeMeta
+                {
+                    Enabled = chkObservationTime.Checked,
+                    Time = (uint)observationTime.Value
+                };
+                mCurrentComposite.ObservationTime = meta;
+                mObservationTimeChanged = false;
+            }
+
+            if (mMagneticVariationChanged)
+            {
+                var meta = new MagneticVariationMeta
+                {
+                    Enabled = chkMagneticVar.Checked,
+                    MagneticDegrees = (int)magneticVar.Value
+                };
+                mCurrentComposite.MagneticVariation = meta;
+                mMagneticVariationChanged = false;
+            }
+
+            if (mIdsEndpointChanged)
+            {
+                mCurrentComposite.IDSEndpoint = txtIdsEndpoint.Text;
+                mIdsEndpointChanged = false;
+            }
+
+            if (mVoiceOptionsChanged)
+            {
+                mCurrentComposite.AtisVoice.UseTextToSpeech = radioTextToSpeech.Checked;
+                mCurrentComposite.AtisVoice.Voice = ddlVoices.SelectedItem.ToString() ?? "Default";
+                mVoiceOptionsChanged = false;
             }
 
             if (mCurrentPreset != null && mCurrentPreset.IsTemplateDirty)
@@ -617,163 +662,219 @@ namespace Vatsim.Vatis.Client
             }
         }
 
-        private void vhfFrequency_ValueChanged(object sender, EventArgs e)
+        private void vhfFrequency_TextChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!vhfFrequency.Focused)
                 return;
 
-            mFrequencyChanged = true;
-            btnApply.Enabled = true;
+            if (decimal.TryParse(vhfFrequency.Text, out var frequency))
+            {
+                if (frequency.ToVatsimFrequencyFormat() != mCurrentComposite.AtisFrequency)
+                {
+                    mFrequencyChanged = true;
+                    btnApply.Enabled = true;
+                }
+                else
+                {
+                    mFrequencyChanged = false;
+                    btnApply.Enabled = false;
+                }
+            }
         }
 
         private void chkObservationTime_CheckedChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!chkObservationTime.Focused)
                 return;
 
             observationTime.Enabled = chkObservationTime.Checked;
 
-            var meta = new ObservationTimeMeta
+            if (chkObservationTime.Checked != mCurrentComposite.ObservationTime.Enabled)
             {
-                Enabled = observationTime.Enabled,
-                Time = (uint)observationTime.Value
-            };
-            mCurrentComposite.ObservationTime = meta;
-
-            btnApply.Enabled = true;
+                mObservationTimeChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                btnApply.Enabled = false;
+            }
         }
 
         private void observationTime_ValueChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!observationTime.Focused)
                 return;
 
-            var meta = new ObservationTimeMeta
+            if (observationTime.Value != mCurrentComposite.ObservationTime.Time)
             {
-                Enabled = observationTime.Enabled,
-                Time = (uint)observationTime.Value
-            };
-            mCurrentComposite.ObservationTime = meta;
-
-            btnApply.Enabled = true;
+                mObservationTimeChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mObservationTimeChanged = false;
+                btnApply.Enabled = false;
+            }
         }
 
         private void chkMagneticVar_CheckedChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!chkMagneticVar.Focused)
                 return;
 
             magneticVar.Enabled = chkMagneticVar.Checked;
 
-            var meta = new MagneticVariationMeta
+            if (chkMagneticVar.Checked != mCurrentComposite.MagneticVariation.Enabled)
             {
-                Enabled = chkMagneticVar.Enabled,
-                MagneticDegrees = (int)magneticVar.Value
-            };
-            mCurrentComposite.MagneticVariation = meta;
-
-            btnApply.Enabled = true;
+                mMagneticVariationChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mMagneticVariationChanged = false;
+                btnApply.Enabled = false;
+            }
         }
 
         private void magneticVar_ValueChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!magneticVar.Focused)
                 return;
 
-            var meta = new MagneticVariationMeta
+            if (magneticVar.Value != mCurrentComposite.MagneticVariation.MagneticDegrees)
             {
-                Enabled = chkMagneticVar.Enabled,
-                MagneticDegrees = (int)magneticVar.Value
-            };
-            mCurrentComposite.MagneticVariation = meta;
-
-            btnApply.Enabled = true;
+                mMagneticVariationChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mMagneticVariationChanged = false;
+                btnApply.Enabled = false;
+            }
         }
 
         private void radioVoiceRecorded_CheckedChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!radioVoiceRecorded.Focused)
                 return;
 
+            ddlVoices.Enabled = !radioVoiceRecorded.Checked;
+
             if (mCurrentComposite.AtisVoice != null)
             {
-                mCurrentComposite.AtisVoice.UseTextToSpeech = false;
+                if (radioVoiceRecorded.Checked && mCurrentComposite.AtisVoice.UseTextToSpeech)
+                {
+                    mVoiceOptionsChanged = true;
+                    btnApply.Enabled = true;
+                }
+                else
+                {
+                    mVoiceOptionsChanged = false;
+                    btnApply.Enabled = false;
+                }
             }
             else
             {
-                mCurrentComposite.AtisVoice = new AtisVoiceMeta
-                {
-                    UseTextToSpeech = false
-                };
+                mVoiceOptionsChanged = false;
+                btnApply.Enabled = false;
             }
-            ddlVoices.Enabled = false;
-            btnApply.Enabled = true;
         }
 
         private void radioTextToSpeech_CheckedChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!radioTextToSpeech.Focused)
                 return;
 
+            ddlVoices.Enabled = radioTextToSpeech.Checked;
+
             if (mCurrentComposite.AtisVoice != null)
             {
-                mCurrentComposite.AtisVoice.UseTextToSpeech = true;
-                if (mCurrentComposite.AtisVoice.Voice != null)
+                if (mCurrentComposite.AtisVoice.UseTextToSpeech == false && radioTextToSpeech.Checked)
                 {
-                    if (ddlVoices.Items.Contains(mCurrentComposite.AtisVoice.Voice))
-                    {
-                        ddlVoices.SelectedItem = mCurrentComposite.AtisVoice.Voice;
-                    }
-                    else
-                    {
-                        ddlVoices.SelectedItem = "Default";
-                    }
+                    mVoiceOptionsChanged = true;
+                    btnApply.Enabled = true;
                 }
                 else
                 {
-                    ddlVoices.SelectedItem = "Default";
+                    mVoiceOptionsChanged = false;
+                    btnApply.Enabled = false;
                 }
             }
             else
             {
-                mCurrentComposite.AtisVoice = new AtisVoiceMeta
-                {
-                    UseTextToSpeech = true
-                };
+                mVoiceOptionsChanged = false;
+                btnApply.Enabled = false;
             }
-            ddlVoices.Enabled = true;
-            btnApply.Enabled = true;
         }
 
         private void ddlVoices_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!ddlVoices.Focused)
                 return;
 
             if (mCurrentComposite.AtisVoice != null)
             {
-                mCurrentComposite.AtisVoice.Voice = ddlVoices.SelectedItem.ToString();
+                if (ddlVoices.SelectedItem.ToString() != mCurrentComposite.AtisVoice.Voice)
+                {
+                    mVoiceOptionsChanged = true;
+                    btnApply.Enabled = true;
+                }
             }
             else
             {
                 mCurrentComposite.AtisVoice = new AtisVoiceMeta
                 {
                     UseTextToSpeech = true,
-                    Voice = ddlVoices.SelectedItem.ToString()
+                    Voice = ddlVoices.SelectedItem.ToString() ?? "Default"
                 };
-            }
 
-            btnApply.Enabled = true;
+                mVoiceOptionsChanged = true;
+                btnApply.Enabled = true;
+            }
         }
 
         private void txtIdsEndpoint_TextChanged(object sender, EventArgs e)
         {
+            if (mCurrentComposite == null)
+                return;
+
             if (!txtIdsEndpoint.Focused)
                 return;
 
-            mCurrentComposite.IDSEndpoint = txtIdsEndpoint.Text;
-
-            btnApply.Enabled = true;
+            if ((txtIdsEndpoint.Text ?? "") != (mCurrentComposite.IDSEndpoint ?? ""))
+            {
+                mIdsEndpointChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mIdsEndpointChanged = false;
+                btnApply.Enabled = false;
+            }
         }
 
         public bool IsValidUrl(string value)
@@ -1108,12 +1209,13 @@ namespace Vatsim.Vatis.Client
             {
                 var composite = new AtisComposite();
 
-                using (var fs = new FileStream(fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using var fs = new FileStream(fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (var sr = new StreamReader(fs))
                 {
-                    using (var sr = new StreamReader(fs))
+                    composite = JsonConvert.DeserializeObject<AtisComposite>(sr.ReadToEnd(), new JsonSerializerSettings
                     {
-                        JsonConvert.PopulateObject(sr.ReadToEnd(), composite);
-                    }
+                        MissingMemberHandling = MissingMemberHandling.Error
+                    });
                 }
 
                 if (mAppConfig.CurrentProfile != null)

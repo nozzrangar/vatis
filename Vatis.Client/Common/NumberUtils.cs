@@ -279,5 +279,10 @@ namespace Vatsim.Vatis.Client.Common
                 return (degrees -= Math.Abs(magvar.Value)).NormalizeHeading();
             }
         }
+
+        public static int ToVatsimFrequencyFormat(this decimal value)
+        {
+            return (int)((value - 100m) * 1000m);
+        }
     }
 }

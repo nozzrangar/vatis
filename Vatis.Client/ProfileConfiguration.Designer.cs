@@ -50,7 +50,7 @@ namespace Vatsim.Vatis.Client
             this.ColumnFind = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnReplace = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pageConfiguration = new System.Windows.Forms.TabPage();
-            this.vhfFrequency = new System.Windows.Forms.NumericUpDown();
+            this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.observationTime = new System.Windows.Forms.NumericUpDown();
             this.chkObservationTime = new System.Windows.Forms.CheckBox();
@@ -100,7 +100,6 @@ namespace Vatsim.Vatis.Client
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).BeginInit();
             this.pageConfiguration.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.vhfFrequency)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
             this.pageTransitionLevel.SuspendLayout();
@@ -375,28 +374,13 @@ namespace Vatsim.Vatis.Client
             // 
             // vhfFrequency
             // 
-            this.vhfFrequency.DecimalPlaces = 3;
-            this.vhfFrequency.Location = new System.Drawing.Point(100, 39);
-            this.vhfFrequency.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.vhfFrequency.Maximum = new decimal(new int[] {
-            135975,
-            0,
-            0,
-            196608});
-            this.vhfFrequency.Minimum = new decimal(new int[] {
-            118000,
-            0,
-            0,
-            196608});
+            this.vhfFrequency.Location = new System.Drawing.Point(95, 40);
+            this.vhfFrequency.Mask = "000.000";
             this.vhfFrequency.Name = "vhfFrequency";
-            this.vhfFrequency.Size = new System.Drawing.Size(96, 23);
-            this.vhfFrequency.TabIndex = 15;
-            this.vhfFrequency.Value = new decimal(new int[] {
-            118000,
-            0,
-            0,
-            196608});
-            this.vhfFrequency.ValueChanged += new System.EventHandler(this.vhfFrequency_ValueChanged);
+            this.vhfFrequency.PromptChar = '#';
+            this.vhfFrequency.Size = new System.Drawing.Size(114, 23);
+            this.vhfFrequency.TabIndex = 16;
+            this.vhfFrequency.TextChanged += new System.EventHandler(this.vhfFrequency_TextChanged);
             // 
             // label3
             // 
@@ -765,6 +749,7 @@ namespace Vatsim.Vatis.Client
             // 
             // btnApply
             // 
+            this.btnApply.Enabled = false;
             this.btnApply.Location = new System.Drawing.Point(556, 3);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(70, 29);
@@ -875,7 +860,6 @@ namespace Vatsim.Vatis.Client
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).EndInit();
             this.pageConfiguration.ResumeLayout(false);
             this.pageConfiguration.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.vhfFrequency)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).EndInit();
             this.pageTransitionLevel.ResumeLayout(false);
@@ -933,7 +917,6 @@ namespace Vatsim.Vatis.Client
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFind;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnReplace;
         private System.Windows.Forms.TabPage pageConfiguration;
-        private System.Windows.Forms.NumericUpDown vhfFrequency;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown observationTime;
         private System.Windows.Forms.CheckBox chkObservationTime;
@@ -953,5 +936,6 @@ namespace Vatsim.Vatis.Client
         private System.Windows.Forms.DataGridViewTextBoxColumn transitionLevel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.MaskedTextBox vhfFrequency;
     }
 }
