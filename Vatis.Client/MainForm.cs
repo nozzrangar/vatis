@@ -330,7 +330,7 @@ namespace Vatsim.Vatis.Client
                     tabPage.Connection.MetarResponseReceived += (sender, args) =>
                     {
                         var metar = MetarDecoder.MetarDecoder.ParseWithMode(args.Metar);
-                        metar.IsInternational = composite.UseFaaFormat;
+                        metar.IsInternational = !composite.UseFaaFormat;
                         composite.DecodedMetar = metar;
 
                         tabPage.CompositeMeta.Error = null;
