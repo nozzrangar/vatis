@@ -28,6 +28,7 @@ namespace Vatsim.Vatis.Client
         private AtisPreset mCurrentPreset = null;
         private bool mFrequencyChanged = false;
         private bool mAtisTypeChanged = false;
+        private bool mFaaFormatChanged = false;
         private bool mObservationTimeChanged = false;
         private bool mMagneticVariationChanged = false;
         private bool mVoiceOptionsChanged = false;
@@ -108,6 +109,8 @@ namespace Vatsim.Vatis.Client
                     typeArrival.Checked = true;
                     break;
             }
+
+            chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -547,6 +550,12 @@ namespace Vatsim.Vatis.Client
                 }
             }
 
+            if (mFaaFormatChanged)
+            {
+                mCurrentComposite.UseFaaFormat = chkFaaFormat.Checked;
+                mFaaFormatChanged = false;
+            }
+
             if (mObservationTimeChanged)
             {
                 var meta = new ObservationTimeMeta
@@ -578,7 +587,7 @@ namespace Vatsim.Vatis.Client
             if (mVoiceOptionsChanged)
             {
                 mCurrentComposite.AtisVoice.UseTextToSpeech = radioTextToSpeech.Checked;
-                mCurrentComposite.AtisVoice.Voice = ddlVoices.SelectedItem.ToString() ?? "Default";
+                mCurrentComposite.AtisVoice.Voice = ddlVoices.SelectedItem == null ? "Default" : ddlVoices.SelectedItem.ToString();
                 mVoiceOptionsChanged = false;
             }
 
@@ -777,6 +786,25 @@ namespace Vatsim.Vatis.Client
             }
         }
 
+        private void chkFaaFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkFaaFormat.Focused)
+                return;
+
+            if (chkFaaFormat.Checked != mCurrentComposite.UseFaaFormat)
+            {
+                mFaaFormatChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                btnApply.Enabled = false;
+            }
+        }
+
         private void chkObservationTime_CheckedChanged(object sender, EventArgs e)
         {
             if (mCurrentComposite == null)
@@ -941,7 +969,7 @@ namespace Vatsim.Vatis.Client
                 mCurrentComposite.AtisVoice = new AtisVoiceMeta
                 {
                     UseTextToSpeech = true,
-                    Voice = ddlVoices.SelectedItem.ToString() ?? "Default"
+                    Voice = ddlVoices.SelectedItem == null ? "Default" : ddlVoices.SelectedItem.ToString()
                 };
 
                 mVoiceOptionsChanged = true;

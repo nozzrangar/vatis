@@ -24,5 +24,6 @@ namespace Vatsim.Vatis.Client.Config
         AtisPreset CurrentPreset { get; set; }
         string CurrentAtisLetter { get; set; }
         MemoryStream MemoryStream { get; set; }
+        bool UseFaaFormat { get; set; }
     }
 }

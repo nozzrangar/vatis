@@ -311,7 +311,6 @@ namespace Vatsim.Vatis.Client
 
                             connection.Disconnect();
 
-                            tabPage.CompositeMeta.DecodedMetar = null;
                             tabPage.CompositeMeta.Metar = null;
                             tabPage.CompositeMeta.Wind = null;
                             tabPage.CompositeMeta.Altimeter = null;
@@ -331,16 +330,16 @@ namespace Vatsim.Vatis.Client
                     tabPage.Connection.MetarResponseReceived += (sender, args) =>
                     {
                         var metar = MetarDecoder.MetarDecoder.ParseWithMode(args.Metar);
+                        metar.IsInternational = composite.UseFaaFormat;
+                        composite.DecodedMetar = metar;
 
                         tabPage.CompositeMeta.Error = null;
                         tabPage.CompositeMeta.Metar = args.Metar;
-                        tabPage.CompositeMeta.DecodedMetar = metar;
                         if (metar.SurfaceWind != null)
                             tabPage.CompositeMeta.Wind = metar.SurfaceWind.ToString();
                         if (metar.Pressure != null)
                             tabPage.CompositeMeta.Altimeter = metar.Pressure.ToString();
                         tabPage.CompositeMeta.Status = ConnectionStatus.Connected;
-                        composite.DecodedMetar = metar;
 
                         tabPage.Parent?.Invalidate();
 
@@ -482,7 +481,6 @@ namespace Vatsim.Vatis.Client
                     };
                     connection.KillRequestReceived += (sender, args) =>
                     {
-                        tabPage.CompositeMeta.DecodedMetar = null;
                         tabPage.CompositeMeta.Error = !string.IsNullOrEmpty(args.Reason) ? $"Forcfully disconnected from network: {args.Reason}" : "Forcfully disconnected from network.";
                         tabPage.CompositeMeta.Wind = null;
                         tabPage.CompositeMeta.Altimeter = null;
@@ -494,7 +492,6 @@ namespace Vatsim.Vatis.Client
                     };
                     connection.NetworkDisconnectedChanged += (sender, args) =>
                     {
-                        tabPage.CompositeMeta.DecodedMetar = null;
                         if (!string.IsNullOrEmpty(tabPage.CompositeMeta.Error))
                             tabPage.CompositeMeta.Metar = null;
                         tabPage.CompositeMeta.Wind = null;

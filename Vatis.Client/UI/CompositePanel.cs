@@ -22,7 +22,6 @@ namespace Vatsim.Vatis.Client.UI
         private AtisPreset mPreviousPreset;
         private int mSelectedIndex = -1;
         private ConnectionStatus mConnectionStatus;
-        private DecodedMetar mDecodedMetar;
         private string mErrorMessage = "";
         private readonly System.Threading.SynchronizationContext mSyncContext;
         private readonly Connection mConnection;
@@ -44,16 +43,6 @@ namespace Vatsim.Vatis.Client.UI
         {
             get => btnRecord.Clicked;
             set => btnRecord.Clicked = value;
-        }
-
-        public DecodedMetar DecodedMetar
-        {
-            get => mDecodedMetar;
-            set
-            {
-                mDecodedMetar = value;
-                mSyncContext.Post(o => { atisLetter.Enabled = value != null; }, null);
-            }
         }
 
         public string AtisLetter
@@ -80,7 +69,12 @@ namespace Vatsim.Vatis.Client.UI
         public string Metar
         {
             get => rtbMetar.Text;
-            set => mSyncContext.Post(o => { rtbMetar.Text = value; rtbMetar.ForeColor = Color.White; }, null);
+            set => mSyncContext.Post(o =>
+            {
+                rtbMetar.Text = value;
+                rtbMetar.ForeColor = Color.White;
+                atisLetter.Enabled = value != null;
+            }, null);
         }
 
         public string Wind
