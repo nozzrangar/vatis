@@ -97,7 +97,7 @@ namespace Vatsim.Vatis.Client
 
         private static void OnProcessExit(object sender, EventArgs e)
         {
-            AppConfig.SaveConfig();
+            AppConfig?.SaveConfig();
         }
 
         private static void AutoRegisterWindowsForms(Container container)
