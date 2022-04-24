@@ -58,7 +58,7 @@ SectionEnd
 Section "Start Menu Shortcuts" MenuShortcuts
 createDirectory "$SMPROGRAMS\vATIS-4.0"
 createShortCut "$SMPROGRAMS\vATIS-4.0\vATIS.lnk" "$INSTDIR\vATIS.exe"
-createShortCut "$SMPROGRAMS\vATIS-4.0\ProfileEditor.lnk" "$INSTDIR\vATIS.exe /editor"
+createShortCut "$SMPROGRAMS\vATIS-4.0\ProfileEditor.lnk" "$INSTDIR\vATIS.exe" "/editor"
 createShortCut "$SMPROGRAMS\vATIS-4.0\Uninstall vATIS.lnk" "$INSTDIR\Uninstall.exe"
 SectionEnd
 
