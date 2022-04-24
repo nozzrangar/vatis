@@ -8,8 +8,10 @@ namespace Vatsim.Vatis.Client.Config
 {
     public class AtisComposite : IAtisComposite
     {
+        public Guid Guid { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
         public string Identifier { get; set; }
+        public AtisType AtisType { get; set; }
         public List<ContractionMeta> Contractions { get; set; } = new List<ContractionMeta>();
         public int AtisFrequency { get; set; } = 18000;
         public ObservationTimeMeta ObservationTime { get; set; } = new ObservationTimeMeta();

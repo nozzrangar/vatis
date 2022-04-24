@@ -18,7 +18,12 @@ namespace Vatsim.Vatis.Client.Network
     {
         public string AirportIcao { get; set; }
         public int Frequency { get; set; }
-        public string Callsign => $"{AirportIcao}_ATIS";
+        public string Callsign => Composite.AtisType switch
+        {
+            AtisType.Departure => $"{AirportIcao}_D_ATIS",
+            AtisType.Arrival => $"{AirportIcao}_A_ATIS",
+            _ => $"{AirportIcao}_ATIS",
+        };
         public bool IsConnected => mSession.Connected;
         public AtisComposite Composite { get; set; }
 

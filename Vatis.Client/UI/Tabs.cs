@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Vatsim.Vatis.Client.Config;
 
 namespace Vatsim.Vatis.Client.UI
 {
@@ -52,44 +53,27 @@ namespace Vatsim.Vatis.Client.UI
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
-                using (Font font = new Font(this.Font.FontFamily, 16, FontStyle.Regular))
-                {
-                    using (SolidBrush brush = new SolidBrush(Color.White))
-                    {
-                        e.Graphics.DrawString("No ATIS Composites Defined", font, brush, TabArea.Width / 2, TabArea.Height / 2, stringFormat);
-                    }
-                }
+                using Font font = new Font(this.Font.FontFamily, 16, FontStyle.Regular);
+                using SolidBrush brush = new SolidBrush(Color.White);
+                e.Graphics.DrawString("No ATIS Composites Defined", font, brush, TabArea.Width / 2, TabArea.Height / 2, stringFormat);
             }
         }
 
         private void DrawTab(Graphics g, AtisTabPage tabPage, int index)
         {
-            Pen borderPen = new Pen(BorderColor);
+            using Pen borderPen = new Pen(BorderColor);
             Rectangle tabRect = GetTabRect(index);
 
             bool mSelected = SelectedIndex == index;
             Point[] pt = new Point[7];
 
-            if (Alignment == TabAlignment.Top)
-            {
-                pt[0] = new Point(tabRect.Left, tabRect.Bottom);
-                pt[1] = new Point(tabRect.Left, tabRect.Top + 3);
-                pt[2] = new Point(tabRect.Left + 3, tabRect.Top);
-                pt[3] = new Point(tabRect.Right - 3, tabRect.Top);
-                pt[4] = new Point(tabRect.Right, tabRect.Top + 3);
-                pt[5] = new Point(tabRect.Right, tabRect.Bottom);
-                pt[6] = new Point(tabRect.Left, tabRect.Bottom);
-            }
-            else
-            {
-                pt[0] = new Point(tabRect.Left, tabRect.Top);
-                pt[1] = new Point(tabRect.Right, tabRect.Top);
-                pt[2] = new Point(tabRect.Right, tabRect.Bottom - 3);
-                pt[3] = new Point(tabRect.Right - 3, tabRect.Bottom);
-                pt[4] = new Point(tabRect.Left + 3, tabRect.Bottom);
-                pt[5] = new Point(tabRect.Left, tabRect.Bottom - 3);
-                pt[6] = new Point(tabRect.Left, tabRect.Top);
-            }
+            pt[0] = new Point(tabRect.Left, tabRect.Bottom);
+            pt[1] = new Point(tabRect.Left, tabRect.Top + 3);
+            pt[2] = new Point(tabRect.Left + 3, tabRect.Top);
+            pt[3] = new Point(tabRect.Right - 3, tabRect.Top);
+            pt[4] = new Point(tabRect.Right, tabRect.Top + 3);
+            pt[5] = new Point(tabRect.Right, tabRect.Bottom);
+            pt[6] = new Point(tabRect.Left, tabRect.Bottom);
 
             using (SolidBrush brush = new SolidBrush(tabPage.BackColor))
             {
@@ -101,18 +85,8 @@ namespace Vatsim.Vatis.Client.UI
             if (mSelected)
             {
                 Pen pen = new Pen(tabPage.BackColor);
-                switch (Alignment)
-                {
-                    case TabAlignment.Top:
-                        g.DrawLine(pen, tabRect.Left + 1, tabRect.Bottom, tabRect.Right - 1, tabRect.Bottom);
-                        g.DrawLine(pen, tabRect.Left + 1, tabRect.Bottom + 1, tabRect.Right - 1, tabRect.Bottom + 1);
-                        break;
-                    case TabAlignment.Bottom:
-                        g.DrawLine(pen, tabRect.Left + 1, tabRect.Top, tabRect.Right - 1, tabRect.Top);
-                        g.DrawLine(pen, tabRect.Left + 1, tabRect.Top - 1, tabRect.Right - 1, tabRect.Top - 1);
-                        g.DrawLine(pen, tabRect.Left + 1, tabRect.Top - 2, tabRect.Right - 1, tabRect.Top - 2);
-                        break;
-                }
+                g.DrawLine(pen, tabRect.Left + 1, tabRect.Bottom, tabRect.Right - 1, tabRect.Bottom);
+                g.DrawLine(pen, tabRect.Left + 1, tabRect.Bottom + 1, tabRect.Right - 1, tabRect.Bottom + 1);
             }
 
             RectangleF layoutRect = tabRect;
@@ -124,19 +98,18 @@ namespace Vatsim.Vatis.Client.UI
 
             using (SolidBrush brush = new SolidBrush(Color.White))
             {
+                var comp = tabPage.Tag as AtisComposite;
                 if (tabPage.Connection.IsConnected)
                 {
-                    layoutRect.X -= 5;
+                    layoutRect.X -= comp.AtisType == AtisType.Combined ? 5 : 4;
                 }
                 g.DrawString(tabPage.Text, Font, brush, layoutRect, stringFormat);
-                layoutRect.X += 23;
+                layoutRect.X += comp.AtisType == AtisType.Combined ? 23 : 29;
             }
             if (tabPage.Connection.IsConnected)
             {
-                using (SolidBrush brush = new SolidBrush(tabPage.ForeColor))
-                {
-                    g.DrawString(tabPage.CompositeMeta.AtisLetter, Font, brush, layoutRect, stringFormat);
-                }
+                using SolidBrush brush = new SolidBrush(tabPage.ForeColor);
+                g.DrawString(tabPage.CompositeMeta.AtisLetter, Font, brush, layoutRect, stringFormat);
             }
         }
     }

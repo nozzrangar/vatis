@@ -233,17 +233,21 @@ namespace Vatsim.Vatis.Client
         [EventSubscription(EventTopics.AtisCompositeDeleted, typeof(OnUserInterfaceAsync))]
         public void OnAtisCompositeDeleted(object sender, AtisCompositeDeletedEventArgs e)
         {
-            if (atisTabs.TabPages.ContainsKey(e.Identifier))
+            foreach (TabPage tab in atisTabs.TabPages)
             {
-                var connection = mConnections.FirstOrDefault(x => x.AirportIcao == e.Identifier);
-                if (connection != null)
+                var composite = tab.Tag as AtisComposite;
+                if (composite != null && composite.Guid == e.Identifier)
                 {
-                    connection.Disconnect();
-                    mConnections.Remove(connection);
-                }
+                    var connection = mConnections.FirstOrDefault(x => x.AirportIcao == composite.Identifier);
+                    if (connection != null)
+                    {
+                        connection.Disconnect();
+                        mConnections.Remove(connection);
+                    }
 
-                atisTabs.TabPages.RemoveByKey(e.Identifier);
-                atisTabs.Invalidate();
+                    atisTabs.TabPages.Remove(tab);
+                    atisTabs.Invalidate();
+                }
             }
         }
 
@@ -256,11 +260,24 @@ namespace Vatsim.Vatis.Client
 
             foreach (var composite in mAppConfig.CurrentProfile.Composites.OrderBy(x => x.Identifier).Take(Constants.MAX_COMPOSITES))
             {
-                var tab = atisTabs.TabPages[composite.Identifier] as AtisTabPage;
+                var tab = atisTabs.TabPages[composite.Guid.ToString()] as AtisTabPage;
+
+                var tabId = composite.Identifier;
+                if (composite.AtisType == AtisType.Departure)
+                {
+                    tabId = composite.Identifier + "/D";
+                }
+                else if (composite.AtisType == AtisType.Arrival)
+                {
+                    tabId = composite.Identifier + "/A";
+                }
+
                 if (tab != null)
                 {
+                    tab.Text = tabId;
                     tab.Connection.Frequency = composite.AtisFrequency;
                     tab.CompositeMeta.BindPresets(composite.Presets.Select(x => x.Name).ToList());
+                    atisTabs.Invalidate();
                 }
                 else
                 {
@@ -277,10 +294,11 @@ namespace Vatsim.Vatis.Client
 
                     var tabPage = new AtisTabPage(connection, composite, mAppConfig)
                     {
-                        Name = composite.Identifier,
-                        Text = composite.Identifier,
+                        Name = composite.Guid.ToString(),
+                        Text = tabId,
                         Tag = composite
                     };
+
                     tabPage.CompositeMeta.ConnectButtonClicked += (sender, args) =>
                     {
                         if (connection.IsConnected)

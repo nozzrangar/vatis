@@ -52,6 +52,9 @@
     <Compile Update="UI\Tabs.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="NewCompositeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeoVR\source\GeoVR.Connection\GeoVR.Connection.csproj" />

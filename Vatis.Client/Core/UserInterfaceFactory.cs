@@ -19,6 +19,7 @@ namespace Vatsim.Vatis.Client.Core
         public UserInputForm CreateUserInputForm() => mContainer.GetInstance<UserInputForm>();
 
         public VersionCheckForm CreateVersionCheckForm() => mContainer.GetInstance<VersionCheckForm>();
+        public NewCompositeDialog CreateNewCompositeDialog() => mContainer.GetInstance<NewCompositeDialog>();
     }
 
     internal interface IUserInterface
@@ -29,5 +30,6 @@ namespace Vatsim.Vatis.Client.Core
         UserInputForm CreateUserInputForm();
         ProfileConfiguration CreateProfileConfigurationForm();
         VersionCheckForm CreateVersionCheckForm();
+        NewCompositeDialog CreateNewCompositeDialog();
     }
 }
