@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ProfileEditor.Config
+namespace Vatsim.Vatis.Client.Config
 {
-    public interface IAppConfig
+    public interface IProfileEditorConfig : IConfig
     {
         string AppPath { get; }
         List<AtisComposite> Composites { get; set; }

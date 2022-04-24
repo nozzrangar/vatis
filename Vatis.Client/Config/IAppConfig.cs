@@ -3,7 +3,7 @@ using Vatsim.Network;
 
 namespace Vatsim.Vatis.Client.Config
 {
-    public interface IAppConfig
+    public interface IAppConfig : IConfig
     {
         string AppPath { get; }
         string VatsimId { get; set; }

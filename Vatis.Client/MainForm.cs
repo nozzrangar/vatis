@@ -236,7 +236,7 @@ namespace Vatsim.Vatis.Client
             foreach (TabPage tab in atisTabs.TabPages)
             {
                 var composite = tab.Tag as AtisComposite;
-                if (composite != null && composite.Guid == e.Identifier)
+                if (composite != null && composite.Id == e.Id)
                 {
                     var connection = mConnections.FirstOrDefault(x => x.AirportIcao == composite.Identifier);
                     if (connection != null)
@@ -260,7 +260,7 @@ namespace Vatsim.Vatis.Client
 
             foreach (var composite in mAppConfig.CurrentProfile.Composites.OrderBy(x => x.Identifier).Take(Constants.MAX_COMPOSITES))
             {
-                var tab = atisTabs.TabPages[composite.Guid.ToString()] as AtisTabPage;
+                var tab = atisTabs.TabPages[composite.Id.ToString()] as AtisTabPage;
 
                 var tabId = composite.Identifier;
                 if (composite.AtisType == AtisType.Departure)
@@ -294,7 +294,7 @@ namespace Vatsim.Vatis.Client
 
                     var tabPage = new AtisTabPage(connection, composite, mAppConfig)
                     {
-                        Name = composite.Guid.ToString(),
+                        Name = composite.Id.ToString(),
                         Text = tabId,
                         Tag = composite
                     };

@@ -411,7 +411,7 @@ namespace Vatsim.Vatis.Client
 
                 if (MessageBox.Show(this, string.Format($"Are you sure you want to delete the selected ATIS Composite? This action will also delete all associated ATIS presets.\r\n\r\n{composite.Identifier} {composite.AtisType}"), "Delete ATIS Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    AtisCompositeDeleted?.Invoke(this, new AtisCompositeDeletedEventArgs(composite.Guid));
+                    AtisCompositeDeleted?.Invoke(this, new AtisCompositeDeletedEventArgs(composite.Id));
 
                     mAppConfig.CurrentProfile.Composites.Remove(composite);
                     mAppConfig.SaveConfig();

@@ -1,6 +1,6 @@
-﻿namespace ProfileEditor
+﻿namespace Vatsim.Vatis.Client
 {
-    partial class MainForm
+    partial class ProfileEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileEditor));
             this.TlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.mainTabControl = new System.Windows.Forms.TabControl();
@@ -785,14 +785,14 @@
             // ctxExportToProfile
             // 
             this.ctxExportToProfile.Name = "ctxExportToProfile";
-            this.ctxExportToProfile.Size = new System.Drawing.Size(180, 22);
+            this.ctxExportToProfile.Size = new System.Drawing.Size(167, 22);
             this.ctxExportToProfile.Text = "To Profile";
             this.ctxExportToProfile.Click += new System.EventHandler(this.ctxExportToProfile_Click);
             // 
             // ctxExportSingleComposite
             // 
             this.ctxExportSingleComposite.Name = "ctxExportSingleComposite";
-            this.ctxExportSingleComposite.Size = new System.Drawing.Size(180, 22);
+            this.ctxExportSingleComposite.Size = new System.Drawing.Size(167, 22);
             this.ctxExportSingleComposite.Text = "Single Composite";
             this.ctxExportSingleComposite.Click += new System.EventHandler(this.ctxExportSingleComposite_Click);
             // 
@@ -843,7 +843,7 @@
             this.compositeTooltip.InitialDelay = 250;
             this.compositeTooltip.ReshowDelay = 50;
             // 
-            // MainForm
+            // ProfileEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -852,7 +852,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "MainForm";
+            this.Name = "ProfileEditor";
             this.Padding = new System.Windows.Forms.Padding(15);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "vATIS Profile Editor";

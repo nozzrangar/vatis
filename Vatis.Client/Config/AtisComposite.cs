@@ -8,7 +8,7 @@ namespace Vatsim.Vatis.Client.Config
 {
     public class AtisComposite : IAtisComposite
     {
-        public Guid Guid { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
         public string Identifier { get; set; }
         public AtisType AtisType { get; set; }
@@ -47,6 +47,8 @@ namespace Vatsim.Vatis.Client.Config
                 IDSEndpoint = IDSEndpoint
             };
         }
+
+        public override string ToString() => AtisType != AtisType.Combined ? $"{Name} ({Identifier}) {AtisType}" : $"{Name} ({Identifier})";
     }
 
     [Serializable]

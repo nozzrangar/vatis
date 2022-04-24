@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Vatsim.Vatis.Client.Config
 {
     public interface IAtisComposite
     {
+        Guid Id { get; set; }
         string Name { get; set; }
         string Identifier { get; set; }
         List<ContractionMeta> Contractions { get; set; }

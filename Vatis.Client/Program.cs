@@ -19,41 +19,55 @@ namespace Vatsim.Vatis.Client
     static class Program
     {
         private static Container Container;
-        private static IAppConfig AppConfig;
+        private static IConfig AppConfig;
         private static string AppPath;
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            if (!SingleAppInstance.Exists("vatis4.0"))
+            Application.CurrentCulture = new CultureInfo("en-US");
+            Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+
+            var commandLineParser = new CommandLineParser { throwInvalidOptionsException = true };
+            var profileEditor = commandLineParser.AddBoolSwitch("-editor", "Profile editor");
+            profileEditor.AddAlias("/editor");
+            commandLineParser.Parse(args);
+
+            AppPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+
+            Container = new Container();
+
+            AutoRegisterWindowsForms(Container);
+
+            Container.RegisterSingleton<IUserInterface, UserInterfaceFactory>();
+            Container.RegisterSingleton<IEventBroker>(() => new EventBroker());
+            Container.RegisterSingleton<IAppConfig, AppConfig>();
+            Container.RegisterSingleton<IProfileEditorConfig, ProfileEditorConfig>();
+            Container.RegisterSingleton<IVersionCheck, VersionCheck>();
+            Container.RegisterSingleton<INavaidDatabase, NavaidDatabase>();
+            Container.RegisterSingleton<IAudioManager, AudioManager>();
+            Container.RegisterSingleton<ITextToSpeechRequest, TextToSpeechRequest>();
+            Container.RegisterSingleton<IAtisBuilder, AtisBuilder>();
+
+            if (profileEditor.isMatched)
             {
-                Application.CurrentCulture = new CultureInfo("en-US");
-                Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-
-                AppPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-
-                Container = new Container();
-
-                AutoRegisterWindowsForms(Container);
-
-                Container.RegisterSingleton<IUserInterface, UserInterfaceFactory>();
-                Container.RegisterSingleton<IEventBroker>(() => new EventBroker());
-                Container.RegisterSingleton<IAppConfig, AppConfig>();
-                Container.RegisterSingleton<IVersionCheck, VersionCheck>();
-                Container.RegisterSingleton<INavaidDatabase, NavaidDatabase>();
-                Container.RegisterSingleton<IAudioManager, AudioManager>();
-                Container.RegisterSingleton<ITextToSpeechRequest, TextToSpeechRequest>();
-                Container.RegisterSingleton<IAtisBuilder, AtisBuilder>();
-
-                Container.Verify();
-
-                AppConfig = Container.GetInstance<IAppConfig>();
-
-                Application.Run(Container.GetInstance<ProfileList>());
+                if (!SingleAppInstance.Exists("vatis4.0-editor"))
+                {
+                    AppConfig = Container.GetInstance<IProfileEditorConfig>();
+                    Application.Run(Container.GetInstance<ProfileEditor>());
+                }
+            }
+            else
+            {
+                if (!SingleAppInstance.Exists("vatis4.0"))
+                {
+                    AppConfig = Container.GetInstance<IAppConfig>();
+                    Application.Run(Container.GetInstance<ProfileList>());
+                }
             }
         }
 

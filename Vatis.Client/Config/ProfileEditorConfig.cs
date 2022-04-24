@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ProfileEditor.Config
+namespace Vatsim.Vatis.Client.Config
 {
-    internal class AppConfig : IAppConfig
+    internal class ProfileEditorConfig : IProfileEditorConfig
     {
         [JsonIgnore] public string AppPath { get; }
 
@@ -14,7 +14,7 @@ namespace ProfileEditor.Config
 
         public List<AtisComposite> Composites { get; set; } = new List<AtisComposite>();
 
-        public AppConfig()
+        public ProfileEditorConfig()
         {
             AppPath = Path.GetDirectoryName(Environment.ProcessPath);
             ConfigPath = Path.Combine(AppPath, "ProfileEditorConfig.json");

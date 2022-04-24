@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using ProfileEditor.Common;
-using ProfileEditor.Config;
-using ProfileEditor.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,19 +9,20 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Vatsim.Vatis.Client.Common;
+using Vatsim.Vatis.Client.Config;
+using Vatsim.Vatis.Client.Core;
 
-namespace ProfileEditor
+namespace Vatsim.Vatis.Client
 {
-    internal partial class MainForm : Form
+    internal partial class ProfileEditor : Form
     {
-        private readonly IAppConfig mAppConfig;
+        private readonly IProfileEditorConfig mAppConfig;
         private readonly IUserInterface mUserInterface;
         private readonly INavaidDatabase mNavaidDatabase;
 
-        private const int MaxAllowedComposites = 4;
-
-        private AtisComposite? mCurrentComposite;
-        private AtisPreset? mCurrentPreset;
+        private AtisComposite mCurrentComposite;
+        private AtisPreset mCurrentPreset;
         private string mPreviousInputValue = "";
         private bool mFrequencyChanged = false;
         private bool mObservationTimeChanged = false;
@@ -35,7 +33,7 @@ namespace ProfileEditor
         private bool mIdsEndpointChanged = false;
         private List<AtisComposite> mSelectedComposites = new();
 
-        public MainForm(IAppConfig appConfig, IUserInterface userInterface, INavaidDatabase navaidDatabase)
+        public ProfileEditor(IProfileEditorConfig appConfig, IUserInterface userInterface, INavaidDatabase navaidDatabase)
         {
             InitializeComponent();
 
@@ -214,81 +212,57 @@ namespace ProfileEditor
         {
             bool flag = false;
 
+            var previousIdentifer = "";
+            var previousName = "";
+            var previousType = AtisType.Combined;
+
             while (!flag)
             {
-                using (var dlg = mUserInterface.CreateUserInputForm())
+                using (var dlg = mUserInterface.CreateNewCompositeDialog())
                 {
-                    mPreviousInputValue = "";
-                    dlg.PromptLabel = "Enter the facility ICAO identifier (e.g. KLAX)";
-                    dlg.WindowTitle = "New ATIS Composite";
-                    dlg.ErrorMessage = "Enter a valid facility identifier code that contains only letters or numbers.";
-                    dlg.TextUppercase = true;
-                    dlg.MaxLength = 4;
-                    dlg.RegexExpression = "^([A-Z]\\d\\d|[A-Z]{4})$";
-                    dlg.InitialValue = mPreviousInputValue;
+                    dlg.Identifier = previousIdentifer;
+                    dlg.CompositeName = previousName;
+                    dlg.Type = previousType;
 
                     DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
                     {
-                        string identifier = dlg.Value;
-                        mPreviousInputValue = dlg.Value;
+                        previousIdentifer = dlg.Identifier;
+                        previousName = dlg.CompositeName;
+                        previousType = dlg.Type;
 
-                        if (mNavaidDatabase.GetAirport(identifier) == null)
+                        if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
                         {
-                            if (MessageBox.Show(this, $"ICAO identifier not found: {identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
+                            if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
                             {
-                                return;
+                                continue;
                             }
                         }
 
-                        if (mAppConfig.Composites != null && mAppConfig.Composites.Any(x => x.Identifier == dlg.Value))
+                        if (mAppConfig.Composites.Any(x => x.Identifier == dlg.Identifier && x.AtisType == dlg.Type))
                         {
-                            if (MessageBox.Show(this, "A composite with that identifier already exists. Do you want to overwrite it?", "Confirm Overwrite", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists. Would you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.No)
                             {
-                                return;
+                                continue;
                             }
-
-                            flag = true;
-                        }
-                        else
-                        {
-                            while (!flag)
+                            else
                             {
-                                using (var dlg2 = mUserInterface.CreateUserInputForm())
-                                {
-                                    mPreviousInputValue = "";
-                                    dlg2.PromptLabel = "Enter a name for the ATIS Composite:";
-                                    dlg2.WindowTitle = "New ATIS Composite";
-                                    dlg2.ErrorMessage = "Invalid composite name. It must consist of only letters, numbers, underscores and spaces.";
-                                    dlg2.RegexExpression = "^[a-zA-Z0-9_ ]*$";
-                                    dlg2.InitialValue = mPreviousInputValue;
-
-                                    DialogResult result2 = dlg2.ShowDialog(this);
-                                    if (result2 == DialogResult.OK && !string.IsNullOrEmpty(dlg2.Value))
-                                    {
-                                        mPreviousInputValue = dlg2.Value;
-
-                                        var composite = new AtisComposite
-                                        {
-                                            Identifier = identifier,
-                                            Name = dlg2.Value
-                                        };
-
-                                        if (mAppConfig.Composites == null)
-                                            mAppConfig.Composites = new List<AtisComposite>();
-
-                                        mAppConfig.Composites.Add(composite);
-                                        mAppConfig.SaveConfig();
-                                        RefreshCompositeList();
-                                        flag = true;
-                                    }
-                                    else
-                                    {
-                                        flag = true;
-                                    }
-                                }
+                                mAppConfig.Composites.RemoveAll(x => x.Identifier == dlg.Identifier && x.AtisType == dlg.Type);
+                                mAppConfig.SaveConfig();
                             }
                         }
+
+                        var composite = new AtisComposite
+                        {
+                            Identifier = dlg.Identifier,
+                            Name = dlg.CompositeName,
+                            AtisType = dlg.Type
+                        };
+
+                        mAppConfig.Composites.Add(composite);
+                        mAppConfig.SaveConfig();
+                        RefreshCompositeList();
+                        flag = true;
                     }
                     else
                     {
@@ -302,71 +276,57 @@ namespace ProfileEditor
         {
             if (listComposites.SelectedItem != null)
             {
+                bool flag = false;
+                var previousIdentifer = "";
+                var previousName = "";
+                var previousType = AtisType.Combined;
+
                 var composite = (AtisComposite)((ListBoxItem)listComposites.SelectedItem).Tag;
-                if (composite != null)
+
+                while (!flag)
                 {
-                    bool flag = false;
-
-                    while (!flag)
+                    using (var dlg = mUserInterface.CreateNewCompositeDialog())
                     {
-                        using (var dlg = mUserInterface.CreateUserInputForm())
+                        dlg.Identifier = previousIdentifer;
+                        dlg.CompositeName = previousName;
+                        dlg.Type = previousType;
+
+                        DialogResult result = dlg.ShowDialog(this);
+                        if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
                         {
-                            mPreviousInputValue = "";
-                            dlg.PromptLabel = "Enter the facility ICAO identifier (e.g. KLAX)";
-                            dlg.WindowTitle = "New ATIS Composite";
-                            dlg.ErrorMessage = "Enter a valid facility identifier code that contains only letters or numbers.";
-                            dlg.TextUppercase = true;
-                            dlg.MaxLength = 4;
-                            dlg.RegexExpression = "^([A-Z]\\d\\d|[A-Z]{4})$";
-                            dlg.InitialValue = mPreviousInputValue;
+                            previousIdentifer = dlg.Identifier;
+                            previousName = dlg.CompositeName;
+                            previousType = dlg.Type;
 
-                            DialogResult result = dlg.ShowDialog(this);
-                            if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                            if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
                             {
-                                string identifier = dlg.Value;
-                                mPreviousInputValue = dlg.Value;
-
-                                if (mAppConfig.Composites.Any(x => x.Identifier == dlg.Value))
+                                if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
                                 {
-                                    MessageBox.Show("Another composite already exists with that facility identifier. Please choose a new facility identifier.", "Duplicate Facility Identifier");
-                                }
-                                else
-                                {
-                                    while (!flag)
-                                    {
-                                        using (var dlg2 = mUserInterface.CreateUserInputForm())
-                                        {
-                                            mPreviousInputValue = "";
-                                            dlg2.PromptLabel = "Enter a name for the ATIS Composite:";
-                                            dlg2.WindowTitle = "New ATIS Composite";
-                                            dlg2.ErrorMessage = "Invalid composite name. It must consist of only letters, numbers, underscores and spaces.";
-                                            dlg2.RegexExpression = "^[a-zA-Z0-9_ ]*$";
-                                            dlg2.InitialValue = mPreviousInputValue;
-
-                                            DialogResult result2 = dlg2.ShowDialog(this);
-                                            if (result2 == DialogResult.OK && !string.IsNullOrEmpty(dlg2.Value))
-                                            {
-                                                mPreviousInputValue = dlg2.Value;
-                                                var clone = composite.Clone();
-                                                clone.Identifier = identifier;
-                                                clone.Name = dlg2.Value;
-                                                mAppConfig.Composites.Add(clone);
-                                                mAppConfig.SaveConfig();
-                                                RefreshCompositeList();
-                                                flag = true;
-                                            }
-                                            else
-                                            {
-                                                flag = true;
-                                            }
-                                        }
-                                    }
+                                    continue;
                                 }
                             }
-                            else
+
+                            if (mAppConfig.Composites.Any(x => x.Identifier == dlg.Identifier && x.AtisType == dlg.Type))
                             {
-                                flag = true;
+                                if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists.", "Duplicate Composite", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
+                                {
+                                    continue;
+                                }
                             }
+
+                            var clone = composite.Clone();
+                            clone.Identifier = dlg.Identifier;
+                            clone.Name = dlg.CompositeName;
+                            clone.AtisType = dlg.Type;
+
+                            mAppConfig.Composites.Add(clone);
+                            mAppConfig.SaveConfig();
+                            RefreshCompositeList();
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = true;
                         }
                     }
                 }

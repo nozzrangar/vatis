@@ -4,10 +4,10 @@ namespace Vatsim.Vatis.Client.Args
 {
     public class AtisCompositeDeletedEventArgs : EventArgs
     {
-        public Guid Identifier { get; set; }
-        public AtisCompositeDeletedEventArgs(Guid identifier)
+        public Guid Id { get; set; }
+        public AtisCompositeDeletedEventArgs(Guid id)
         {
-            Identifier = identifier;
+            Id = id;
         }
     }
 }
