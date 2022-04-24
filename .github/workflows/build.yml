@@ -2,6 +2,8 @@ name: Build Client
 
 on:
   push:
+    branches:
+      - 'dev/*'
     tags:
       - 'v*'
 
