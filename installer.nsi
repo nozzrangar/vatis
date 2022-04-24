@@ -58,6 +58,7 @@ SectionEnd
 Section "Start Menu Shortcuts" MenuShortcuts
 createDirectory "$SMPROGRAMS\vATIS-4.0"
 createShortCut "$SMPROGRAMS\vATIS-4.0\vATIS.lnk" "$INSTDIR\vATIS.exe"
+createShortCut "$SMPROGRAMS\vATIS-4.0\ProfileEditor.lnk" "$INSTDIR\vATIS.exe /editor"
 createShortCut "$SMPROGRAMS\vATIS-4.0\Uninstall vATIS.lnk" "$INSTDIR\Uninstall.exe"
 SectionEnd
 
@@ -69,11 +70,13 @@ SectionEnd
 ;Delete AppConfig.json
 Section /o "Delete Config File" EmptyConfig
 Delete $INSTDIR\AppConfig.json
+Delete $INSTDIR\ProfileEditorConfig.json
 SectionEnd
 
 ;Uninstaller
 Section "Uninstall"
 Delete "$SMPROGRAMS\vATIS-4.0\vATIS.lnk"
+Delete "$SMPROGRAMS\vATIS-4.0\ProfileEditor.lnk"
 Delete "$SMPROGRAMS\vATIS-4.0\Uninstall vATIS.lnk"
 Delete "$DESKTOP\vATIS.lnk"
 RMDir "$SMPROGRAMS\vATIS-4.0"
