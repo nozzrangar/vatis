@@ -111,6 +111,7 @@
             this.Padding = new System.Windows.Forms.Padding(5);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MiniDisplay";
+            this.TopMost = true;
             this.hitTestPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
