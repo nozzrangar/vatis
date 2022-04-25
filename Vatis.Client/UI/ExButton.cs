@@ -101,6 +101,13 @@ namespace Vatsim.Vatis.Client.UI
 				e.Graphics.FillRectangle(backgroundBrush, 0, 0, ClientSize.Width, ClientSize.Height);
 			}
 
+			if (Image != null)
+			{
+				var x = (ClientSize.Width - Image.Width) / 2;
+				var y = (ClientSize.Height - Image.Height) / 2;
+				e.Graphics.DrawImage(Image, x, y);
+			}
+
 			// Draw the border.
 			Rectangle borderRect = new Rectangle(0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
 			using (Pen borderPen = new Pen(BorderColor)) e.Graphics.DrawRectangle(borderPen, borderRect);

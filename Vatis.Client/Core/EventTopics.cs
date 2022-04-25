@@ -8,5 +8,7 @@
         public const string RefreshAtisComposites = "RefreshAtisComposites";
         public const string AtisCompositeDeleted = "AtisCompositeDeleted";
         public const string PerformVersionCheck = "PerformVersionCheck";
+        public const string MinifiedWindowClosed = "MinifiedWindowClosed";
+        public const string RefreshMinifiedWindow = "RefreshMinifiedWindow";
     }
 }

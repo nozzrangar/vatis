@@ -30,6 +30,9 @@ namespace Vatsim.Vatis.Client
         [EventPublication(EventTopics.PerformVersionCheck)]
         public event EventHandler<EventArgs> RaisePerformVersionCheck;
 
+        [EventPublication(EventTopics.RefreshMinifiedWindow)]
+        public event EventHandler<EventArgs> RefreshMinifiedWindow;
+
         private readonly IEventBroker mEventBroker;
         private readonly IUserInterface mUserInterface;
         private readonly IAppConfig mAppConfig;
@@ -288,6 +291,7 @@ namespace Vatsim.Vatis.Client
                         Composite = composite
                     };
 
+                    composite.Connection = connection;
                     composite.AtisCallsign = connection.Callsign;
 
                     var cancellationToken = new CancellationTokenSource();
@@ -297,6 +301,14 @@ namespace Vatsim.Vatis.Client
                         Name = composite.Id.ToString(),
                         Text = tabId,
                         Tag = composite
+                    };
+
+                    composite.AtisUpdateAcknowledged += (sender, args) =>
+                    {
+                        if (tabPage != null)
+                        {
+                            tabPage.CompositeMeta.IsNewAtis = false;
+                        }
                     };
 
                     tabPage.CompositeMeta.ConnectButtonClicked += (sender, args) =>
@@ -332,6 +344,8 @@ namespace Vatsim.Vatis.Client
                         var metar = MetarDecoder.MetarDecoder.ParseWithMode(args.Metar);
                         metar.IsInternational = !composite.UseFaaFormat;
                         composite.DecodedMetar = metar;
+
+                        composite.MetarReceived?.Invoke(this, new ClientEventArgs<string>(args.Metar));
 
                         tabPage.CompositeMeta.Error = null;
                         tabPage.CompositeMeta.Metar = args.Metar;
@@ -377,6 +391,8 @@ namespace Vatsim.Vatis.Client
                         {
                             tabPage.CompositeMeta.IncrementAtisLetter();
                             tabPage.Connection.SendSubscriberNotification();
+
+                            composite.NewAtisUpdate?.Invoke(this, EventArgs.Empty); // update mini display
 
                             if (!mAppConfig.SuppressNotifications)
                             {
@@ -497,6 +513,8 @@ namespace Vatsim.Vatis.Client
                         tabPage.CompositeMeta.Wind = null;
                         tabPage.CompositeMeta.Altimeter = null;
 
+                        RefreshMinifiedWindow?.Invoke(this, EventArgs.Empty);
+
                         mSyncContext.Post(o =>
                         {
                             tabPage.CompositeMeta.VoiceRecordEnabled = false;
@@ -510,6 +528,8 @@ namespace Vatsim.Vatis.Client
                     };
                     connection.NetworkConnectedChanged += (sender, args) =>
                     {
+                        RefreshMinifiedWindow?.Invoke(this, EventArgs.Empty);
+
                         mAudioManager.RemoveBot(connection.Callsign);
 
                         tabPage.CompositeMeta.Error = null;
@@ -556,6 +576,20 @@ namespace Vatsim.Vatis.Client
                 }
                 catch { }
             });
+        }
+
+        private void btnMinify_Click(object sender, EventArgs e)
+        {
+            Hide();
+
+            using var dlg = mUserInterface.CreateMiniDisplay();
+            dlg.ShowDialog();
+        }
+
+        [EventSubscription(EventTopics.MinifiedWindowClosed, typeof(OnUserInterfaceAsync))]
+        public void OnMinfiedWindowClosed(object sender, EventArgs e)
+        {
+            Show();
         }
     }
 }

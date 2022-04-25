@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Vatsim.Vatis.Client.Args;
+using Vatsim.Vatis.Client.Network;
 
 namespace Vatsim.Vatis.Client.Config
 {
@@ -33,6 +35,11 @@ namespace Vatsim.Vatis.Client.Config
         [JsonIgnore] public uint AfvFrequency => ((uint)AtisFrequency + 100000) * 1000;
         [JsonIgnore] public string AtisCallsign { get; set; }
         [JsonIgnore] public MemoryStream MemoryStream { get; set; }
+        [JsonIgnore] public Connection Connection { get; set; }
+
+        [JsonIgnore] public EventHandler<ClientEventArgs<string>> MetarReceived;
+        [JsonIgnore] public EventHandler<EventArgs> NewAtisUpdate;
+        [JsonIgnore] public EventHandler<EventArgs> AtisUpdateAcknowledged;
 
         internal AtisComposite Clone()
         {

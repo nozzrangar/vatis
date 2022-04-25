@@ -33,6 +33,7 @@ namespace Vatsim.Vatis.Client
             this.tabContainer = new System.Windows.Forms.Panel();
             this.atisTabs = new Vatsim.Vatis.Client.UI.Tabs();
             this.hitTestPanel1 = new Vatsim.Vatis.Client.UI.HitTestPanel();
+            this.btnMinify = new Vatsim.Vatis.Client.UI.ExButton();
             this.btnSettings = new Vatsim.Vatis.Client.UI.ExButton();
             this.btnMinimize = new Vatsim.Vatis.Client.UI.ExButton();
             this.btnManageProfile = new Vatsim.Vatis.Client.UI.ExButton();
@@ -70,6 +71,7 @@ namespace Vatsim.Vatis.Client
             // 
             this.hitTestPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.hitTestPanel1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+            this.hitTestPanel1.Controls.Add(this.btnMinify);
             this.hitTestPanel1.Controls.Add(this.btnSettings);
             this.hitTestPanel1.Controls.Add(this.btnMinimize);
             this.hitTestPanel1.Controls.Add(this.btnManageProfile);
@@ -81,6 +83,26 @@ namespace Vatsim.Vatis.Client
             this.hitTestPanel1.ShowBorder = false;
             this.hitTestPanel1.Size = new System.Drawing.Size(848, 45);
             this.hitTestPanel1.TabIndex = 2;
+            // 
+            // btnMinify
+            // 
+            this.btnMinify.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.btnMinify.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnMinify.Clicked = false;
+            this.btnMinify.ClickedColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.btnMinify.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMinify.DisabledTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.btnMinify.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnMinify.ForeColor = System.Drawing.Color.White;
+            this.btnMinify.Image = ((System.Drawing.Image)(resources.GetObject("btnMinify.Image")));
+            this.btnMinify.Location = new System.Drawing.Point(766, 10);
+            this.btnMinify.Name = "btnMinify";
+            this.btnMinify.Pushed = false;
+            this.btnMinify.PushedColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.btnMinify.Size = new System.Drawing.Size(20, 25);
+            this.btnMinify.TabIndex = 5;
+            this.btnMinify.UseVisualStyleBackColor = false;
+            this.btnMinify.Click += new System.EventHandler(this.btnMinify_Click);
             // 
             // btnSettings
             // 
@@ -148,7 +170,7 @@ namespace Vatsim.Vatis.Client
             this.utcClock.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.utcClock.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.utcClock.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
-            this.utcClock.Location = new System.Drawing.Point(662, 8);
+            this.utcClock.Location = new System.Drawing.Point(640, 8);
             this.utcClock.Name = "utcClock";
             this.utcClock.ShowBorder = false;
             this.utcClock.Size = new System.Drawing.Size(116, 28);
@@ -211,6 +233,7 @@ namespace Vatsim.Vatis.Client
         private UI.Tabs atisTabs;
         private UI.ExButton btnManageProfile;
         private UI.ExButton btnSettings;
+        private UI.ExButton btnMinify;
     }
 }
 
