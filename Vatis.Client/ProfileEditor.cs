@@ -31,6 +31,8 @@ namespace Vatsim.Vatis.Client
         private bool mTransitionLevelsChanged = false;
         private bool mVoiceOptionsChanged = false;
         private bool mIdsEndpointChanged = false;
+        private bool mFaaFormatChanged = false;
+        private bool mAtisTypeChanged = false;
         private List<AtisComposite> mSelectedComposites = new();
 
         public ProfileEditor(IProfileEditorConfig appConfig, IUserInterface userInterface, INavaidDatabase navaidDatabase)
@@ -115,6 +117,21 @@ namespace Vatsim.Vatis.Client
                 return;
 
             vhfFrequency.Text = ((mCurrentComposite.AtisFrequency + 100000) / 1000.0).ToString("000.000");
+
+            switch (mCurrentComposite.AtisType)
+            {
+                case AtisType.Combined:
+                    typeCombined.Checked = true;
+                    break;
+                case AtisType.Departure:
+                    typeDeparture.Checked = true;
+                    break;
+                case AtisType.Arrival:
+                    typeArrival.Checked = true;
+                    break;
+            }
+
+            chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -670,6 +687,55 @@ namespace Vatsim.Vatis.Client
                 }
             }
 
+            if (mAtisTypeChanged)
+            {
+                if (typeCombined.Checked)
+                {
+                    if (mAppConfig.Composites.Any(x => x.Identifier == mCurrentComposite.Identifier && x.AtisType == AtisType.Combined && x != mCurrentComposite))
+                    {
+                        MessageBox.Show(this, $"A Combined ATIS already exists for {mCurrentComposite.Identifier}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return false;
+                    }
+                    else
+                    {
+                        mCurrentComposite.AtisType = AtisType.Combined;
+                        mAtisTypeChanged = false;
+                    }
+                }
+                else if (typeDeparture.Checked)
+                {
+                    if (mAppConfig.Composites.Any(x => x.Identifier == mCurrentComposite.Identifier && x.AtisType == AtisType.Departure && x != mCurrentComposite))
+                    {
+                        MessageBox.Show(this, $"A Departure ATIS already exists for {mCurrentComposite.Identifier}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return false;
+                    }
+                    else
+                    {
+                        mCurrentComposite.AtisType = AtisType.Departure;
+                        mAtisTypeChanged = false;
+                    }
+                }
+                else if (typeArrival.Checked)
+                {
+                    if (mAppConfig.Composites.Any(x => x.Identifier == mCurrentComposite.Identifier && x.AtisType == AtisType.Arrival && x != mCurrentComposite))
+                    {
+                        MessageBox.Show(this, $"An Arrival ATIS already exists for {mCurrentComposite.Identifier}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return false;
+                    }
+                    else
+                    {
+                        mCurrentComposite.AtisType = AtisType.Arrival;
+                        mAtisTypeChanged = false;
+                    }
+                }
+            }
+
+            if (mFaaFormatChanged)
+            {
+                mCurrentComposite.UseFaaFormat = chkFaaFormat.Checked;
+                mFaaFormatChanged = false;
+            }
+
             if (mObservationTimeChanged)
             {
                 var meta = new ObservationTimeMeta
@@ -940,6 +1006,85 @@ namespace Vatsim.Vatis.Client
                     mFrequencyChanged = false;
                     btnApply.Enabled = false;
                 }
+            }
+        }
+
+        private void chkFaaFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkFaaFormat.Focused)
+                return;
+
+            if (chkFaaFormat.Checked != mCurrentComposite.UseFaaFormat)
+            {
+                mFaaFormatChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void typeCombined_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!typeCombined.Focused)
+                return;
+
+            if (typeCombined.Checked && mCurrentComposite.AtisType != AtisType.Combined)
+            {
+                mAtisTypeChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mAtisTypeChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void typeDeparture_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!typeDeparture.Focused)
+                return;
+
+            if (typeDeparture.Checked && mCurrentComposite.AtisType != AtisType.Departure)
+            {
+                mAtisTypeChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mAtisTypeChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void typeArrival_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!typeArrival.Focused)
+                return;
+
+            if (typeArrival.Checked && mCurrentComposite.AtisType != AtisType.Arrival)
+            {
+                mAtisTypeChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mAtisTypeChanged = false;
+                btnApply.Enabled = false;
             }
         }
 

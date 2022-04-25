@@ -55,6 +55,12 @@
             this.ColumnFind = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnReplace = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pageConfiguration = new System.Windows.Forms.TabPage();
+            this.chkFaaFormat = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.typeCombined = new System.Windows.Forms.RadioButton();
+            this.typeDeparture = new System.Windows.Forms.RadioButton();
+            this.typeArrival = new System.Windows.Forms.RadioButton();
+            this.label4 = new System.Windows.Forms.Label();
             this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.observationTime = new System.Windows.Forms.NumericUpDown();
@@ -104,6 +110,7 @@
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).BeginInit();
             this.pageConfiguration.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
             this.pageTransitionLevel.SuspendLayout();
@@ -431,6 +438,9 @@
             // 
             // pageConfiguration
             // 
+            this.pageConfiguration.Controls.Add(this.chkFaaFormat);
+            this.pageConfiguration.Controls.Add(this.flowLayoutPanel2);
+            this.pageConfiguration.Controls.Add(this.label4);
             this.pageConfiguration.Controls.Add(this.vhfFrequency);
             this.pageConfiguration.Controls.Add(this.label3);
             this.pageConfiguration.Controls.Add(this.observationTime);
@@ -450,9 +460,78 @@
             this.pageConfiguration.Text = "Configuration";
             this.pageConfiguration.UseVisualStyleBackColor = true;
             // 
+            // chkFaaFormat
+            // 
+            this.chkFaaFormat.AutoSize = true;
+            this.chkFaaFormat.Location = new System.Drawing.Point(27, 124);
+            this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkFaaFormat.Name = "chkFaaFormat";
+            this.chkFaaFormat.Size = new System.Drawing.Size(130, 19);
+            this.chkFaaFormat.TabIndex = 41;
+            this.chkFaaFormat.Text = "FAA Formatted ATIS";
+            this.compositeTooltip.SetToolTip(this.chkFaaFormat, "Add or subtract the specified number of degrees from the wind direction.");
+            this.chkFaaFormat.UseVisualStyleBackColor = true;
+            this.chkFaaFormat.CheckedChanged += new System.EventHandler(this.chkFaaFormat_CheckedChanged);
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.typeCombined);
+            this.flowLayoutPanel2.Controls.Add(this.typeDeparture);
+            this.flowLayoutPanel2.Controls.Add(this.typeArrival);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(89, 77);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(235, 26);
+            this.flowLayoutPanel2.TabIndex = 40;
+            // 
+            // typeCombined
+            // 
+            this.typeCombined.AutoSize = true;
+            this.typeCombined.Location = new System.Drawing.Point(3, 3);
+            this.typeCombined.Name = "typeCombined";
+            this.typeCombined.Size = new System.Drawing.Size(81, 19);
+            this.typeCombined.TabIndex = 32;
+            this.typeCombined.TabStop = true;
+            this.typeCombined.Text = "Combined";
+            this.typeCombined.UseVisualStyleBackColor = true;
+            this.typeCombined.CheckedChanged += new System.EventHandler(this.typeCombined_CheckedChanged);
+            // 
+            // typeDeparture
+            // 
+            this.typeDeparture.AutoSize = true;
+            this.typeDeparture.Location = new System.Drawing.Point(90, 3);
+            this.typeDeparture.Name = "typeDeparture";
+            this.typeDeparture.Size = new System.Drawing.Size(77, 19);
+            this.typeDeparture.TabIndex = 33;
+            this.typeDeparture.TabStop = true;
+            this.typeDeparture.Text = "Departure";
+            this.typeDeparture.UseVisualStyleBackColor = true;
+            this.typeDeparture.CheckedChanged += new System.EventHandler(this.typeDeparture_CheckedChanged);
+            // 
+            // typeArrival
+            // 
+            this.typeArrival.AutoSize = true;
+            this.typeArrival.Location = new System.Drawing.Point(173, 3);
+            this.typeArrival.Name = "typeArrival";
+            this.typeArrival.Size = new System.Drawing.Size(59, 19);
+            this.typeArrival.TabIndex = 34;
+            this.typeArrival.TabStop = true;
+            this.typeArrival.Text = "Arrival";
+            this.typeArrival.UseVisualStyleBackColor = true;
+            this.typeArrival.CheckedChanged += new System.EventHandler(this.typeArrival_CheckedChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 83);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 15);
+            this.label4.TabIndex = 39;
+            this.label4.Text = "ATIS Type:";
+            // 
             // vhfFrequency
             // 
-            this.vhfFrequency.Location = new System.Drawing.Point(95, 40);
+            this.vhfFrequency.Location = new System.Drawing.Point(95, 39);
             this.vhfFrequency.Mask = "000.000";
             this.vhfFrequency.Name = "vhfFrequency";
             this.vhfFrequency.PromptChar = '#';
@@ -463,7 +542,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 43);
+            this.label3.Location = new System.Drawing.Point(23, 42);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 15);
@@ -473,7 +552,7 @@
             // observationTime
             // 
             this.observationTime.Enabled = false;
-            this.observationTime.Location = new System.Drawing.Point(201, 103);
+            this.observationTime.Location = new System.Drawing.Point(201, 167);
             this.observationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.observationTime.Name = "observationTime";
             this.observationTime.Size = new System.Drawing.Size(74, 23);
@@ -484,7 +563,7 @@
             // chkObservationTime
             // 
             this.chkObservationTime.AutoSize = true;
-            this.chkObservationTime.Location = new System.Drawing.Point(27, 105);
+            this.chkObservationTime.Location = new System.Drawing.Point(27, 169);
             this.chkObservationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkObservationTime.Name = "chkObservationTime";
             this.chkObservationTime.Size = new System.Drawing.Size(160, 19);
@@ -496,7 +575,7 @@
             // radioVoiceRecorded
             // 
             this.radioVoiceRecorded.AutoSize = true;
-            this.radioVoiceRecorded.Location = new System.Drawing.Point(439, 239);
+            this.radioVoiceRecorded.Location = new System.Drawing.Point(439, 259);
             this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.radioVoiceRecorded.Name = "radioVoiceRecorded";
             this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
@@ -509,7 +588,7 @@
             // 
             this.radioTextToSpeech.AutoSize = true;
             this.radioTextToSpeech.Checked = true;
-            this.radioTextToSpeech.Location = new System.Drawing.Point(27, 239);
+            this.radioTextToSpeech.Location = new System.Drawing.Point(27, 259);
             this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.radioTextToSpeech.Name = "radioTextToSpeech";
             this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
@@ -529,7 +608,7 @@
             "US Female",
             "UK Male",
             "UK Female"});
-            this.ddlVoices.Location = new System.Drawing.Point(146, 237);
+            this.ddlVoices.Location = new System.Drawing.Point(146, 257);
             this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ddlVoices.Name = "ddlVoices";
             this.ddlVoices.Size = new System.Drawing.Size(264, 23);
@@ -538,7 +617,7 @@
             // 
             // txtIdsEndpoint
             // 
-            this.txtIdsEndpoint.Location = new System.Drawing.Point(119, 301);
+            this.txtIdsEndpoint.Location = new System.Drawing.Point(119, 300);
             this.txtIdsEndpoint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtIdsEndpoint.Name = "txtIdsEndpoint";
             this.txtIdsEndpoint.Size = new System.Drawing.Size(438, 23);
@@ -548,7 +627,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 306);
+            this.label2.Location = new System.Drawing.Point(23, 304);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(78, 15);
@@ -558,7 +637,7 @@
             // chkMagneticVar
             // 
             this.chkMagneticVar.AutoSize = true;
-            this.chkMagneticVar.Location = new System.Drawing.Point(27, 172);
+            this.chkMagneticVar.Location = new System.Drawing.Point(27, 214);
             this.chkMagneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkMagneticVar.Name = "chkMagneticVar";
             this.chkMagneticVar.Size = new System.Drawing.Size(128, 19);
@@ -570,7 +649,7 @@
             // magneticVar
             // 
             this.magneticVar.Enabled = false;
-            this.magneticVar.Location = new System.Drawing.Point(173, 170);
+            this.magneticVar.Location = new System.Drawing.Point(173, 212);
             this.magneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.magneticVar.Maximum = new decimal(new int[] {
             360,
@@ -873,6 +952,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).EndInit();
             this.pageConfiguration.ResumeLayout(false);
             this.pageConfiguration.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).EndInit();
             this.pageTransitionLevel.ResumeLayout(false);
@@ -952,5 +1033,11 @@
         private System.Windows.Forms.ToolStripMenuItem ctxImportComposite;
         private System.Windows.Forms.ToolStripMenuItem ctxExportToProfile;
         private System.Windows.Forms.ToolStripMenuItem ctxExportSingleComposite;
+        private System.Windows.Forms.CheckBox chkFaaFormat;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.RadioButton typeCombined;
+        private System.Windows.Forms.RadioButton typeDeparture;
+        private System.Windows.Forms.RadioButton typeArrival;
+        private System.Windows.Forms.Label label4;
     }
 }
