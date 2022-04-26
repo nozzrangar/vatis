@@ -245,12 +245,12 @@ namespace Vatsim.Vatis.Client.Atis
                 notamVoice = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
                 if (composite.NotamsBeforeFreeText)
                 {
-                    notamText = "NOTAMS... " + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                    notamText = (composite.UseFaaFormat ? "NOTAMS... " : "") + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
                     notamVoice += string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
                 }
                 else
                 {
-                    notamText = "NOTAMS..." + string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                    notamText = (composite.UseFaaFormat ? "NOTAMS... " : "") + string.Join(". ", new[] { composite.CurrentPreset.Notams, string.Join(" ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
                     notamVoice += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
                 }
             }
