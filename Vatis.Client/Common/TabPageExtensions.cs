@@ -5,9 +5,9 @@ namespace Vatsim.Vatis.Client.Common
 {
     public static class TabPageExtensions
     {
-        static readonly Dictionary<System.Windows.Forms.TabPage, object[]> mHiddenPages = new Dictionary<System.Windows.Forms.TabPage, object[]>();
+        static readonly Dictionary<System.Windows.Forms.TabPage, object[]> mHiddenPages = new();
 
-        public static void SetVisible(this System.Windows.Forms.TabPage tabPage, Boolean visible)
+        public static void SetVisible(this System.Windows.Forms.TabPage tabPage, bool visible)
         {
             if (visible)
             {
@@ -32,6 +32,9 @@ namespace Vatsim.Vatis.Client.Common
             var opt = mHiddenPages[tabPage];
             var tabControl = (System.Windows.Forms.TabControl)opt[0];
             var index = (int)opt[1];
+
+            if (index > tabControl.TabPages.Count)
+                index--;
 
             mHiddenPages.Remove(tabPage);
             tabControl.TabPages.Insert(index, tabPage);

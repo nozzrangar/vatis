@@ -10,7 +10,7 @@ namespace Vatsim.Vatis.Client.Config
         public string Notams { get; set; }
         public string ArbitraryText { get; set; }
         public string Template { get; set; }
-        public override string ToString() => Name;
+        public ExternalGenerator ExternalGenerator { get; set; } = new();
 
         [JsonIgnore] public bool IsAirportConditionsDirty { get; set; }
         [JsonIgnore] public bool IsNotamsDirty { get; set; }
@@ -23,8 +23,20 @@ namespace Vatsim.Vatis.Client.Config
                 AirportConditions = AirportConditions,
                 Notams = Notams,
                 ArbitraryText = ArbitraryText,
-                Template = Template
+                Template = Template,
+                ExternalGenerator = ExternalGenerator
             };
         }
+
+        public override string ToString() => Name;
+    }
+
+    public class ExternalGenerator
+    {
+        public string Url { get; set; }
+        public string Arrival { get; set; }
+        public string Departure { get; set; }
+        public string Approaches { get; set; }
+        public string Remarks { get; set; }
     }
 }

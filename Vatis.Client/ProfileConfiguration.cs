@@ -1,6 +1,7 @@
 ﻿using Appccelerate.EventBroker;
 using Newtonsoft.Json;
 using NLog.Layouts;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +9,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Vatsim.Vatis.Client.Args;
@@ -23,9 +26,11 @@ namespace Vatsim.Vatis.Client
         private readonly IUserInterface mUserInterface;
         private readonly IEventBroker mEventBroker;
         private readonly INavaidDatabase mNavaidDatabase;
-        private string mPreviousInputValue = "";
+        private readonly SynchronizationContext mSyncContext;
+
         private AtisComposite mCurrentComposite = null;
         private AtisPreset mCurrentPreset = null;
+
         private bool mFrequencyChanged = false;
         private bool mAtisTypeChanged = false;
         private bool mFaaFormatChanged = false;
@@ -35,6 +40,12 @@ namespace Vatsim.Vatis.Client
         private bool mIdsEndpointChanged = false;
         private bool mContractionsChanged = false;
         private bool mTransitionLevelsChanged = false;
+        private bool mExternalAtisGeneratorChanged = false;
+        private bool mExternalUrlChanged = false;
+        private bool mExternalArrivalChanged = false;
+        private bool mExternalDepartureChanged = false;
+        private bool mExternalApproachesChanged = false;
+        private bool mExternalRemarksChanged = false;
 
         [EventPublication(EventTopics.RefreshAtisComposites)]
         public event EventHandler RefreshAtisComposites;
@@ -45,6 +56,8 @@ namespace Vatsim.Vatis.Client
         public ProfileConfiguration(IEventBroker eventBroker, IUserInterface userInterface, IAppConfig appConfig, INavaidDatabase navaidDatabase)
         {
             InitializeComponent();
+
+            mSyncContext = SynchronizationContext.Current;
 
             mAppConfig = appConfig;
             mUserInterface = userInterface;
@@ -111,6 +124,7 @@ namespace Vatsim.Vatis.Client
             }
 
             chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
+            chkExternalAtisGenerator.Checked = mCurrentComposite.UseExternalAtisGenerator;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -193,6 +207,8 @@ namespace Vatsim.Vatis.Client
                 });
             }
 
+            pageExternalAtis.SetVisible(mCurrentComposite.UseExternalAtisGenerator);
+
             if (mCurrentComposite.Identifier.StartsWith("K") || mCurrentComposite.Identifier.StartsWith("P"))
             {
                 pageTransitionLevel.SetVisible(false);
@@ -241,58 +257,56 @@ namespace Vatsim.Vatis.Client
 
             while (!flag)
             {
-                using (var dlg = mUserInterface.CreateNewCompositeDialog())
+                using var dlg = mUserInterface.CreateNewCompositeDialog();
+                dlg.Identifier = previousIdentifer;
+                dlg.CompositeName = previousName;
+                dlg.Type = previousType;
+
+                DialogResult result = dlg.ShowDialog(this);
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
                 {
-                    dlg.Identifier = previousIdentifer;
-                    dlg.CompositeName = previousName;
-                    dlg.Type = previousType;
+                    previousIdentifer = dlg.Identifier;
+                    previousName = dlg.CompositeName;
+                    previousType = dlg.Type;
 
-                    DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
+                    if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
                     {
-                        previousIdentifer = dlg.Identifier;
-                        previousName = dlg.CompositeName;
-                        previousType = dlg.Type;
-
-                        if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
+                        if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
                         {
-                            if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
-                            {
-                                continue;
-                            }
+                            continue;
                         }
-
-                        if (mAppConfig.CurrentProfile != null
-                            && mAppConfig.CurrentProfile.Composites.Any(x => x.Identifier == dlg.Identifier 
-                            && x.AtisType == dlg.Type))
-                        {
-                            if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists. Would you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.No)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                mAppConfig.CurrentProfile.Composites.RemoveAll(x => x.Identifier == dlg.Identifier && x.AtisType == dlg.Type);
-                                mAppConfig.SaveConfig();
-                            }
-                        }
-
-                        var composite = new AtisComposite
-                        {
-                            Identifier = dlg.Identifier,
-                            Name = dlg.CompositeName,
-                            AtisType = dlg.Type
-                        };
-
-                        mAppConfig.CurrentProfile.Composites.Add(composite);
-                        mAppConfig.SaveConfig();
-                        RefreshCompositeList();
-                        flag = true;
                     }
-                    else
+
+                    if (mAppConfig.CurrentProfile != null
+                        && mAppConfig.CurrentProfile.Composites.Any(x => x.Identifier == dlg.Identifier
+                        && x.AtisType == dlg.Type))
                     {
-                        flag = true;
+                        if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists. Would you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.No)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            mAppConfig.CurrentProfile.Composites.RemoveAll(x => x.Identifier == dlg.Identifier && x.AtisType == dlg.Type);
+                            mAppConfig.SaveConfig();
+                        }
                     }
+
+                    var composite = new AtisComposite
+                    {
+                        Identifier = dlg.Identifier,
+                        Name = dlg.CompositeName,
+                        AtisType = dlg.Type
+                    };
+
+                    mAppConfig.CurrentProfile.Composites.Add(composite);
+                    mAppConfig.SaveConfig();
+                    RefreshCompositeList();
+                    flag = true;
+                }
+                else
+                {
+                    flag = true;
                 }
             }
         }
@@ -316,51 +330,49 @@ namespace Vatsim.Vatis.Client
 
                 while (!flag)
                 {
-                    using (var dlg = mUserInterface.CreateNewCompositeDialog())
+                    using var dlg = mUserInterface.CreateNewCompositeDialog();
+                    dlg.Identifier = previousIdentifer;
+                    dlg.CompositeName = previousName;
+                    dlg.Type = previousType;
+
+                    DialogResult result = dlg.ShowDialog(this);
+                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
                     {
-                        dlg.Identifier = previousIdentifer;
-                        dlg.CompositeName = previousName;
-                        dlg.Type = previousType;
+                        previousIdentifer = dlg.Identifier;
+                        previousName = dlg.CompositeName;
+                        previousType = dlg.Type;
 
-                        DialogResult result = dlg.ShowDialog(this);
-                        if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
+                        if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
                         {
-                            previousIdentifer = dlg.Identifier;
-                            previousName = dlg.CompositeName;
-                            previousType = dlg.Type;
-
-                            if (mNavaidDatabase.GetAirport(dlg.Identifier) == null)
+                            if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
                             {
-                                if (MessageBox.Show(this, $"ICAO identifier not found: {dlg.Identifier}", "Invalid Identifier", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
-
-                            if (mAppConfig.CurrentProfile != null
-                                && mAppConfig.CurrentProfile.Composites.Any(x => x.Identifier == dlg.Identifier
-                                && x.AtisType == dlg.Type))
-                            {
-                                if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists.", "Duplicate Composite", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
-                                {
-                                    continue;
-                                }
-                            }
-
-                            var clone = composite.Clone();
-                            clone.Identifier = dlg.Identifier;
-                            clone.Name = dlg.CompositeName;
-                            clone.AtisType = dlg.Type;
-
-                            mAppConfig.CurrentProfile.Composites.Add(clone);
-                            mAppConfig.SaveConfig();
-                            RefreshCompositeList();
-                            flag = true;
                         }
-                        else
+
+                        if (mAppConfig.CurrentProfile != null
+                            && mAppConfig.CurrentProfile.Composites.Any(x => x.Identifier == dlg.Identifier
+                            && x.AtisType == dlg.Type))
                         {
-                            flag = true;
+                            if (MessageBox.Show(this, $"{dlg.Identifier} ({dlg.Type}) already exists.", "Duplicate Composite", MessageBoxButtons.OK, MessageBoxIcon.Hand) == DialogResult.OK)
+                            {
+                                continue;
+                            }
                         }
+
+                        var clone = composite.Clone();
+                        clone.Identifier = dlg.Identifier;
+                        clone.Name = dlg.CompositeName;
+                        clone.AtisType = dlg.Type;
+
+                        mAppConfig.CurrentProfile.Composites.Add(clone);
+                        mAppConfig.SaveConfig();
+                        RefreshCompositeList();
+                        flag = true;
+                    }
+                    else
+                    {
+                        flag = true;
                     }
                 }
             }
@@ -375,31 +387,30 @@ namespace Vatsim.Vatis.Client
                 var composite = TreeMenu.SelectedNode.Tag as AtisComposite;
                 if (composite != null)
                 {
+                    var previousValue = "";
+
                     while (!flag)
                     {
-                        using (var dlg = mUserInterface.CreateUserInputForm())
+                        using var dlg = mUserInterface.CreateUserInputForm();
+                        previousValue = composite.Name;
+                        dlg.PromptLabel = "Enter a new name for the ATIS Composite:";
+                        dlg.WindowTitle = "Rename ATIS Composite";
+                        dlg.ErrorMessage = "Invalid composite name. It must consist of only letters, numbers, underscores and spaces.";
+                        dlg.RegexExpression = "^[a-zA-Z0-9_ ]*$";
+                        dlg.InitialValue = previousValue;
+
+                        DialogResult result2 = dlg.ShowDialog(this);
+                        if (result2 == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
                         {
-                            mPreviousInputValue = composite.Name;
-                            dlg.PromptLabel = "Enter a new name for the ATIS Composite:";
-                            dlg.WindowTitle = "Rename ATIS Composite";
-                            dlg.ErrorMessage = "Invalid composite name. It must consist of only letters, numbers, underscores and spaces.";
-                            dlg.RegexExpression = "^[a-zA-Z0-9_ ]*$";
-                            dlg.InitialValue = mPreviousInputValue;
-
-                            DialogResult result2 = dlg.ShowDialog(this);
-                            if (result2 == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
-                            {
-                                mPreviousInputValue = dlg.Value;
-
-                                composite.Name = dlg.Value;
-                                mAppConfig.SaveConfig();
-                                RefreshCompositeList();
-                                flag = true;
-                            }
-                            else
-                            {
-                                flag = true;
-                            }
+                            previousValue = dlg.Value;
+                            composite.Name = dlg.Value;
+                            mAppConfig.SaveConfig();
+                            RefreshCompositeList();
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = true;
                         }
                     }
                 }
@@ -438,6 +449,7 @@ namespace Vatsim.Vatis.Client
             chkObservationTime.Checked = false;
             txtIdsEndpoint.Text = "";
 
+            pageExternalAtis.SetVisible(false);
             pageTransitionLevel.SetVisible(false);
 
             TreeMenu.Nodes.Clear();
@@ -554,6 +566,12 @@ namespace Vatsim.Vatis.Client
             {
                 mCurrentComposite.UseFaaFormat = chkFaaFormat.Checked;
                 mFaaFormatChanged = false;
+            }
+
+            if (mExternalAtisGeneratorChanged)
+            {
+                mCurrentComposite.UseExternalAtisGenerator = chkExternalAtisGenerator.Checked;
+                mExternalAtisGeneratorChanged = false;
             }
 
             if (mObservationTimeChanged)
@@ -684,6 +702,36 @@ namespace Vatsim.Vatis.Client
                 }
             }
 
+            if (mExternalUrlChanged)
+            {
+                mCurrentPreset.ExternalGenerator.Url = txtExternalUrl.Text;
+                mExternalUrlChanged = false;
+            }
+
+            if (mExternalArrivalChanged)
+            {
+                mCurrentPreset.ExternalGenerator.Arrival = txtExternalArr.Text;
+                mExternalArrivalChanged = false;
+            }
+
+            if (mExternalDepartureChanged)
+            {
+                mCurrentPreset.ExternalGenerator.Departure = txtExternalDep.Text;
+                mExternalDepartureChanged = false;
+            }
+
+            if (mExternalApproachesChanged)
+            {
+                mCurrentPreset.ExternalGenerator.Approaches = txtExternalApp.Text;
+                mExternalApproachesChanged = false;
+            }
+
+            if (mExternalRemarksChanged)
+            {
+                mCurrentPreset.ExternalGenerator.Remarks = txtExternalRemarks.Text;
+                mExternalRemarksChanged = false;
+            }
+
             mTransitionLevelsChanged = false;
             mContractionsChanged = false;
             btnApply.Enabled = false;
@@ -797,6 +845,28 @@ namespace Vatsim.Vatis.Client
             if (chkFaaFormat.Checked != mCurrentComposite.UseFaaFormat)
             {
                 mFaaFormatChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void chkExternalAtisGenerator_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkExternalAtisGenerator.Focused)
+                return;
+
+            pageExternalAtis.SetVisible(chkExternalAtisGenerator.Checked);
+            RefreshPresetList();
+
+            if (chkExternalAtisGenerator.Checked != mCurrentComposite.UseExternalAtisGenerator)
+            {
+                mExternalAtisGeneratorChanged = true;
                 btnApply.Enabled = true;
             }
             else
@@ -1006,45 +1076,43 @@ namespace Vatsim.Vatis.Client
         private void btnNewPreset_Click(object sender, EventArgs e)
         {
             bool flag = false;
+            var previousValue = "";
 
             while (!flag)
             {
-                using (var dlg = mUserInterface.CreateUserInputForm())
+                using var dlg = mUserInterface.CreateUserInputForm();
+                dlg.PromptLabel = "Enter a name for the preset";
+                dlg.WindowTitle = "New Preset";
+                dlg.InitialValue = previousValue;
+                dlg.TextUppercase = true;
+
+                DialogResult result = dlg.ShowDialog(this);
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
                 {
-                    mPreviousInputValue = "";
-                    dlg.PromptLabel = "Enter a name for the preset";
-                    dlg.WindowTitle = "New Preset";
-                    dlg.InitialValue = mPreviousInputValue;
-                    dlg.TextUppercase = true;
+                    previousValue = dlg.Value;
 
-                    DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                    if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
                     {
-                        mPreviousInputValue = dlg.Value;
-
-                        if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
-                        {
-                            MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            return;
-                        }
-
-                        var preset = new AtisPreset
-                        {
-                            Name = dlg.Value,
-                            Template = "[FACILITY] ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]"
-                        };
-                        mCurrentComposite.Presets.Add(preset);
-                        mAppConfig.SaveConfig();
-
-                        RefreshPresetList(preset.Name);
-                        mPreviousInputValue = "";
-
-                        flag = true;
+                        MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
                     }
-                    else
+
+                    var preset = new AtisPreset
                     {
-                        flag = true;
-                    }
+                        Name = dlg.Value,
+                        Template = "[FACILITY] ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]"
+                    };
+                    mCurrentComposite.Presets.Add(preset);
+                    mAppConfig.SaveConfig();
+
+                    RefreshPresetList(preset.Name);
+                    previousValue = "";
+
+                    flag = true;
+                }
+                else
+                {
+                    flag = true;
                 }
             }
         }
@@ -1053,42 +1121,40 @@ namespace Vatsim.Vatis.Client
         {
             bool flag = false;
 
-            mPreviousInputValue = mCurrentPreset.Name;
+            var previousValue = mCurrentPreset.Name;
 
             while (!flag)
             {
-                using (var dlg = mUserInterface.CreateUserInputForm())
+                using var dlg = mUserInterface.CreateUserInputForm();
+                dlg.PromptLabel = "Enter a new name for the preset";
+                dlg.WindowTitle = "Rename Preset";
+                dlg.InitialValue = previousValue;
+                dlg.TextUppercase = true;
+
+                DialogResult result = dlg.ShowDialog(this);
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
                 {
-                    dlg.PromptLabel = "Enter a new name for the preset";
-                    dlg.WindowTitle = "Rename Preset";
-                    dlg.InitialValue = mPreviousInputValue;
-                    dlg.TextUppercase = true;
+                    previousValue = dlg.Value;
 
-                    DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                    if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
                     {
-                        mPreviousInputValue = dlg.Value;
-
-                        if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
-                        {
-                            MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            flag = false;
-                        }
-                        else
-                        {
-                            mCurrentPreset.Name = dlg.Value;
-                            mAppConfig.SaveConfig();
-
-                            RefreshPresetList();
-                            mPreviousInputValue = "";
-
-                            flag = true;
-                        }
+                        MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        flag = false;
                     }
                     else
                     {
+                        mCurrentPreset.Name = dlg.Value;
+                        mAppConfig.SaveConfig();
+
+                        RefreshPresetList();
+                        previousValue = "";
+
                         flag = true;
                     }
+                }
+                else
+                {
+                    flag = true;
                 }
             }
         }
@@ -1096,42 +1162,41 @@ namespace Vatsim.Vatis.Client
         private void btnCopyPreset_Click(object sender, EventArgs e)
         {
             bool flag = false;
+            var previousValue = "";
 
             while (!flag)
             {
-                using (var dlg = mUserInterface.CreateUserInputForm())
+                using var dlg = mUserInterface.CreateUserInputForm();
+                dlg.PromptLabel = "Enter a name for the preset";
+                dlg.WindowTitle = "Copy Preset";
+                dlg.InitialValue = previousValue;
+                dlg.TextUppercase = true;
+
+                DialogResult result = dlg.ShowDialog(this);
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
                 {
-                    dlg.PromptLabel = "Enter a name for the preset";
-                    dlg.WindowTitle = "Copy Preset";
-                    dlg.InitialValue = mPreviousInputValue;
-                    dlg.TextUppercase = true;
+                    previousValue = dlg.Value;
 
-                    DialogResult result = dlg.ShowDialog(this);
-                    if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
+                    if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
                     {
-                        mPreviousInputValue = dlg.Value;
-
-                        if (mCurrentComposite.Presets.Any(x => x.Name == dlg.Value))
-                        {
-                            MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        }
-                        else
-                        {
-                            var clone = mCurrentPreset.Clone();
-                            clone.Name = dlg.Value;
-                            mCurrentComposite.Presets.Add(clone);
-                            mAppConfig.SaveConfig();
-
-                            RefreshPresetList();
-                            mPreviousInputValue = "";
-
-                            flag = true;
-                        }
+                        MessageBox.Show(this, "Another profile already exists with that name. Please choose another.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     else
                     {
+                        var clone = mCurrentPreset.Clone();
+                        clone.Name = dlg.Value;
+                        mCurrentComposite.Presets.Add(clone);
+                        mAppConfig.SaveConfig();
+
+                        RefreshPresetList();
+                        previousValue = "";
+
                         flag = true;
                     }
+                }
+                else
+                {
+                    flag = true;
                 }
             }
         }
@@ -1156,7 +1221,6 @@ namespace Vatsim.Vatis.Client
             if (mCurrentComposite != null)
             {
                 ddlPresets.Items.Clear();
-
                 foreach (var preset in mCurrentComposite.Presets)
                 {
                     ddlPresets.Items.Add(preset.Name);
@@ -1195,7 +1259,32 @@ namespace Vatsim.Vatis.Client
                 mCurrentPreset = mCurrentComposite.Presets.FirstOrDefault(x => x.Name == ddlPresets.SelectedItem.ToString());
 
                 if (mCurrentPreset != null)
-                    txtAtisTemplate.Text = mCurrentPreset.Template;
+                {
+                    if (mCurrentComposite.UseExternalAtisGenerator)
+                    {
+                        txtAtisTemplate.Enabled = false;
+                        txtAtisTemplate.Text = "";
+
+                        txtSelectedPreset.Text = mCurrentPreset.Name;
+                        txtExternalUrl.Enabled = ddlPresets.SelectedItem != null;
+                        tlpVariables.Enabled = ddlPresets.SelectedItem != null;
+                        groupTest.Enabled = ddlPresets.SelectedItem != null;
+
+                        if (mCurrentPreset.ExternalGenerator != null)
+                        {
+                            txtExternalUrl.Text = mCurrentPreset.ExternalGenerator.Url;
+                            txtExternalArr.Text = mCurrentPreset.ExternalGenerator.Arrival;
+                            txtExternalDep.Text = mCurrentPreset.ExternalGenerator.Departure;
+                            txtExternalApp.Text = mCurrentPreset.ExternalGenerator.Approaches;
+                            txtExternalRemarks.Text = mCurrentPreset.ExternalGenerator.Remarks;
+                        }
+                    }
+                    else
+                    {
+                        txtAtisTemplate.Enabled = true;
+                        txtAtisTemplate.Text = mCurrentPreset.Template;
+                    }
+                }
             }
         }
 
@@ -1368,143 +1457,49 @@ namespace Vatsim.Vatis.Client
         private void ImportLegacyProfile(string fullName)
         {
             FileStream fs = new FileStream(fullName, FileMode.Open, FileAccess.Read);
-            using (Stream stream = new GZipStream(fs, CompressionMode.Decompress))
+            using Stream stream = new GZipStream(fs, CompressionMode.Decompress);
+            XmlSerializer xml = new XmlSerializer(typeof(LegacyFacility));
+            var profile = (LegacyFacility)xml.Deserialize(stream);
+
+            if (mAppConfig.CurrentProfile != null)
             {
-                XmlSerializer xml = new XmlSerializer(typeof(LegacyFacility));
-                var profile = (LegacyFacility)xml.Deserialize(stream);
-
-                if (mAppConfig.CurrentProfile != null)
+                if (mAppConfig.CurrentProfile.Composites.Any(t => t.Identifier == profile.ID))
                 {
-                    if (mAppConfig.CurrentProfile.Composites.Any(t => t.Identifier == profile.ID))
+                    if (MessageBox.Show(this, "A composite with that identifier already exists. Would you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo) == DialogResult.No)
                     {
-                        if (MessageBox.Show(this, "A composite with that identifier already exists. Would you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo) == DialogResult.No)
-                        {
-                            return;
-                        }
-
-                        var existing = mAppConfig.CurrentProfile.Composites.FirstOrDefault(t => t.Identifier == profile.ID);
-                        if (existing != null)
-                        {
-                            existing.Name = profile.Name;
-                            existing.Identifier = profile.ID;
-                            if (!string.IsNullOrEmpty(profile.AtisFrequency))
-                            {
-                                existing.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
-                            }
-                            else
-                            {
-                                existing.AtisFrequency = profile.Frequency;
-                            }
-                            existing.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
-                            existing.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
-
-                            if (profile.MagneticVariation != null)
-                            {
-                                if (profile.MagneticVariation.Option != LegacyMagneticVariation.LegacyMagneticVariationOption.None)
-                                {
-                                    existing.MagneticVariation.Enabled = true;
-                                }
-                                switch (profile.MagneticVariation.Option)
-                                {
-                                    case LegacyMagneticVariation.LegacyMagneticVariationOption.Add:
-                                        existing.MagneticVariation.MagneticDegrees =
-                                            Math.Abs(profile.MagneticVariation.MagneticVariationValue);
-                                        break;
-                                    case LegacyMagneticVariation.LegacyMagneticVariationOption.Subtract:
-                                        existing.MagneticVariation.MagneticDegrees =
-                                            profile.MagneticVariation.MagneticVariationValue * -1;
-                                        break;
-                                }
-                            }
-
-                            if (profile.MetarObservation != null)
-                            {
-                                existing.ObservationTime.Enabled = profile.MetarObservation.Enable;
-                                existing.ObservationTime.Time = (uint)profile.MetarObservation.ObservationTimeValue;
-                            }
-
-                            existing.Contractions.Clear();
-                            foreach (var contraction in profile.Contractions)
-                            {
-                                existing.Contractions.Add(new ContractionMeta
-                                {
-                                    String = contraction.Key,
-                                    Spoken = contraction.Value
-                                });
-                            }
-
-                            int idx = 1;
-                            existing.AirportConditionDefinitions.Clear();
-                            foreach (var condition in profile.AirportConditions)
-                            {
-                                existing.AirportConditionDefinitions.Add(new DefinedText
-                                {
-                                    Ordinal = idx++,
-                                    Text = condition.Message,
-                                    Enabled = condition.IsSelected
-                                });
-                            }
-
-                            idx = 1;
-                            existing.NotamDefinitions.Clear();
-                            foreach (var condition in profile.Notams)
-                            {
-                                existing.NotamDefinitions.Add(new DefinedText
-                                {
-                                    Ordinal = idx++,
-                                    Text = condition.Message,
-                                    Enabled = condition.IsSelected
-                                });
-                            }
-
-                            existing.Presets.Clear();
-                            foreach (var preset in profile.Profiles)
-                            {
-                                var p = new AtisPreset
-                                {
-                                    Name = preset.Name,
-                                    Template = preset.AtisTemplate,
-                                    AirportConditions = preset.AirportConditions,
-                                    Notams = preset.Notams
-                                };
-                                existing.Presets.Add(p);
-                            }
-
-                            mAppConfig.SaveConfig();
-                            RefreshCompositeList();
-                            LoadComposite();
-                        }
+                        return;
                     }
-                    else
+
+                    var existing = mAppConfig.CurrentProfile.Composites.FirstOrDefault(t => t.Identifier == profile.ID);
+                    if (existing != null)
                     {
-                        var composite = new AtisComposite();
-                        composite.Name = profile.Name;
-                        composite.Identifier = profile.ID;
+                        existing.Name = profile.Name;
+                        existing.Identifier = profile.ID;
                         if (!string.IsNullOrEmpty(profile.AtisFrequency))
                         {
-                            composite.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
+                            existing.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
                         }
                         else
                         {
-                            composite.AtisFrequency = profile.Frequency;
+                            existing.AtisFrequency = profile.Frequency;
                         }
-                        composite.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
-                        composite.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
+                        existing.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
+                        existing.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
 
                         if (profile.MagneticVariation != null)
                         {
                             if (profile.MagneticVariation.Option != LegacyMagneticVariation.LegacyMagneticVariationOption.None)
                             {
-                                composite.MagneticVariation.Enabled = true;
+                                existing.MagneticVariation.Enabled = true;
                             }
                             switch (profile.MagneticVariation.Option)
                             {
                                 case LegacyMagneticVariation.LegacyMagneticVariationOption.Add:
-                                    composite.MagneticVariation.MagneticDegrees =
+                                    existing.MagneticVariation.MagneticDegrees =
                                         Math.Abs(profile.MagneticVariation.MagneticVariationValue);
                                     break;
                                 case LegacyMagneticVariation.LegacyMagneticVariationOption.Subtract:
-                                    composite.MagneticVariation.MagneticDegrees =
+                                    existing.MagneticVariation.MagneticDegrees =
                                         profile.MagneticVariation.MagneticVariationValue * -1;
                                     break;
                             }
@@ -1512,13 +1507,14 @@ namespace Vatsim.Vatis.Client
 
                         if (profile.MetarObservation != null)
                         {
-                            composite.ObservationTime.Enabled = profile.MetarObservation.Enable;
-                            composite.ObservationTime.Time = (uint)profile.MetarObservation.ObservationTimeValue;
+                            existing.ObservationTime.Enabled = profile.MetarObservation.Enable;
+                            existing.ObservationTime.Time = (uint)profile.MetarObservation.ObservationTimeValue;
                         }
 
+                        existing.Contractions.Clear();
                         foreach (var contraction in profile.Contractions)
                         {
-                            composite.Contractions.Add(new ContractionMeta
+                            existing.Contractions.Add(new ContractionMeta
                             {
                                 String = contraction.Key,
                                 Spoken = contraction.Value
@@ -1526,9 +1522,10 @@ namespace Vatsim.Vatis.Client
                         }
 
                         int idx = 1;
+                        existing.AirportConditionDefinitions.Clear();
                         foreach (var condition in profile.AirportConditions)
                         {
-                            composite.AirportConditionDefinitions.Add(new DefinedText
+                            existing.AirportConditionDefinitions.Add(new DefinedText
                             {
                                 Ordinal = idx++,
                                 Text = condition.Message,
@@ -1537,9 +1534,10 @@ namespace Vatsim.Vatis.Client
                         }
 
                         idx = 1;
+                        existing.NotamDefinitions.Clear();
                         foreach (var condition in profile.Notams)
                         {
-                            composite.NotamDefinitions.Add(new DefinedText
+                            existing.NotamDefinitions.Add(new DefinedText
                             {
                                 Ordinal = idx++,
                                 Text = condition.Message,
@@ -1547,6 +1545,7 @@ namespace Vatsim.Vatis.Client
                             });
                         }
 
+                        existing.Presets.Clear();
                         foreach (var preset in profile.Profiles)
                         {
                             var p = new AtisPreset
@@ -1556,13 +1555,101 @@ namespace Vatsim.Vatis.Client
                                 AirportConditions = preset.AirportConditions,
                                 Notams = preset.Notams
                             };
-                            composite.Presets.Add(p);
+                            existing.Presets.Add(p);
                         }
 
-                        mAppConfig.CurrentProfile.Composites.Add(composite);
                         mAppConfig.SaveConfig();
                         RefreshCompositeList();
+                        LoadComposite();
                     }
+                }
+                else
+                {
+                    var composite = new AtisComposite();
+                    composite.Name = profile.Name;
+                    composite.Identifier = profile.ID;
+                    if (!string.IsNullOrEmpty(profile.AtisFrequency))
+                    {
+                        composite.AtisFrequency = (int)(double.Parse(profile.AtisFrequency) * 1000) - 100000;
+                    }
+                    else
+                    {
+                        composite.AtisFrequency = profile.Frequency;
+                    }
+                    composite.IDSEndpoint = profile.InformationDisplaySystemEndpoint;
+                    composite.AtisVoice.UseTextToSpeech = !profile.VoiceRecordEnabled;
+
+                    if (profile.MagneticVariation != null)
+                    {
+                        if (profile.MagneticVariation.Option != LegacyMagneticVariation.LegacyMagneticVariationOption.None)
+                        {
+                            composite.MagneticVariation.Enabled = true;
+                        }
+                        switch (profile.MagneticVariation.Option)
+                        {
+                            case LegacyMagneticVariation.LegacyMagneticVariationOption.Add:
+                                composite.MagneticVariation.MagneticDegrees =
+                                    Math.Abs(profile.MagneticVariation.MagneticVariationValue);
+                                break;
+                            case LegacyMagneticVariation.LegacyMagneticVariationOption.Subtract:
+                                composite.MagneticVariation.MagneticDegrees =
+                                    profile.MagneticVariation.MagneticVariationValue * -1;
+                                break;
+                        }
+                    }
+
+                    if (profile.MetarObservation != null)
+                    {
+                        composite.ObservationTime.Enabled = profile.MetarObservation.Enable;
+                        composite.ObservationTime.Time = (uint)profile.MetarObservation.ObservationTimeValue;
+                    }
+
+                    foreach (var contraction in profile.Contractions)
+                    {
+                        composite.Contractions.Add(new ContractionMeta
+                        {
+                            String = contraction.Key,
+                            Spoken = contraction.Value
+                        });
+                    }
+
+                    int idx = 1;
+                    foreach (var condition in profile.AirportConditions)
+                    {
+                        composite.AirportConditionDefinitions.Add(new DefinedText
+                        {
+                            Ordinal = idx++,
+                            Text = condition.Message,
+                            Enabled = condition.IsSelected
+                        });
+                    }
+
+                    idx = 1;
+                    foreach (var condition in profile.Notams)
+                    {
+                        composite.NotamDefinitions.Add(new DefinedText
+                        {
+                            Ordinal = idx++,
+                            Text = condition.Message,
+                            Enabled = condition.IsSelected
+                        });
+                    }
+
+                    foreach (var preset in profile.Profiles)
+                    {
+                        var p = new AtisPreset
+                        {
+                            Name = preset.Name,
+                            Template = preset.AtisTemplate,
+                            AirportConditions = preset.AirportConditions,
+                            Notams = preset.Notams
+                        };
+                        composite.Presets.Add(p);
+                    }
+
+                    mAppConfig.CurrentProfile.Composites.Add(composite);
+                    mAppConfig.SaveConfig();
+                    RefreshCompositeList();
                 }
             }
         }
@@ -1645,6 +1732,190 @@ namespace Vatsim.Vatis.Client
             {
                 MessageBox.Show(this, "No transition level selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            var url = txtExternalUrl.Text;
+            if (!string.IsNullOrEmpty(url))
+            {
+                url = url.Replace("$metar", System.Web.HttpUtility.UrlEncode(txtMetar.Text));
+                url = url.Replace("$arrrwy", txtExternalArr.Text);
+                url = url.Replace("$deprwy", txtExternalDep.Text);
+                url = url.Replace("$app", txtExternalApp.Text);
+                url = url.Replace("$remarks", txtExternalRemarks.Text);
+                url = url.Replace("$atiscode", RandomLetter());
+
+                Task.Run(() =>
+                {
+                    mSyncContext.Post(o =>
+                    {
+                        btnTest.Text = "Loading...";
+                        btnTest.Enabled = false;
+                    }, null);
+
+                    var result = "";
+
+                    try
+                    {
+                        var client = new RestClient();
+                        var request = new RestRequest(url);
+                        var response = client.Get<string>(request);
+                        
+                        result = Regex.Replace(response.Content, @"\[(.*?)\]", " $1 ");
+                        result = Regex.Replace(result, @"\s+", " ");
+                    }
+                    catch { }
+
+                    mSyncContext.Post(o => { 
+                        txtResponse.Text = result.Trim(' ');
+                        btnTest.Text = "Test URL";
+                        btnTest.Enabled = true;
+                    }, null);
+                });
+            }
+        }
+
+        private void btnFetchMetar_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+
+                mSyncContext.Post(o =>
+                {
+                    btnFetchMetar.Enabled = false;
+                    btnTest.Enabled = false;
+                }, null);
+
+                var result = "";
+
+                try
+                {
+                    var client = new RestClient();
+                    var request = new RestRequest("https://metar.vatsim.net/metar.php?id=" + mCurrentComposite.Identifier);
+                    result = client.Get<string>(request).Content;
+                }
+                catch { }
+
+                mSyncContext.Post(o =>
+                {
+                    txtMetar.Text = result;
+                    btnFetchMetar.Enabled = true;
+                    btnTest.Enabled = true;
+                }, null);
+            });
+        }
+
+        private void txtExternalUrl_TextChanged(object sender, EventArgs e)
+        {
+            if (mCurrentPreset == null)
+                return;
+
+            if (!txtExternalUrl.Focused)
+                return;
+
+            if (txtExternalUrl.Text != mCurrentPreset.ExternalGenerator.Url)
+            {
+                mExternalUrlChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mExternalUrlChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void txtExternalArr_TextChanged(object sender, EventArgs e)
+        {
+            if (mCurrentPreset == null)
+                return;
+
+            if (!txtExternalArr.Focused)
+                return;
+
+            if (txtExternalArr.Text != mCurrentPreset.ExternalGenerator.Arrival)
+            {
+                mExternalArrivalChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mExternalArrivalChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void txtExternalDep_TextChanged(object sender, EventArgs e)
+        {
+            if (mCurrentPreset == null)
+                return;
+
+            if (!txtExternalDep.Focused)
+                return;
+
+            if (txtExternalDep.Text != mCurrentPreset.ExternalGenerator.Departure)
+            {
+                mExternalDepartureChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mExternalArrivalChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void txtExternalApp_TextChanged(object sender, EventArgs e)
+        {
+            if (mCurrentPreset == null)
+                return;
+
+            if (!txtExternalApp.Focused)
+                return;
+
+            if (txtExternalApp.Text != mCurrentPreset.ExternalGenerator.Approaches)
+            {
+                mExternalApproachesChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mExternalApproachesChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void txtExternalRemarks_TextChanged(object sender, EventArgs e)
+        {
+            if (mCurrentPreset == null)
+                return;
+
+            if (!txtExternalRemarks.Focused)
+                return;
+
+            if (txtExternalRemarks.Text != mCurrentPreset.ExternalGenerator.Remarks)
+            {
+                mExternalRemarksChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mExternalRemarksChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private static string RandomLetter()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var random = new Random();
+            return new string(Enumerable.Range(1, 1).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+        }
+
+        private void txtMetar_TextChanged(object sender, EventArgs e)
+        {
+            btnTest.Enabled = !string.IsNullOrEmpty(txtMetar.Text);
         }
     }
 }

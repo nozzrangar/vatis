@@ -27,6 +27,7 @@ namespace Vatsim.Vatis.Client.Config
         public bool NotamsBeforeFreeText { get; set; }
         public List<TransitionLevel> TransitionLevels { get; set; } = new List<TransitionLevel>();
         public bool UseFaaFormat { get; set; } = true;
+        public bool UseExternalAtisGenerator { get; set; }
 
         [JsonIgnore] public DecodedMetar DecodedMetar { get; set; }
         [JsonIgnore] public AtisPreset CurrentPreset { get; set; }
