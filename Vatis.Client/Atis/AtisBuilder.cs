@@ -306,8 +306,9 @@ namespace Vatsim.Vatis.Client.Atis
             // format vhf frequencies
             input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value).DecimalToWordString(composite.DecodedMetar.IsInternational));
 
-            // read numbers as singular
+            // read numbers as singular (serial) format, prefixed by # or surrounded by {}
             input = Regex.Replace(input, @"\#(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
+            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
 
             // format numbers to singluar words
             input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
@@ -386,6 +387,7 @@ namespace Vatsim.Vatis.Client.Atis
 
             input = Regex.Replace(input, @"(?<=\*)(-?[\,0-9]+)", "$1");
             input = Regex.Replace(input, @"(?<=\#)(-?[\,0-9]+)", "$1");
+            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{3})", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{4})", "$1");
             input = Regex.Replace(input, @"\s+", " ");
