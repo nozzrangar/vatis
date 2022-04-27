@@ -101,16 +101,19 @@ namespace Vatsim.Vatis.Client.Common
         /// <param name="prefix"></param>
         /// <param name="plural"></param>
         /// <returns></returns>
-        public static string RwyNumbersToWords(int number, string identifier, bool prefix = false, bool plural = false)
+        public static string RwyNumbersToWords(int number, string identifier, bool prefix = false, bool plural = false, bool leadingZero = false)
         {
             string words = "";
             string result = "";
+
+            if (leadingZero && number < 10)
+                words += "zero ";
 
             if (number >= 1 && number <= 36)
             {
                 var unitsMap = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "niner", "one zero", "one one", "one two", "one three", "one four", "one five", "one six", "one seven", "one eight", "one niner", "two zero", "two one", "two two", "two three", "two four", "two five", "two six", "two seven", "two eight", "two niner", "three zero", "three one", "three two", "three three", "three four", "three five", "three six" };
 
-                words = unitsMap[number];
+                words += unitsMap[number];
             }
 
             string ident;

@@ -320,9 +320,11 @@ namespace Vatsim.Vatis.Client.Atis
             input = Regex.Replace(input, @"\bTWYS ([A-Z]{1,2}[0-9]{0,2})\b", m => $"TWYS { m.Groups[1].Value.ConvertAlphaNumericToWordGroup() }");
 
             // parse runways
-            input = Regex.Replace(input, @"\b(RY|RWY|RWYS)?\s?([0-9]{1,2})([LRC]?)\b", m => StringUtils.RwyNumbersToWords(int.Parse(m.Groups[2].Value), m.Groups[3].Value,
-                (!string.IsNullOrEmpty(m.Groups[1].Value) ? true : false),
-                (!string.IsNullOrEmpty(m.Groups[1].Value) && m.Groups[1].Value == "RWYS") ? true : false));
+            input = Regex.Replace(input, @"\b(RY|RWY|RWYS)?\s?([0-9]{1,2})([LRC]?)\b", m =>
+            StringUtils.RwyNumbersToWords(int.Parse(m.Groups[2].Value), m.Groups[3].Value,
+                prefix: !string.IsNullOrEmpty(m.Groups[1].Value),
+                plural: !string.IsNullOrEmpty(m.Groups[1].Value) && m.Groups[1].Value == "RWYS",
+                leadingZero: !composite.UseFaaFormat));
 
             // user defined contractions
             foreach (var x in composite.Contractions)
