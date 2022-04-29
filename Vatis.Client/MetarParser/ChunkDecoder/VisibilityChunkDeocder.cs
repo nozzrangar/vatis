@@ -57,6 +57,7 @@ namespace MetarDecoder
                         visibility.MinimumVisibilityDirection = found[6].Value;
                     }
                     visibility.NDV = !string.IsNullOrEmpty(found[3].Value);
+                    visibility.RawValue = found[2].Value;
                 }
                 else
                 {

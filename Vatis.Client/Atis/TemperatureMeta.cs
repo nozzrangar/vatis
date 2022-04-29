@@ -1,6 +1,7 @@
 ﻿using MetarDecoder;
 using System;
 using Vatsim.Vatis.Client.Common;
+using Vatsim.Vatis.Client.Config;
 
 namespace Vatsim.Vatis.Client.Atis
 {

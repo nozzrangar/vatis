@@ -1,6 +1,5 @@
 ﻿using Appccelerate.EventBroker;
 using Newtonsoft.Json;
-using NLog.Layouts;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -46,6 +45,11 @@ namespace Vatsim.Vatis.Client
         private bool mExternalDepartureChanged = false;
         private bool mExternalApproachesChanged = false;
         private bool mExternalRemarksChanged = false;
+        private bool mPrefixNotamsChanged = false;
+        private bool mTransitionLevelPrefixChanged = false;
+        private bool mConvertMetricChanged = false;
+        private bool mSurfaceWindPrefixChanged = false;
+        private bool mVisibilitySuffixChanged = false;
 
         [EventPublication(EventTopics.RefreshAtisComposites)]
         public event EventHandler RefreshAtisComposites;
@@ -125,6 +129,11 @@ namespace Vatsim.Vatis.Client
 
             chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
             chkExternalAtisGenerator.Checked = mCurrentComposite.UseExternalAtisGenerator;
+            chkPrefixNotams.Checked = mCurrentComposite.UseNotamPrefix;
+            chkTransitionLevelPrefix.Checked = mCurrentComposite.UseTransitionLevelPrefix;
+            chkConvertMetric.Checked = mCurrentComposite.UseMetricUnits;
+            chkVisibilitySuffix.Checked = mCurrentComposite.UseVisibilitySuffix;
+            chkSurfaceWindPrefix.Checked = mCurrentComposite.UseSurfaceWindPrefix;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -217,6 +226,8 @@ namespace Vatsim.Vatis.Client
             {
                 pageTransitionLevel.SetVisible(true);
             }
+
+            ToggleNonFaaOptions();
         }
 
         private void TreeMenu_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -296,7 +307,8 @@ namespace Vatsim.Vatis.Client
                     {
                         Identifier = dlg.Identifier,
                         Name = dlg.CompositeName,
-                        AtisType = dlg.Type
+                        AtisType = dlg.Type,
+                        UseFaaFormat = dlg.Identifier.StartsWith("K") && dlg.Identifier.StartsWith("P"),
                     };
 
                     mAppConfig.CurrentProfile.Composites.Add(composite);
@@ -732,6 +744,36 @@ namespace Vatsim.Vatis.Client
                 mExternalRemarksChanged = false;
             }
 
+            if (mPrefixNotamsChanged)
+            {
+                mCurrentComposite.UseNotamPrefix = chkPrefixNotams.Checked;
+                mPrefixNotamsChanged = false;
+            }
+
+            if (mTransitionLevelPrefixChanged)
+            {
+                mCurrentComposite.UseTransitionLevelPrefix = chkTransitionLevelPrefix.Checked;
+                mTransitionLevelPrefixChanged = false;
+            }
+
+            if (mConvertMetricChanged)
+            {
+                mCurrentComposite.UseMetricUnits = chkConvertMetric.Checked;
+                mConvertMetricChanged = false;
+            }
+
+            if (mSurfaceWindPrefixChanged)
+            {
+                mCurrentComposite.UseSurfaceWindPrefix = chkSurfaceWindPrefix.Checked;
+                mSurfaceWindPrefixChanged = false;
+            }
+
+            if (mVisibilitySuffixChanged)
+            {
+                mCurrentComposite.UseVisibilitySuffix = chkVisibilitySuffix.Checked;
+                mVisibilitySuffixChanged = false;
+            }
+
             mTransitionLevelsChanged = false;
             mContractionsChanged = false;
             btnApply.Enabled = false;
@@ -841,6 +883,8 @@ namespace Vatsim.Vatis.Client
 
             if (!chkFaaFormat.Focused)
                 return;
+
+            ToggleNonFaaOptions();
 
             if (chkFaaFormat.Checked != mCurrentComposite.UseFaaFormat)
             {
@@ -1065,12 +1109,6 @@ namespace Vatsim.Vatis.Client
                 mIdsEndpointChanged = false;
                 btnApply.Enabled = false;
             }
-        }
-
-        public bool IsValidUrl(string value)
-        {
-            var pattern = new Regex(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$");
-            return pattern.IsMatch(value.Trim());
         }
 
         private void btnNewPreset_Click(object sender, EventArgs e)
@@ -1906,6 +1944,140 @@ namespace Vatsim.Vatis.Client
             }
         }
 
+        private void txtMetar_TextChanged(object sender, EventArgs e)
+        {
+            btnTest.Enabled = !string.IsNullOrEmpty(txtMetar.Text);
+        }
+
+        private void chkPrefixNotams_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkPrefixNotams.Focused)
+                return;
+
+            if (chkPrefixNotams.Checked != mCurrentComposite.UseNotamPrefix)
+            {
+                mPrefixNotamsChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mPrefixNotamsChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void chkTransitionLevelPrefix_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkTransitionLevelPrefix.Focused)
+                return;
+
+            if (chkTransitionLevelPrefix.Checked != mCurrentComposite.UseTransitionLevelPrefix)
+            {
+                mTransitionLevelPrefixChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mTransitionLevelPrefixChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void chkConvertMetric_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkConvertMetric.Focused)
+                return;
+
+            if (chkConvertMetric.Checked != mCurrentComposite.UseMetricUnits)
+            {
+                mConvertMetricChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mConvertMetricChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void chkSurfaceWindPrefix_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkSurfaceWindPrefix.Focused)
+                return;
+
+            if (chkSurfaceWindPrefix.Checked != mCurrentComposite.UseSurfaceWindPrefix)
+            {
+                mSurfaceWindPrefixChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mSurfaceWindPrefixChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void chkVisibilitySuffix_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkVisibilitySuffix.Focused)
+                return;
+
+            if (chkVisibilitySuffix.Checked != mCurrentComposite.UseVisibilitySuffix)
+            {
+                mVisibilitySuffixChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mVisibilitySuffixChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
+        private void ToggleNonFaaOptions()
+        {
+            if (chkFaaFormat.Checked)
+            {
+                chkConvertMetric.Checked = false;
+                chkConvertMetric.Enabled = false;
+                mConvertMetricChanged = true;
+
+                chkTransitionLevelPrefix.Checked = false;
+                chkTransitionLevelPrefix.Enabled = false;
+                mTransitionLevelPrefixChanged = true;
+
+                chkSurfaceWindPrefix.Checked = false;
+                chkSurfaceWindPrefix.Enabled = false;
+                mSurfaceWindPrefixChanged = true;
+
+                chkVisibilitySuffix.Checked = false;
+                chkVisibilitySuffix.Enabled = false;
+                mVisibilitySuffixChanged = true;
+            }
+            else
+            {
+                chkConvertMetric.Enabled = true;
+                chkTransitionLevelPrefix.Enabled = true;
+                chkSurfaceWindPrefix.Enabled = true;
+                chkVisibilitySuffix.Enabled = true;
+            }
+        }
+
         private static string RandomLetter()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1913,9 +2085,10 @@ namespace Vatsim.Vatis.Client
             return new string(Enumerable.Range(1, 1).Select(_ => chars[random.Next(chars.Length)]).ToArray());
         }
 
-        private void txtMetar_TextChanged(object sender, EventArgs e)
+        public bool IsValidUrl(string value)
         {
-            btnTest.Enabled = !string.IsNullOrEmpty(txtMetar.Text);
+            var pattern = new Regex(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$");
+            return pattern.IsMatch(value.Trim());
         }
     }
 }

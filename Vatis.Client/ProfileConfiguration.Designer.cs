@@ -34,6 +34,33 @@ namespace Vatsim.Vatis.Client
             this.TlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.mainTabControl = new System.Windows.Forms.TabControl();
+            this.pageConfiguration = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.pageGeneral = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
+            this.observationTime = new System.Windows.Forms.NumericUpDown();
+            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
+            this.ddlVoices = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.typeCombined = new System.Windows.Forms.RadioButton();
+            this.typeDeparture = new System.Windows.Forms.RadioButton();
+            this.typeArrival = new System.Windows.Forms.RadioButton();
+            this.txtIdsEndpoint = new System.Windows.Forms.TextBox();
+            this.chkObservationTime = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.chkMagneticVar = new System.Windows.Forms.CheckBox();
+            this.magneticVar = new System.Windows.Forms.NumericUpDown();
+            this.pageFormat = new System.Windows.Forms.TabPage();
+            this.chkVisibilitySuffix = new System.Windows.Forms.CheckBox();
+            this.chkSurfaceWindPrefix = new System.Windows.Forms.CheckBox();
+            this.chkConvertMetric = new System.Windows.Forms.CheckBox();
+            this.chkTransitionLevelPrefix = new System.Windows.Forms.CheckBox();
+            this.chkPrefixNotams = new System.Windows.Forms.CheckBox();
+            this.chkFaaFormat = new System.Windows.Forms.CheckBox();
+            this.chkExternalAtisGenerator = new System.Windows.Forms.CheckBox();
             this.pagePresets = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -49,25 +76,6 @@ namespace Vatsim.Vatis.Client
             this.gridContractions = new System.Windows.Forms.DataGridView();
             this.ColumnFind = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnReplace = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pageConfiguration = new System.Windows.Forms.TabPage();
-            this.chkExternalAtisGenerator = new System.Windows.Forms.CheckBox();
-            this.chkFaaFormat = new System.Windows.Forms.CheckBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.typeCombined = new System.Windows.Forms.RadioButton();
-            this.typeDeparture = new System.Windows.Forms.RadioButton();
-            this.typeArrival = new System.Windows.Forms.RadioButton();
-            this.label4 = new System.Windows.Forms.Label();
-            this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.observationTime = new System.Windows.Forms.NumericUpDown();
-            this.chkObservationTime = new System.Windows.Forms.CheckBox();
-            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
-            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
-            this.ddlVoices = new System.Windows.Forms.ComboBox();
-            this.txtIdsEndpoint = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.chkMagneticVar = new System.Windows.Forms.CheckBox();
-            this.magneticVar = new System.Windows.Forms.NumericUpDown();
             this.pageExternalAtis = new System.Windows.Forms.TabPage();
             this.txtSelectedPreset = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -90,11 +98,13 @@ namespace Vatsim.Vatis.Client
             this.label6 = new System.Windows.Forms.Label();
             this.pageTransitionLevel = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnDeleteTransitionLevel = new System.Windows.Forms.Button();
             this.gridTransitionLevels = new System.Windows.Forms.DataGridView();
             this.low = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.high = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.transitionLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnDeleteTransitionLevel = new System.Windows.Forms.Button();
             this.btnManageComposite = new System.Windows.Forms.Button();
             this.ctxOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxNew = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,21 +131,25 @@ namespace Vatsim.Vatis.Client
             this.TlpMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.mainTabControl.SuspendLayout();
+            this.pageConfiguration.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.pageGeneral.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
+            this.flowLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
+            this.pageFormat.SuspendLayout();
             this.pagePresets.SuspendLayout();
             this.panel2.SuspendLayout();
             this.pageContractions.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).BeginInit();
-            this.pageConfiguration.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
             this.pageExternalAtis.SuspendLayout();
             this.groupTest.SuspendLayout();
             this.tlpVariables.SuspendLayout();
             this.pageTransitionLevel.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridTransitionLevels)).BeginInit();
+            this.panel3.SuspendLayout();
             this.ctxOptions.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelCompositeList.SuspendLayout();
@@ -195,6 +209,366 @@ namespace Vatsim.Vatis.Client
             this.mainTabControl.SelectedIndex = 0;
             this.mainTabControl.Size = new System.Drawing.Size(718, 390);
             this.mainTabControl.TabIndex = 1;
+            // 
+            // pageConfiguration
+            // 
+            this.pageConfiguration.Controls.Add(this.tabControl1);
+            this.pageConfiguration.Location = new System.Drawing.Point(4, 24);
+            this.pageConfiguration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pageConfiguration.Name = "pageConfiguration";
+            this.pageConfiguration.Padding = new System.Windows.Forms.Padding(15);
+            this.pageConfiguration.Size = new System.Drawing.Size(710, 362);
+            this.pageConfiguration.TabIndex = 2;
+            this.pageConfiguration.Text = "Configuration";
+            this.pageConfiguration.UseVisualStyleBackColor = true;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.pageGeneral);
+            this.tabControl1.Controls.Add(this.pageFormat);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(15, 15);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(680, 332);
+            this.tabControl1.TabIndex = 44;
+            // 
+            // pageGeneral
+            // 
+            this.pageGeneral.Controls.Add(this.label3);
+            this.pageGeneral.Controls.Add(this.vhfFrequency);
+            this.pageGeneral.Controls.Add(this.label4);
+            this.pageGeneral.Controls.Add(this.radioVoiceRecorded);
+            this.pageGeneral.Controls.Add(this.observationTime);
+            this.pageGeneral.Controls.Add(this.radioTextToSpeech);
+            this.pageGeneral.Controls.Add(this.ddlVoices);
+            this.pageGeneral.Controls.Add(this.flowLayoutPanel2);
+            this.pageGeneral.Controls.Add(this.txtIdsEndpoint);
+            this.pageGeneral.Controls.Add(this.chkObservationTime);
+            this.pageGeneral.Controls.Add(this.label2);
+            this.pageGeneral.Controls.Add(this.chkMagneticVar);
+            this.pageGeneral.Controls.Add(this.magneticVar);
+            this.pageGeneral.Location = new System.Drawing.Point(4, 24);
+            this.pageGeneral.Name = "pageGeneral";
+            this.pageGeneral.Padding = new System.Windows.Forms.Padding(3);
+            this.pageGeneral.Size = new System.Drawing.Size(672, 304);
+            this.pageGeneral.TabIndex = 1;
+            this.pageGeneral.Text = "General";
+            this.pageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(40, 39);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 15);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Frequency:";
+            this.compositeTooltip.SetToolTip(this.label3, "The VHF frequency of the ATIS station.");
+            // 
+            // vhfFrequency
+            // 
+            this.vhfFrequency.Location = new System.Drawing.Point(112, 35);
+            this.vhfFrequency.Mask = "000.000";
+            this.vhfFrequency.Name = "vhfFrequency";
+            this.vhfFrequency.PromptChar = '#';
+            this.vhfFrequency.Size = new System.Drawing.Size(114, 23);
+            this.vhfFrequency.TabIndex = 16;
+            this.vhfFrequency.TextChanged += new System.EventHandler(this.vhfFrequency_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(40, 77);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 15);
+            this.label4.TabIndex = 35;
+            this.label4.Text = "ATIS Type:";
+            // 
+            // radioVoiceRecorded
+            // 
+            this.radioVoiceRecorded.AutoSize = true;
+            this.radioVoiceRecorded.Location = new System.Drawing.Point(455, 199);
+            this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioVoiceRecorded.Name = "radioVoiceRecorded";
+            this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
+            this.radioVoiceRecorded.TabIndex = 11;
+            this.radioVoiceRecorded.Text = "Voice Recorded";
+            this.compositeTooltip.SetToolTip(this.radioVoiceRecorded, "Manually voice record the ATIS using a microphone device.");
+            this.radioVoiceRecorded.UseVisualStyleBackColor = true;
+            this.radioVoiceRecorded.CheckedChanged += new System.EventHandler(this.radioVoiceRecorded_CheckedChanged);
+            // 
+            // observationTime
+            // 
+            this.observationTime.Enabled = false;
+            this.observationTime.Location = new System.Drawing.Point(218, 113);
+            this.observationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.observationTime.Name = "observationTime";
+            this.observationTime.Size = new System.Drawing.Size(74, 23);
+            this.observationTime.TabIndex = 13;
+            this.observationTime.ValueChanged += new System.EventHandler(this.observationTime_ValueChanged);
+            // 
+            // radioTextToSpeech
+            // 
+            this.radioTextToSpeech.AutoSize = true;
+            this.radioTextToSpeech.Checked = true;
+            this.radioTextToSpeech.Location = new System.Drawing.Point(43, 199);
+            this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioTextToSpeech.Name = "radioTextToSpeech";
+            this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
+            this.radioTextToSpeech.TabIndex = 10;
+            this.radioTextToSpeech.TabStop = true;
+            this.radioTextToSpeech.Text = "Text to Speech:";
+            this.compositeTooltip.SetToolTip(this.radioTextToSpeech, "Use synthesized text to speech to generate the ATIS voice.");
+            this.radioTextToSpeech.UseVisualStyleBackColor = true;
+            this.radioTextToSpeech.CheckedChanged += new System.EventHandler(this.radioTextToSpeech_CheckedChanged);
+            // 
+            // ddlVoices
+            // 
+            this.ddlVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlVoices.FormattingEnabled = true;
+            this.ddlVoices.Items.AddRange(new object[] {
+            "Default",
+            "US Male",
+            "US Female",
+            "UK Male",
+            "UK Female"});
+            this.ddlVoices.Location = new System.Drawing.Point(169, 197);
+            this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ddlVoices.Name = "ddlVoices";
+            this.ddlVoices.Size = new System.Drawing.Size(264, 23);
+            this.ddlVoices.TabIndex = 9;
+            this.ddlVoices.SelectedIndexChanged += new System.EventHandler(this.ddlVoices_SelectedIndexChanged);
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.typeCombined);
+            this.flowLayoutPanel2.Controls.Add(this.typeDeparture);
+            this.flowLayoutPanel2.Controls.Add(this.typeArrival);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(112, 73);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(235, 23);
+            this.flowLayoutPanel2.TabIndex = 37;
+            // 
+            // typeCombined
+            // 
+            this.typeCombined.AutoSize = true;
+            this.typeCombined.Location = new System.Drawing.Point(3, 3);
+            this.typeCombined.Name = "typeCombined";
+            this.typeCombined.Size = new System.Drawing.Size(81, 19);
+            this.typeCombined.TabIndex = 32;
+            this.typeCombined.TabStop = true;
+            this.typeCombined.Text = "Combined";
+            this.typeCombined.UseVisualStyleBackColor = true;
+            this.typeCombined.CheckedChanged += new System.EventHandler(this.typeCombined_CheckedChanged);
+            // 
+            // typeDeparture
+            // 
+            this.typeDeparture.AutoSize = true;
+            this.typeDeparture.Location = new System.Drawing.Point(90, 3);
+            this.typeDeparture.Name = "typeDeparture";
+            this.typeDeparture.Size = new System.Drawing.Size(77, 19);
+            this.typeDeparture.TabIndex = 33;
+            this.typeDeparture.TabStop = true;
+            this.typeDeparture.Text = "Departure";
+            this.typeDeparture.UseVisualStyleBackColor = true;
+            this.typeDeparture.CheckedChanged += new System.EventHandler(this.typeDeparture_CheckedChanged);
+            // 
+            // typeArrival
+            // 
+            this.typeArrival.AutoSize = true;
+            this.typeArrival.Location = new System.Drawing.Point(173, 3);
+            this.typeArrival.Name = "typeArrival";
+            this.typeArrival.Size = new System.Drawing.Size(59, 19);
+            this.typeArrival.TabIndex = 34;
+            this.typeArrival.TabStop = true;
+            this.typeArrival.Text = "Arrival";
+            this.typeArrival.UseVisualStyleBackColor = true;
+            this.typeArrival.CheckedChanged += new System.EventHandler(this.typeArrival_CheckedChanged);
+            // 
+            // txtIdsEndpoint
+            // 
+            this.txtIdsEndpoint.Location = new System.Drawing.Point(136, 237);
+            this.txtIdsEndpoint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtIdsEndpoint.Name = "txtIdsEndpoint";
+            this.txtIdsEndpoint.Size = new System.Drawing.Size(438, 23);
+            this.txtIdsEndpoint.TabIndex = 7;
+            this.txtIdsEndpoint.TextChanged += new System.EventHandler(this.txtIdsEndpoint_TextChanged);
+            // 
+            // chkObservationTime
+            // 
+            this.chkObservationTime.AutoSize = true;
+            this.chkObservationTime.Location = new System.Drawing.Point(43, 115);
+            this.chkObservationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkObservationTime.Name = "chkObservationTime";
+            this.chkObservationTime.Size = new System.Drawing.Size(160, 19);
+            this.chkObservationTime.TabIndex = 12;
+            this.chkObservationTime.Text = "Offical Observation Time:";
+            this.compositeTooltip.SetToolTip(this.chkObservationTime, resources.GetString("chkObservationTime.ToolTip"));
+            this.chkObservationTime.UseVisualStyleBackColor = true;
+            this.chkObservationTime.CheckedChanged += new System.EventHandler(this.chkObservationTime_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(40, 241);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 15);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "IDS Endpoint:";
+            this.compositeTooltip.SetToolTip(this.label2, "Specify the URL endpoint of an IDS. \r\nWhen an ATIS update occurs, vATIS will post" +
+        " the update to the IDS to automatically update it.");
+            // 
+            // chkMagneticVar
+            // 
+            this.chkMagneticVar.AutoSize = true;
+            this.chkMagneticVar.Location = new System.Drawing.Point(43, 157);
+            this.chkMagneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkMagneticVar.Name = "chkMagneticVar";
+            this.chkMagneticVar.Size = new System.Drawing.Size(128, 19);
+            this.chkMagneticVar.TabIndex = 4;
+            this.chkMagneticVar.Text = "Magnetic Variation:";
+            this.compositeTooltip.SetToolTip(this.chkMagneticVar, "Add or subtract the specified number of degrees from the wind direction.");
+            this.chkMagneticVar.UseVisualStyleBackColor = true;
+            this.chkMagneticVar.CheckedChanged += new System.EventHandler(this.chkMagneticVar_CheckedChanged);
+            // 
+            // magneticVar
+            // 
+            this.magneticVar.Enabled = false;
+            this.magneticVar.Location = new System.Drawing.Point(190, 155);
+            this.magneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.magneticVar.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.magneticVar.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+            this.magneticVar.Name = "magneticVar";
+            this.magneticVar.Size = new System.Drawing.Size(79, 23);
+            this.magneticVar.TabIndex = 1;
+            this.magneticVar.ValueChanged += new System.EventHandler(this.magneticVar_ValueChanged);
+            // 
+            // pageFormat
+            // 
+            this.pageFormat.Controls.Add(this.chkVisibilitySuffix);
+            this.pageFormat.Controls.Add(this.chkSurfaceWindPrefix);
+            this.pageFormat.Controls.Add(this.chkConvertMetric);
+            this.pageFormat.Controls.Add(this.chkTransitionLevelPrefix);
+            this.pageFormat.Controls.Add(this.chkPrefixNotams);
+            this.pageFormat.Controls.Add(this.chkFaaFormat);
+            this.pageFormat.Controls.Add(this.chkExternalAtisGenerator);
+            this.pageFormat.Location = new System.Drawing.Point(4, 24);
+            this.pageFormat.Name = "pageFormat";
+            this.pageFormat.Padding = new System.Windows.Forms.Padding(3);
+            this.pageFormat.Size = new System.Drawing.Size(672, 304);
+            this.pageFormat.TabIndex = 0;
+            this.pageFormat.Text = "Formatting";
+            this.pageFormat.UseVisualStyleBackColor = true;
+            // 
+            // chkVisibilitySuffix
+            // 
+            this.chkVisibilitySuffix.AutoSize = true;
+            this.chkVisibilitySuffix.Enabled = false;
+            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 215);
+            this.chkVisibilitySuffix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkVisibilitySuffix.Name = "chkVisibilitySuffix";
+            this.chkVisibilitySuffix.Size = new System.Drawing.Size(333, 19);
+            this.chkVisibilitySuffix.TabIndex = 48;
+            this.chkVisibilitySuffix.Text = "Append \"meters/kilometers\" to spoken prevailing visibility";
+            this.compositeTooltip.SetToolTip(this.chkVisibilitySuffix, "Appends \"meters/kilometers\" to the spoken prevailing visibility value (e.g. \"visi" +
+        "bility more than one zero kilometers\")");
+            this.chkVisibilitySuffix.UseVisualStyleBackColor = true;
+            this.chkVisibilitySuffix.CheckedChanged += new System.EventHandler(this.chkVisibilitySuffix_CheckedChanged);
+            // 
+            // chkSurfaceWindPrefix
+            // 
+            this.chkSurfaceWindPrefix.AutoSize = true;
+            this.chkSurfaceWindPrefix.Enabled = false;
+            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 179);
+            this.chkSurfaceWindPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkSurfaceWindPrefix.Name = "chkSurfaceWindPrefix";
+            this.chkSurfaceWindPrefix.Size = new System.Drawing.Size(234, 19);
+            this.chkSurfaceWindPrefix.TabIndex = 47;
+            this.chkSurfaceWindPrefix.Text = "Prepend \"surface wind\" to spoken wind";
+            this.compositeTooltip.SetToolTip(this.chkSurfaceWindPrefix, "Prepends \"surface wind\" to the spoken wind (e.g. \"surface wind 270 degrees at 10\"" +
+        ").");
+            this.chkSurfaceWindPrefix.UseVisualStyleBackColor = true;
+            this.chkSurfaceWindPrefix.CheckedChanged += new System.EventHandler(this.chkSurfaceWindPrefix_CheckedChanged);
+            // 
+            // chkConvertMetric
+            // 
+            this.chkConvertMetric.AutoSize = true;
+            this.chkConvertMetric.Location = new System.Drawing.Point(40, 251);
+            this.chkConvertMetric.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkConvertMetric.Name = "chkConvertMetric";
+            this.chkConvertMetric.Size = new System.Drawing.Size(217, 19);
+            this.chkConvertMetric.TabIndex = 46;
+            this.chkConvertMetric.Text = "Convert cloud layer height to metric";
+            this.compositeTooltip.SetToolTip(this.chkConvertMetric, "Converts the cloud layer height from feet to meters.");
+            this.chkConvertMetric.UseVisualStyleBackColor = true;
+            this.chkConvertMetric.CheckedChanged += new System.EventHandler(this.chkConvertMetric_CheckedChanged);
+            // 
+            // chkTransitionLevelPrefix
+            // 
+            this.chkTransitionLevelPrefix.AutoSize = true;
+            this.chkTransitionLevelPrefix.Enabled = false;
+            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 143);
+            this.chkTransitionLevelPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkTransitionLevelPrefix.Name = "chkTransitionLevelPrefix";
+            this.chkTransitionLevelPrefix.Size = new System.Drawing.Size(316, 19);
+            this.chkTransitionLevelPrefix.TabIndex = 45;
+            this.chkTransitionLevelPrefix.Text = "Prepend \"flight level\" to spoken transition level altitude";
+            this.compositeTooltip.SetToolTip(this.chkTransitionLevelPrefix, "Prepends \"flight level\" to the spoken transition level altitude (e.g. \"transition" +
+        " level, flight level 70\")");
+            this.chkTransitionLevelPrefix.UseVisualStyleBackColor = true;
+            this.chkTransitionLevelPrefix.CheckedChanged += new System.EventHandler(this.chkTransitionLevelPrefix_CheckedChanged);
+            // 
+            // chkPrefixNotams
+            // 
+            this.chkPrefixNotams.AutoSize = true;
+            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 107);
+            this.chkPrefixNotams.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkPrefixNotams.Name = "chkPrefixNotams";
+            this.chkPrefixNotams.Size = new System.Drawing.Size(352, 19);
+            this.chkPrefixNotams.TabIndex = 44;
+            this.chkPrefixNotams.Text = "Prepend \"Notices to Airmen/Air Missions\" to spoken NOTAMs";
+            this.compositeTooltip.SetToolTip(this.chkPrefixNotams, "Prepends \"Notices to Airmen\" or \"Notices to Air Missions\" (FAA) to the spoken NOT" +
+        "AM text.");
+            this.chkPrefixNotams.UseVisualStyleBackColor = true;
+            this.chkPrefixNotams.CheckedChanged += new System.EventHandler(this.chkPrefixNotams_CheckedChanged);
+            // 
+            // chkFaaFormat
+            // 
+            this.chkFaaFormat.AutoSize = true;
+            this.chkFaaFormat.Location = new System.Drawing.Point(40, 71);
+            this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkFaaFormat.Name = "chkFaaFormat";
+            this.chkFaaFormat.Size = new System.Drawing.Size(184, 19);
+            this.chkFaaFormat.TabIndex = 38;
+            this.chkFaaFormat.Text = "Format ATIS using FAA format";
+            this.compositeTooltip.SetToolTip(this.chkFaaFormat, "Formats the ATIS using the FAA style format.");
+            this.chkFaaFormat.UseVisualStyleBackColor = true;
+            this.chkFaaFormat.CheckedChanged += new System.EventHandler(this.chkFaaFormat_CheckedChanged);
+            // 
+            // chkExternalAtisGenerator
+            // 
+            this.chkExternalAtisGenerator.AutoSize = true;
+            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 35);
+            this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
+            this.chkExternalAtisGenerator.Size = new System.Drawing.Size(310, 19);
+            this.chkExternalAtisGenerator.TabIndex = 43;
+            this.chkExternalAtisGenerator.Text = "Use external source to produce ATIS text (e.g. UniATIS)";
+            this.compositeTooltip.SetToolTip(this.chkExternalAtisGenerator, "Use an external source for producing the ATIS text (e.g. UniATIS).");
+            this.chkExternalAtisGenerator.UseVisualStyleBackColor = true;
+            this.chkExternalAtisGenerator.CheckedChanged += new System.EventHandler(this.chkExternalAtisGenerator_CheckedChanged);
             // 
             // pagePresets
             // 
@@ -382,256 +756,6 @@ namespace Vatsim.Vatis.Client
             // 
             this.ColumnReplace.HeaderText = "Spoken";
             this.ColumnReplace.Name = "ColumnReplace";
-            // 
-            // pageConfiguration
-            // 
-            this.pageConfiguration.Controls.Add(this.chkExternalAtisGenerator);
-            this.pageConfiguration.Controls.Add(this.chkFaaFormat);
-            this.pageConfiguration.Controls.Add(this.flowLayoutPanel2);
-            this.pageConfiguration.Controls.Add(this.label4);
-            this.pageConfiguration.Controls.Add(this.vhfFrequency);
-            this.pageConfiguration.Controls.Add(this.label3);
-            this.pageConfiguration.Controls.Add(this.observationTime);
-            this.pageConfiguration.Controls.Add(this.chkObservationTime);
-            this.pageConfiguration.Controls.Add(this.radioVoiceRecorded);
-            this.pageConfiguration.Controls.Add(this.radioTextToSpeech);
-            this.pageConfiguration.Controls.Add(this.ddlVoices);
-            this.pageConfiguration.Controls.Add(this.txtIdsEndpoint);
-            this.pageConfiguration.Controls.Add(this.label2);
-            this.pageConfiguration.Controls.Add(this.chkMagneticVar);
-            this.pageConfiguration.Controls.Add(this.magneticVar);
-            this.pageConfiguration.Location = new System.Drawing.Point(4, 24);
-            this.pageConfiguration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pageConfiguration.Name = "pageConfiguration";
-            this.pageConfiguration.Size = new System.Drawing.Size(710, 362);
-            this.pageConfiguration.TabIndex = 2;
-            this.pageConfiguration.Text = "Configuration";
-            this.pageConfiguration.UseVisualStyleBackColor = true;
-            // 
-            // chkExternalAtisGenerator
-            // 
-            this.chkExternalAtisGenerator.AutoSize = true;
-            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(26, 145);
-            this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
-            this.chkExternalAtisGenerator.Size = new System.Drawing.Size(170, 19);
-            this.chkExternalAtisGenerator.TabIndex = 43;
-            this.chkExternalAtisGenerator.Text = "Use External ATIS Generator";
-            this.compositeTooltip.SetToolTip(this.chkExternalAtisGenerator, "Use an external source for producing the ATIS text (e.g. UniATIS).");
-            this.chkExternalAtisGenerator.UseVisualStyleBackColor = true;
-            this.chkExternalAtisGenerator.CheckedChanged += new System.EventHandler(this.chkExternalAtisGenerator_CheckedChanged);
-            // 
-            // chkFaaFormat
-            // 
-            this.chkFaaFormat.AutoSize = true;
-            this.chkFaaFormat.Location = new System.Drawing.Point(26, 105);
-            this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkFaaFormat.Name = "chkFaaFormat";
-            this.chkFaaFormat.Size = new System.Drawing.Size(130, 19);
-            this.chkFaaFormat.TabIndex = 38;
-            this.chkFaaFormat.Text = "FAA Formatted ATIS";
-            this.compositeTooltip.SetToolTip(this.chkFaaFormat, "Add or subtract the specified number of degrees from the wind direction.");
-            this.chkFaaFormat.UseVisualStyleBackColor = true;
-            this.chkFaaFormat.CheckedChanged += new System.EventHandler(this.chkFaaFormat_CheckedChanged);
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.typeCombined);
-            this.flowLayoutPanel2.Controls.Add(this.typeDeparture);
-            this.flowLayoutPanel2.Controls.Add(this.typeArrival);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(89, 65);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(235, 23);
-            this.flowLayoutPanel2.TabIndex = 37;
-            // 
-            // typeCombined
-            // 
-            this.typeCombined.AutoSize = true;
-            this.typeCombined.Location = new System.Drawing.Point(3, 3);
-            this.typeCombined.Name = "typeCombined";
-            this.typeCombined.Size = new System.Drawing.Size(81, 19);
-            this.typeCombined.TabIndex = 32;
-            this.typeCombined.TabStop = true;
-            this.typeCombined.Text = "Combined";
-            this.typeCombined.UseVisualStyleBackColor = true;
-            this.typeCombined.CheckedChanged += new System.EventHandler(this.typeCombined_CheckedChanged);
-            // 
-            // typeDeparture
-            // 
-            this.typeDeparture.AutoSize = true;
-            this.typeDeparture.Location = new System.Drawing.Point(90, 3);
-            this.typeDeparture.Name = "typeDeparture";
-            this.typeDeparture.Size = new System.Drawing.Size(77, 19);
-            this.typeDeparture.TabIndex = 33;
-            this.typeDeparture.TabStop = true;
-            this.typeDeparture.Text = "Departure";
-            this.typeDeparture.UseVisualStyleBackColor = true;
-            this.typeDeparture.CheckedChanged += new System.EventHandler(this.typeDeparture_CheckedChanged);
-            // 
-            // typeArrival
-            // 
-            this.typeArrival.AutoSize = true;
-            this.typeArrival.Location = new System.Drawing.Point(173, 3);
-            this.typeArrival.Name = "typeArrival";
-            this.typeArrival.Size = new System.Drawing.Size(59, 19);
-            this.typeArrival.TabIndex = 34;
-            this.typeArrival.TabStop = true;
-            this.typeArrival.Text = "Arrival";
-            this.typeArrival.UseVisualStyleBackColor = true;
-            this.typeArrival.CheckedChanged += new System.EventHandler(this.typeArrival_CheckedChanged);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 69);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 15);
-            this.label4.TabIndex = 35;
-            this.label4.Text = "ATIS Type:";
-            // 
-            // vhfFrequency
-            // 
-            this.vhfFrequency.Location = new System.Drawing.Point(95, 30);
-            this.vhfFrequency.Mask = "000.000";
-            this.vhfFrequency.Name = "vhfFrequency";
-            this.vhfFrequency.PromptChar = '#';
-            this.vhfFrequency.Size = new System.Drawing.Size(114, 23);
-            this.vhfFrequency.TabIndex = 16;
-            this.vhfFrequency.TextChanged += new System.EventHandler(this.vhfFrequency_TextChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 33);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 15);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Frequency:";
-            this.compositeTooltip.SetToolTip(this.label3, "The VHF frequency of the ATIS station.");
-            // 
-            // observationTime
-            // 
-            this.observationTime.Enabled = false;
-            this.observationTime.Location = new System.Drawing.Point(201, 183);
-            this.observationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.observationTime.Name = "observationTime";
-            this.observationTime.Size = new System.Drawing.Size(74, 23);
-            this.observationTime.TabIndex = 13;
-            this.observationTime.ValueChanged += new System.EventHandler(this.observationTime_ValueChanged);
-            // 
-            // chkObservationTime
-            // 
-            this.chkObservationTime.AutoSize = true;
-            this.chkObservationTime.Location = new System.Drawing.Point(26, 185);
-            this.chkObservationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkObservationTime.Name = "chkObservationTime";
-            this.chkObservationTime.Size = new System.Drawing.Size(160, 19);
-            this.chkObservationTime.TabIndex = 12;
-            this.chkObservationTime.Text = "Offical Observation Time:";
-            this.compositeTooltip.SetToolTip(this.chkObservationTime, resources.GetString("chkObservationTime.ToolTip"));
-            this.chkObservationTime.UseVisualStyleBackColor = true;
-            this.chkObservationTime.CheckedChanged += new System.EventHandler(this.chkObservationTime_CheckedChanged);
-            // 
-            // radioVoiceRecorded
-            // 
-            this.radioVoiceRecorded.AutoSize = true;
-            this.radioVoiceRecorded.Location = new System.Drawing.Point(439, 265);
-            this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.radioVoiceRecorded.Name = "radioVoiceRecorded";
-            this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
-            this.radioVoiceRecorded.TabIndex = 11;
-            this.radioVoiceRecorded.Text = "Voice Recorded";
-            this.compositeTooltip.SetToolTip(this.radioVoiceRecorded, "Manually voice record the ATIS using a microphone device.");
-            this.radioVoiceRecorded.UseVisualStyleBackColor = true;
-            this.radioVoiceRecorded.CheckedChanged += new System.EventHandler(this.radioVoiceRecorded_CheckedChanged);
-            // 
-            // radioTextToSpeech
-            // 
-            this.radioTextToSpeech.AutoSize = true;
-            this.radioTextToSpeech.Checked = true;
-            this.radioTextToSpeech.Location = new System.Drawing.Point(26, 265);
-            this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.radioTextToSpeech.Name = "radioTextToSpeech";
-            this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
-            this.radioTextToSpeech.TabIndex = 10;
-            this.radioTextToSpeech.TabStop = true;
-            this.radioTextToSpeech.Text = "Text to Speech:";
-            this.compositeTooltip.SetToolTip(this.radioTextToSpeech, "Use synthesized text to speech to generate the ATIS voice.");
-            this.radioTextToSpeech.UseVisualStyleBackColor = true;
-            this.radioTextToSpeech.CheckedChanged += new System.EventHandler(this.radioTextToSpeech_CheckedChanged);
-            // 
-            // ddlVoices
-            // 
-            this.ddlVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlVoices.FormattingEnabled = true;
-            this.ddlVoices.Items.AddRange(new object[] {
-            "Default",
-            "US Male",
-            "US Female",
-            "UK Male",
-            "UK Female"});
-            this.ddlVoices.Location = new System.Drawing.Point(146, 263);
-            this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ddlVoices.Name = "ddlVoices";
-            this.ddlVoices.Size = new System.Drawing.Size(264, 23);
-            this.ddlVoices.TabIndex = 9;
-            this.ddlVoices.SelectedIndexChanged += new System.EventHandler(this.ddlVoices_SelectedIndexChanged);
-            // 
-            // txtIdsEndpoint
-            // 
-            this.txtIdsEndpoint.Location = new System.Drawing.Point(119, 301);
-            this.txtIdsEndpoint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.txtIdsEndpoint.Name = "txtIdsEndpoint";
-            this.txtIdsEndpoint.Size = new System.Drawing.Size(438, 23);
-            this.txtIdsEndpoint.TabIndex = 7;
-            this.txtIdsEndpoint.TextChanged += new System.EventHandler(this.txtIdsEndpoint_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 305);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 15);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "IDS Endpoint:";
-            this.compositeTooltip.SetToolTip(this.label2, "Specify the URL endpoint of an IDS. \r\nWhen an ATIS update occurs, vATIS will post" +
-        " the update to the IDS to automatically update it.");
-            // 
-            // chkMagneticVar
-            // 
-            this.chkMagneticVar.AutoSize = true;
-            this.chkMagneticVar.Location = new System.Drawing.Point(26, 225);
-            this.chkMagneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkMagneticVar.Name = "chkMagneticVar";
-            this.chkMagneticVar.Size = new System.Drawing.Size(128, 19);
-            this.chkMagneticVar.TabIndex = 4;
-            this.chkMagneticVar.Text = "Magnetic Variation:";
-            this.compositeTooltip.SetToolTip(this.chkMagneticVar, "Add or subtract the specified number of degrees from the wind direction.");
-            this.chkMagneticVar.UseVisualStyleBackColor = true;
-            this.chkMagneticVar.CheckedChanged += new System.EventHandler(this.chkMagneticVar_CheckedChanged);
-            // 
-            // magneticVar
-            // 
-            this.magneticVar.Enabled = false;
-            this.magneticVar.Location = new System.Drawing.Point(173, 223);
-            this.magneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.magneticVar.Maximum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            0});
-            this.magneticVar.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
-            this.magneticVar.Name = "magneticVar";
-            this.magneticVar.Size = new System.Drawing.Size(79, 23);
-            this.magneticVar.TabIndex = 1;
-            this.magneticVar.ValueChanged += new System.EventHandler(this.magneticVar_ValueChanged);
             // 
             // pageExternalAtis
             // 
@@ -878,8 +1002,8 @@ namespace Vatsim.Vatis.Client
             // 
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Controls.Add(this.btnDeleteTransitionLevel, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.gridTransitionLevels, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.panel3, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -890,17 +1014,6 @@ namespace Vatsim.Vatis.Client
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(686, 338);
             this.tableLayoutPanel5.TabIndex = 3;
-            // 
-            // btnDeleteTransitionLevel
-            // 
-            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(562, 306);
-            this.btnDeleteTransitionLevel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnDeleteTransitionLevel.Name = "btnDeleteTransitionLevel";
-            this.btnDeleteTransitionLevel.Size = new System.Drawing.Size(120, 27);
-            this.btnDeleteTransitionLevel.TabIndex = 1;
-            this.btnDeleteTransitionLevel.Text = "Delete Selected";
-            this.btnDeleteTransitionLevel.UseVisualStyleBackColor = true;
-            this.btnDeleteTransitionLevel.Click += new System.EventHandler(this.btnDeleteTransitionLevel_Click);
             // 
             // gridTransitionLevels
             // 
@@ -941,6 +1054,38 @@ namespace Vatsim.Vatis.Client
             // 
             this.transitionLevel.HeaderText = "Transition Level";
             this.transitionLevel.Name = "transitionLevel";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.label13);
+            this.panel3.Controls.Add(this.btnDeleteTransitionLevel);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 303);
+            this.panel3.Margin = new System.Windows.Forms.Padding(0);
+            this.panel3.Name = "panel3";
+            this.panel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.panel3.Size = new System.Drawing.Size(686, 35);
+            this.panel3.TabIndex = 3;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 10);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(244, 15);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "Both Low and High QNH values are required.\r\n";
+            // 
+            // btnDeleteTransitionLevel
+            // 
+            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(562, 4);
+            this.btnDeleteTransitionLevel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnDeleteTransitionLevel.Name = "btnDeleteTransitionLevel";
+            this.btnDeleteTransitionLevel.Size = new System.Drawing.Size(120, 27);
+            this.btnDeleteTransitionLevel.TabIndex = 1;
+            this.btnDeleteTransitionLevel.Text = "Delete Selected";
+            this.btnDeleteTransitionLevel.UseVisualStyleBackColor = true;
+            this.btnDeleteTransitionLevel.Click += new System.EventHandler(this.btnDeleteTransitionLevel_Click);
             // 
             // btnManageComposite
             // 
@@ -1199,6 +1344,16 @@ namespace Vatsim.Vatis.Client
             this.TlpMain.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.mainTabControl.ResumeLayout(false);
+            this.pageConfiguration.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.pageGeneral.ResumeLayout(false);
+            this.pageGeneral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).EndInit();
+            this.pageFormat.ResumeLayout(false);
+            this.pageFormat.PerformLayout();
             this.pagePresets.ResumeLayout(false);
             this.pagePresets.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -1206,12 +1361,6 @@ namespace Vatsim.Vatis.Client
             this.pageContractions.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridContractions)).EndInit();
-            this.pageConfiguration.ResumeLayout(false);
-            this.pageConfiguration.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).EndInit();
             this.pageExternalAtis.ResumeLayout(false);
             this.pageExternalAtis.PerformLayout();
             this.groupTest.ResumeLayout(false);
@@ -1221,6 +1370,8 @@ namespace Vatsim.Vatis.Client
             this.pageTransitionLevel.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridTransitionLevels)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ctxOptions.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panelCompositeList.ResumeLayout(false);
@@ -1320,5 +1471,15 @@ namespace Vatsim.Vatis.Client
         private System.Windows.Forms.Button btnFetchMetar;
         private System.Windows.Forms.TextBox txtExternalRemarks;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage pageFormat;
+        private System.Windows.Forms.TabPage pageGeneral;
+        private System.Windows.Forms.CheckBox chkTransitionLevelPrefix;
+        private System.Windows.Forms.CheckBox chkPrefixNotams;
+        private System.Windows.Forms.CheckBox chkConvertMetric;
+        private System.Windows.Forms.CheckBox chkSurfaceWindPrefix;
+        private System.Windows.Forms.CheckBox chkVisibilitySuffix;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label13;
     }
 }

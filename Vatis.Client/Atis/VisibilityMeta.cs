@@ -2,11 +2,19 @@
 using System;
 using System.Collections.Generic;
 using Vatsim.Vatis.Client.Common;
+using Vatsim.Vatis.Client.Config;
 
 namespace Vatsim.Vatis.Client.Atis
 {
     public class VisibilityMeta : AtisMeta
     {
+        private AtisComposite mComposite;
+
+        public VisibilityMeta(AtisComposite composite)
+        {
+            mComposite = composite;
+        }
+
         public override void Parse(DecodedMetar metar)
         {
             List<string> tts = new List<string>();
@@ -26,11 +34,11 @@ namespace Vatsim.Vatis.Client.Atis
                     {
                         if (metar.Visibility.PrevailingVisibility.ActualValue > 5000)
                         {
-                            tts.Add($"Visibility {Math.Round(metar.Visibility.PrevailingVisibility.ActualValue / 1000)} kilometers");
+                            tts.Add($"Visibility {Math.Round(metar.Visibility.PrevailingVisibility.ActualValue / 1000)} {(mComposite.UseVisibilitySuffix ? "kilometers" : "")}");
                         }
                         else
                         {
-                            tts.Add($"Visibility {Convert.ToInt32(metar.Visibility.PrevailingVisibility.ActualValue).NumbersToWords()} meters");
+                            tts.Add($"Visibility {Convert.ToInt32(metar.Visibility.PrevailingVisibility.ActualValue).NumbersToWords()} {(mComposite.UseVisibilitySuffix ? "meters" : "")}");
                         }
                     }
                 }
@@ -145,10 +153,7 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
             TextToSpeech = string.Join(", ", tts).TrimEnd(',').TrimEnd(' ');
-            if (metar.Visibility != null)
-            {
-                Acars = metar.Visibility.RawValue;
-            }
+            Acars = metar?.Visibility?.RawValue ?? "";
         }
     }
 }

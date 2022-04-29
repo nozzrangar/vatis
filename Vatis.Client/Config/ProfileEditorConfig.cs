@@ -35,13 +35,26 @@ namespace Vatsim.Vatis.Client.Config
 
         public void LoadConfig(string path)
         {
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            JsonConvert.PopulateObject(sr.ReadToEnd(), this);
+
+            ValidateConfig();
+        }
+
+        private void ValidateConfig()
+        {
+            foreach (var composite in Composites)
             {
-                using (var sr = new StreamReader(fs))
+                if (composite.UseFaaFormat)
                 {
-                    JsonConvert.PopulateObject(sr.ReadToEnd(), this);
+                    composite.UseTransitionLevelPrefix = false;
+                    composite.UseMetricUnits = false;
+                    composite.UseSurfaceWindPrefix = false;
+                    composite.UseVisibilitySuffix = false;
                 }
             }
+            SaveConfig();
         }
 
         public void SaveConfig()

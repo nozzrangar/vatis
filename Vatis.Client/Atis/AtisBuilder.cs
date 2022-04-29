@@ -31,65 +31,6 @@ namespace Vatsim.Vatis.Client.Atis
             mAudioManager = audioManager;
         }
 
-        public void GenerateAcarsText(AtisComposite composite)
-        {
-            if (composite == null)
-            {
-                throw new Exception("Composite is null");
-            }
-
-            if (composite.CurrentPreset == null)
-            {
-                throw new Exception("CurrentPreset is null");
-            }
-
-            if (composite.DecodedMetar == null)
-            {
-                throw new Exception("DecodedMetar is null");
-            }
-
-            mAirport = mNavData.GetAirport(composite.Identifier);
-            if (mAirport == null)
-            {
-                throw new Exception($"{composite.Identifier} not found in airport database.");
-            }
-
-            DecodedMetar metar;
-            string atisLetter;
-            List<Variable> variables;
-            ParseMetar(composite, out metar, out atisLetter, out variables);
-
-            StringBuilder acarsText = new StringBuilder(composite.CurrentPreset.Template);
-
-            foreach (var variable in variables)
-            {
-                acarsText.Replace($"[{variable.Find}]", variable.TextReplace);
-                acarsText.Replace($"${variable.Find}", variable.TextReplace);
-
-                if (variable.Aliases != null)
-                {
-                    foreach (var alias in variable.Aliases)
-                    {
-                        acarsText.Replace($"[{alias}]", variable.TextReplace);
-                        acarsText.Replace($"${alias}", variable.TextReplace);
-                    }
-                }
-            }
-
-            if (!metar.IsInternational)
-            {
-                acarsText.Append($" ...ADVS YOU HAVE INFO { composite.CurrentAtisLetter }.");
-            }
-
-            var str = acarsText.ToString();
-            str = Regex.Replace(str, @"\s+", " ");
-            str = Regex.Replace(str, @"(?<=\*)(-?[\,0-9]+)", "$1");
-            str = Regex.Replace(str, @"(?<=\#)(-?[\,0-9]+)", "$1");
-            str = Regex.Replace(str, @"(?<=\+)([A-Z]{3})", "$1");
-            str = Regex.Replace(str, @"(?<=\+)([A-Z]{4})", "$1");
-            composite.AcarsText = str.ToUpper();
-        }
-
         public async Task BuildAtisAsync(AtisComposite composite, CancellationToken cancellationToken)
         {
             if (composite == null)
@@ -137,46 +78,17 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
-            if (!metar.IsInternational)
+            if (composite.UseFaaFormat)
             {
                 voiceString.Append($"ADVISE ON INITIAL CONTACT, YOU HAVE INFORMATION {atisLetter}.");
             }
 
-            // Build Text ATIS
-
-            StringBuilder acarsText = new StringBuilder(composite.CurrentPreset.Template);
-
-            foreach (var variable in variables)
-            {
-                acarsText.Replace($"[{variable.Find}]", variable.TextReplace);
-                acarsText.Replace($"${variable.Find}", variable.TextReplace);
-
-                if (variable.Aliases != null)
-                {
-                    foreach (var alias in variable.Aliases)
-                    {
-                        acarsText.Replace($"[{alias}]", variable.TextReplace);
-                        acarsText.Replace($"${alias}", variable.TextReplace);
-                    }
-                }
-            }
-
-            if (!metar.IsInternational)
-            {
-                acarsText.Append($" ...ADVS YOU HAVE INFO { composite.CurrentAtisLetter }.");
-            }
-
-            var str = acarsText.ToString();
-            str = Regex.Replace(str, @"\s+", " ");
-            str = Regex.Replace(str, @"(?<=\*)(-?[\,0-9]+)", "$1");
-            str = Regex.Replace(str, @"(?<=\#)(-?[\,0-9]+)", "$1");
-            str = Regex.Replace(str, @"(?<=\+)([A-Z]{3})", "$1");
-            str = Regex.Replace(str, @"(?<=\+)([A-Z]{4})", "$1");
-            composite.AcarsText = str.ToUpper();
+            GenerateAcarsText(composite);
 
             if (composite.AtisVoice.UseTextToSpeech)
             {
                 var tts = FormatForTextToSpeech(voiceString.ToString().ToUpper(), composite);
+                System.Diagnostics.Debug.WriteLine(tts);
                 try
                 {
                     await Task.Run(async () =>
@@ -208,15 +120,75 @@ namespace Vatsim.Vatis.Client.Atis
             }
         }
 
+        public void GenerateAcarsText(AtisComposite composite)
+        {
+            if (composite == null)
+            {
+                throw new Exception("Composite is null");
+            }
+
+            if (composite.CurrentPreset == null)
+            {
+                throw new Exception("CurrentPreset is null");
+            }
+
+            if (composite.DecodedMetar == null)
+            {
+                throw new Exception("DecodedMetar is null");
+            }
+
+            mAirport = mNavData.GetAirport(composite.Identifier);
+            if (mAirport == null)
+            {
+                throw new Exception($"{composite.Identifier} not found in airport database.");
+            }
+
+            DecodedMetar metar;
+            string atisLetter;
+            List<Variable> variables;
+            ParseMetar(composite, out metar, out atisLetter, out variables);
+
+            var acarsText = composite.CurrentPreset.Template;
+
+            foreach (var variable in variables)
+            {
+                acarsText = acarsText.Replace($"[{variable.Find}]", variable.TextReplace);
+                acarsText = acarsText.Replace($"${variable.Find}", variable.TextReplace);
+
+                if (variable.Aliases != null)
+                {
+                    foreach (var alias in variable.Aliases)
+                    {
+                        acarsText = acarsText.Replace($"[{alias}]", variable.TextReplace);
+                        acarsText = acarsText.Replace($"${alias}", variable.TextReplace);
+                    }
+                }
+            }
+
+            acarsText = Regex.Replace(acarsText, @"\s+(?=[.,?!])", ""); // remove extra spaces before punctuation
+            acarsText = Regex.Replace(acarsText, @"\s+", " ");
+            acarsText = Regex.Replace(acarsText, @"(?<=\*)(-?[\,0-9]+)", "$1");
+            acarsText = Regex.Replace(acarsText, @"(?<=\#)(-?[\,0-9]+)", "$1");
+            acarsText = Regex.Replace(acarsText, @"(?<=\+)([A-Z]{3})", "$1");
+            acarsText = Regex.Replace(acarsText, @"(?<=\+)([A-Z]{4})", "$1");
+
+            if (composite.UseFaaFormat)
+            {
+                acarsText += $" ...ADVS YOU HAVE INFO { composite.CurrentAtisLetter }.";
+            }
+
+            composite.AcarsText = acarsText.ToUpper();
+        }
+
         private void ParseMetar(AtisComposite composite, out DecodedMetar metar, out string atisLetter, out List<Variable> variables)
         {
             metar = composite.DecodedMetar;
             var time = DoParse(metar, new ObservationTimeMeta(composite));
             var surfaceWind = DoParse(metar, new SurfaceWindMeta(composite));
             var rvr = DoParse(metar, new RunwayVisualRangeMeta());
-            var visibility = DoParse(metar, new VisibilityMeta());
+            var visibility = DoParse(metar, new VisibilityMeta(composite));
             var presentWeather = DoParse(metar, new PresentWeatherMeta());
-            var clouds = DoParse(metar, new CloudsMeta());
+            var clouds = DoParse(metar, new CloudsMeta(composite));
             var temp = DoParse(metar, new TemperatureMeta());
             var dew = DoParse(metar, new DewpointMeta());
             var pressure = DoParse(metar, new PressureMeta());
@@ -238,26 +210,38 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
+            airportConditions = Regex.Replace(airportConditions, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
+
             var notamVoice = "";
             var notamText = "";
             if (!string.IsNullOrEmpty(composite.CurrentPreset.Notams) || composite.NotamDefinitions.Any(t => t.Enabled))
             {
-                notamVoice = metar.IsInternational ? "Notices to airmen. " : "Notices to air missions. ";
+                if (composite.UseNotamPrefix)
+                {
+                    notamVoice = composite.UseFaaFormat ? "Notices to air missions. " : "Notices to airmen. ";
+                }
+
                 if (composite.NotamsBeforeFreeText)
                 {
-                    notamText = (composite.UseFaaFormat ? "NOTAMS... " : "") + string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
+                    notamText = string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
                     notamVoice += string.Join(" ", new[] { string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)), composite.CurrentPreset.Notams });
                 }
                 else
                 {
-                    notamText = (composite.UseFaaFormat ? "NOTAMS... " : "") + string.Join(". ", new[] { composite.CurrentPreset.Notams, string.Join(" ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
+                    notamText = string.Join(". ", new[] { composite.CurrentPreset.Notams, string.Join(" ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
                     notamVoice += string.Join(" ", new[] { composite.CurrentPreset.Notams, string.Join(". ", composite.NotamDefinitions.Where(t => t.Enabled).Select(t => t.Text)) });
                 }
             }
 
+            notamText = Regex.Replace(notamText, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
+            if (composite.UseFaaFormat)
+            {
+                notamText = "NOTAMS... " + notamText;
+            }
+
             var transitionLevelVoice = "";
             var transitionLevelText = "";
-            if (metar.IsInternational)
+            if (!composite.UseFaaFormat)
             {
                 transitionLevelText = "TL N/A";
                 transitionLevelVoice = "Transition level not determined";
@@ -271,8 +255,13 @@ namespace Vatsim.Vatis.Client.Atis
 
                     if (tlValue != null)
                     {
-                        transitionLevelText = "Transition level FL " + tlValue.Altitude;
-                        transitionLevelVoice = "Transition level flight level " + tlValue.Altitude.NumberToSingular();
+                        transitionLevelText = $"Transition level" +
+                            $"{(composite.UseTransitionLevelPrefix ? " TL " : "")}" +
+                            $"{tlValue.Altitude}";
+
+                        transitionLevelVoice = composite.UseTransitionLevelPrefix
+                            ? $"Transition level, flight level {tlValue.Altitude.NumberToSingular()}"
+                            : $"Transition level {tlValue.Altitude.NumberToSingular()}";
                     }
                 }
             }
@@ -301,10 +290,14 @@ namespace Vatsim.Vatis.Client.Atis
         {
             // parse zulu times
             input = Regex.Replace(input, @"([0-9])([0-9])([0-9])([0-8])Z",
-                m => string.Format($"{ int.Parse(m.Groups[1].Value).NumberToSingular() } { int.Parse(m.Groups[2].Value).NumberToSingular() } { int.Parse(m.Groups[3].Value).NumberToSingular() } { int.Parse(m.Groups[4].Value).NumberToSingular() } zulu"));
+              m => string.Format($"{ int.Parse(m.Groups[1].Value).NumberToSingular() } " +
+                $"{ int.Parse(m.Groups[2].Value).NumberToSingular() } " +
+                $"{ int.Parse(m.Groups[3].Value).NumberToSingular() } " +
+                $"{ int.Parse(m.Groups[4].Value).NumberToSingular() } zulu"));
 
             // format vhf frequencies
-            input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value).DecimalToWordString(composite.DecodedMetar.IsInternational));
+            input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value)
+            .DecimalToWordString(!composite.UseFaaFormat));
 
             // read numbers as singular (serial) format, prefixed by # or surrounded by {}
             input = Regex.Replace(input, @"\#(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
@@ -390,13 +383,14 @@ namespace Vatsim.Vatis.Client.Atis
             input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{3})", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{4})", "$1");
+            input = Regex.Replace(input, @"\s+(?=[.,?!])", ""); // remove extra spaces before punctuation
             input = Regex.Replace(input, @"\s+", " ");
             input = Regex.Replace(input, @"\.+", ".");
             input = Regex.Replace(input, @"\s\,", ",");
             input = Regex.Replace(input, @"\&", "and");
             input = Regex.Replace(input, @"\*", "");
 
-            return input;
+            return input.ToUpper();
         }
 
         private ParsedData DoParse(DecodedMetar metar, AtisMeta meta)
@@ -405,7 +399,7 @@ namespace Vatsim.Vatis.Client.Atis
             return new ParsedData
             {
                 Acars = meta.Acars,
-                TextToSpeech = $"{meta.TextToSpeech}."
+                TextToSpeech = !string.IsNullOrEmpty(meta.TextToSpeech) ? $"{meta.TextToSpeech.TrimEnd('.')}." : ""
             };
         }
 

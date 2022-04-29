@@ -28,6 +28,37 @@ namespace Vatsim.Vatis.Client.Config
         public List<TransitionLevel> TransitionLevels { get; set; } = new List<TransitionLevel>();
         public bool UseFaaFormat { get; set; } = true;
         public bool UseExternalAtisGenerator { get; set; }
+        public bool UseNotamPrefix { get; set; } = true;
+        public bool UseTransitionLevelPrefix { get; set; } = true;
+        public bool UseMetricUnits { get; set; }
+        public bool UseSurfaceWindPrefix { get; set; }
+        public bool UseVisibilitySuffix { get; set; }
+
+        internal AtisComposite Clone()
+        {
+            return new AtisComposite
+            {
+                Contractions = Contractions,
+                AtisFrequency = AtisFrequency,
+                ObservationTime = ObservationTime,
+                MagneticVariation = MagneticVariation,
+                Presets = Presets,
+                AirportConditionDefinitions = AirportConditionDefinitions,
+                AirportConditionsBeforeFreeText = AirportConditionsBeforeFreeText,
+                NotamDefinitions = NotamDefinitions,
+                NotamsBeforeFreeText = NotamsBeforeFreeText,
+                TransitionLevels = TransitionLevels,
+                UseFaaFormat = UseFaaFormat,
+                UseExternalAtisGenerator = UseExternalAtisGenerator,
+                UseNotamPrefix = UseNotamPrefix,
+                UseTransitionLevelPrefix = UseTransitionLevelPrefix,
+                UseMetricUnits = UseMetricUnits,
+                AtisVoice = AtisVoice,
+                IDSEndpoint = IDSEndpoint
+            };
+        }
+
+        public override string ToString() => AtisType != AtisType.Combined ? $"{Name} ({Identifier}) {AtisType}" : $"{Name} ({Identifier})";
 
         [JsonIgnore] public DecodedMetar DecodedMetar { get; set; }
         [JsonIgnore] public AtisPreset CurrentPreset { get; set; }
@@ -41,23 +72,6 @@ namespace Vatsim.Vatis.Client.Config
         [JsonIgnore] public EventHandler<ClientEventArgs<string>> MetarReceived;
         [JsonIgnore] public EventHandler<EventArgs> NewAtisUpdate;
         [JsonIgnore] public EventHandler<EventArgs> AtisUpdateAcknowledged;
-
-        internal AtisComposite Clone()
-        {
-            return new AtisComposite
-            {
-                Contractions = Contractions,
-                AtisFrequency = AtisFrequency,
-                ObservationTime = ObservationTime,
-                MagneticVariation = MagneticVariation,
-                AirportConditionDefinitions = AirportConditionDefinitions,
-                AtisVoice = AtisVoice,
-                Presets = Presets,
-                IDSEndpoint = IDSEndpoint
-            };
-        }
-
-        public override string ToString() => AtisType != AtisType.Combined ? $"{Name} ({Identifier}) {AtisType}" : $"{Name} ({Identifier})";
     }
 
     [Serializable]

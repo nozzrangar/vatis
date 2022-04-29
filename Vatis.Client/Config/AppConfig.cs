@@ -75,13 +75,11 @@ namespace Vatsim.Vatis.Client.Config
 
         public void LoadConfig(string path)
         {
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (var sr = new StreamReader(fs))
-                {
-                    JsonConvert.PopulateObject(sr.ReadToEnd(), this);
-                }
-            }
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            JsonConvert.PopulateObject(sr.ReadToEnd(), this);
+
+            ValidateConfig();
         }
 
         public void SaveConfig()
@@ -91,6 +89,21 @@ namespace Vatsim.Vatis.Client.Config
                 ContractResolver = new OrderedContractResolver(),
             };
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
+        }
+
+        private void ValidateConfig()
+        {
+            foreach (var composite in Profiles.SelectMany(x => x.Composites))
+            {
+                if (composite.UseFaaFormat)
+                {
+                    composite.UseTransitionLevelPrefix = false;
+                    composite.UseMetricUnits = false;
+                    composite.UseSurfaceWindPrefix = false;
+                    composite.UseVisibilitySuffix = false;
+                }
+            }
+            SaveConfig();
         }
 
         private string Encrypt(string value)

@@ -26,5 +26,10 @@ namespace Vatsim.Vatis.Client.Config
         MemoryStream MemoryStream { get; set; }
         bool UseFaaFormat { get; set; }
         bool UseExternalAtisGenerator { get; set; }
+        bool UseNotamPrefix { get; set; }
+        bool UseTransitionLevelPrefix { get; set; }
+        bool UseMetricUnits { get; set; }
+        bool UseSurfaceWindPrefix { get; set; }
+        bool UseVisibilitySuffix { get; set; }
     }
 }

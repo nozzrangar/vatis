@@ -57,5 +57,7 @@ namespace MetarDecoder
         /// Boolean flag if this cloud layer is the celing
         /// </summary>
         public bool IsCeiling { get; set; }
+
+        public string RawValue { get; set; }
     }
 }

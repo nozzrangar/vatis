@@ -2,11 +2,19 @@
 using System;
 using System.Collections.Generic;
 using Vatsim.Vatis.Client.Common;
+using Vatsim.Vatis.Client.Config;
 
 namespace Vatsim.Vatis.Client.Atis
 {
     public class CloudsMeta : AtisMeta
     {
+        private AtisComposite mComposite;
+
+        public CloudsMeta(AtisComposite composite)
+        {
+            mComposite = composite;
+        }
+
         public override void Parse(DecodedMetar metar)
         {
             List<string> tts = new List<string>();
@@ -18,8 +26,11 @@ namespace Vatsim.Vatis.Client.Atis
 
                 foreach (var cloud in metar.Clouds)
                 {
-                    var cloudAmount = CloudsAmount.ContainsKey(cloud.Amount.ToString()) ? CloudsAmount[cloud.Amount.ToString()] : "";
-                    var cloudType = CloudsType.ContainsKey(cloud.Type.ToString()) ? CloudsType[cloud.Type.ToString()] : "";
+                    var cloudCoverage = CloudCoverage.ContainsKey(cloud.Amount.ToString())
+                        ? CloudCoverage[cloud.Amount.ToString()] : "";
+
+                    var cloudType = CloudType.ContainsKey(cloud.Type.ToString())
+                        ? CloudType[cloud.Type.ToString()] : "";
 
                     if (metar.IsInternational)
                     {
@@ -29,14 +40,22 @@ namespace Vatsim.Vatis.Client.Atis
                             temp += "clouds ";
                             cloudPrefixIncluded = true;
                         }
-                        temp += cloudAmount;
+                        temp += cloudCoverage;
                         if (cloud.Type != CloudLayer.CloudType.NULL)
                         {
                             temp += string.Join(" ", cloudType);
                         }
                         if (cloud.BaseHeight != null && cloud.BaseHeight.ActualValue > 0)
                         {
-                            temp += string.Join(" ", ((int)cloud.BaseHeight.ActualValue).NumbersToWords(), "feet");
+                            if (mComposite.UseMetricUnits)
+                            {
+                                var value = cloud.BaseHeight.ActualValue * 0.3;
+                                temp += string.Join(" ", ((int)value).NumbersToWordsGroup(), "meters");
+                            }
+                            else
+                            {
+                                temp += string.Join(" ", ((int)cloud.BaseHeight.ActualValue).NumbersToWords(), "feet");
+                            }
                         }
                         tts.Add(temp);
                     }
@@ -55,12 +74,12 @@ namespace Vatsim.Vatis.Client.Atis
                             }
                             else
                             {
-                                tts.Add($"{(cloud.IsCeiling ? "ceiling " : "")}{(cloud.BaseHeight != null ? Convert.ToInt32(cloud.BaseHeight.ActualValue).NumbersToWords() + " " : "")}{cloudAmount}{(cloud.Type != CloudLayer.CloudType.NULL ? string.Concat(" ", cloudType) : "")}");
+                                tts.Add($"{(cloud.IsCeiling ? "ceiling " : "")}{(cloud.BaseHeight != null ? Convert.ToInt32(cloud.BaseHeight.ActualValue).NumbersToWords() + " " : "")}{cloudCoverage}{(cloud.Type != CloudLayer.CloudType.NULL ? string.Concat(" ", cloudType) : "")}");
                             }
-
-                            acars.Add($"{ cloud.Amount}{ cloud.BaseHeight.ActualValue / 100:000}{ (cloud.Type != CloudLayer.CloudType.NULL ? string.Concat(" ", cloud.Type.ToString()) : "") }");
                         }
                     }
+
+                    acars.Add(cloud.RawValue);
                 }
             }
 
@@ -68,7 +87,7 @@ namespace Vatsim.Vatis.Client.Atis
             Acars = string.Join(" ", acars).TrimEnd(' ');
         }
 
-        public static Dictionary<string, string> CloudsAmount => new Dictionary<string, string>()
+        public static Dictionary<string, string> CloudCoverage => new Dictionary<string, string>()
         {
             {"FEW", "few "},
             {"SCT", "scattered "},
@@ -81,7 +100,7 @@ namespace Vatsim.Vatis.Client.Atis
             {"SKC", "sky clear " }
         };
 
-        public static Dictionary<string, string> CloudsType => new Dictionary<string, string>()
+        public static Dictionary<string, string> CloudType => new Dictionary<string, string>()
         {
             {"CB", "cumulonimbus " },
             {"TCU", "towering cumulus " }

@@ -42,6 +42,7 @@ namespace MetarDecoder
                         if (!string.IsNullOrEmpty(found[i].Value))
                         {
                             var layer = new CloudLayer();
+                            layer.RawValue = found[i].Value;
                             var layerHeight = Value.ToInt(found[i + 2].Value);
                             int? layerHeightFeet = null;
                             if (layerHeight.HasValue)
@@ -93,6 +94,7 @@ namespace MetarDecoder
                     if (!string.IsNullOrEmpty(found[1].Value))
                     {
                         var layer = new CloudLayer();
+                        layer.RawValue = found[1].Value;
                         layer.Type = CloudLayer.CloudType.NULL;
                         layer.BaseHeight = new Value(0, Value.Unit.Feet);
 

@@ -34,24 +34,32 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.mainTabControl = new System.Windows.Forms.TabControl();
             this.pageConfiguration = new System.Windows.Forms.TabPage();
-            this.chkExternalAtisGenerator = new System.Windows.Forms.CheckBox();
-            this.chkFaaFormat = new System.Windows.Forms.CheckBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.pageGeneral = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.typeCombined = new System.Windows.Forms.RadioButton();
             this.typeDeparture = new System.Windows.Forms.RadioButton();
             this.typeArrival = new System.Windows.Forms.RadioButton();
-            this.label4 = new System.Windows.Forms.Label();
-            this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.observationTime = new System.Windows.Forms.NumericUpDown();
-            this.chkObservationTime = new System.Windows.Forms.CheckBox();
-            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
-            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
-            this.ddlVoices = new System.Windows.Forms.ComboBox();
             this.txtIdsEndpoint = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
+            this.observationTime = new System.Windows.Forms.NumericUpDown();
+            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
+            this.ddlVoices = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.chkObservationTime = new System.Windows.Forms.CheckBox();
             this.chkMagneticVar = new System.Windows.Forms.CheckBox();
             this.magneticVar = new System.Windows.Forms.NumericUpDown();
+            this.pageFormatting = new System.Windows.Forms.TabPage();
+            this.chkVisibilitySuffix = new System.Windows.Forms.CheckBox();
+            this.chkSurfaceWindPrefix = new System.Windows.Forms.CheckBox();
+            this.chkConvertMetric = new System.Windows.Forms.CheckBox();
+            this.chkTransitionLevelPrefix = new System.Windows.Forms.CheckBox();
+            this.chkPrefixNotams = new System.Windows.Forms.CheckBox();
+            this.chkFaaFormat = new System.Windows.Forms.CheckBox();
+            this.chkExternalAtisGenerator = new System.Windows.Forms.CheckBox();
             this.pagePresets = new System.Windows.Forms.TabPage();
             this.notams = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -120,13 +128,18 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.compositeTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
             this.TlpMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.mainTabControl.SuspendLayout();
             this.pageConfiguration.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.pageGeneral.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
+            this.pageFormatting.SuspendLayout();
             this.pagePresets.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -144,6 +157,7 @@
             this.panel3.SuspendLayout();
             this.ctxOptions.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // TlpMain
@@ -199,61 +213,76 @@
             // 
             // pageConfiguration
             // 
-            this.pageConfiguration.Controls.Add(this.chkExternalAtisGenerator);
-            this.pageConfiguration.Controls.Add(this.chkFaaFormat);
-            this.pageConfiguration.Controls.Add(this.flowLayoutPanel2);
-            this.pageConfiguration.Controls.Add(this.label4);
-            this.pageConfiguration.Controls.Add(this.vhfFrequency);
-            this.pageConfiguration.Controls.Add(this.label3);
-            this.pageConfiguration.Controls.Add(this.observationTime);
-            this.pageConfiguration.Controls.Add(this.chkObservationTime);
-            this.pageConfiguration.Controls.Add(this.radioVoiceRecorded);
-            this.pageConfiguration.Controls.Add(this.radioTextToSpeech);
-            this.pageConfiguration.Controls.Add(this.ddlVoices);
-            this.pageConfiguration.Controls.Add(this.txtIdsEndpoint);
-            this.pageConfiguration.Controls.Add(this.label2);
-            this.pageConfiguration.Controls.Add(this.chkMagneticVar);
-            this.pageConfiguration.Controls.Add(this.magneticVar);
+            this.pageConfiguration.Controls.Add(this.tabControl1);
             this.pageConfiguration.Location = new System.Drawing.Point(4, 24);
             this.pageConfiguration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pageConfiguration.Name = "pageConfiguration";
+            this.pageConfiguration.Padding = new System.Windows.Forms.Padding(15);
             this.pageConfiguration.Size = new System.Drawing.Size(708, 362);
             this.pageConfiguration.TabIndex = 2;
             this.pageConfiguration.Text = "Configuration";
             this.pageConfiguration.UseVisualStyleBackColor = true;
             // 
-            // chkExternalAtisGenerator
+            // tabControl1
             // 
-            this.chkExternalAtisGenerator.AutoSize = true;
-            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(27, 151);
-            this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
-            this.chkExternalAtisGenerator.Size = new System.Drawing.Size(170, 19);
-            this.chkExternalAtisGenerator.TabIndex = 44;
-            this.chkExternalAtisGenerator.Text = "Use External ATIS Generator";
-            this.compositeTooltip.SetToolTip(this.chkExternalAtisGenerator, "Use an external source for producing the ATIS text (e.g. UniATIS).");
-            this.chkExternalAtisGenerator.UseVisualStyleBackColor = true;
-            this.chkExternalAtisGenerator.CheckedChanged += new System.EventHandler(this.chkExternalAtisGenerator_CheckedChanged);
+            this.tabControl1.Controls.Add(this.pageGeneral);
+            this.tabControl1.Controls.Add(this.pageFormatting);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(15, 15);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(678, 332);
+            this.tabControl1.TabIndex = 45;
             // 
-            // chkFaaFormat
+            // pageGeneral
             // 
-            this.chkFaaFormat.AutoSize = true;
-            this.chkFaaFormat.Location = new System.Drawing.Point(27, 112);
-            this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkFaaFormat.Name = "chkFaaFormat";
-            this.chkFaaFormat.Size = new System.Drawing.Size(130, 19);
-            this.chkFaaFormat.TabIndex = 41;
-            this.chkFaaFormat.Text = "FAA Formatted ATIS";
-            this.compositeTooltip.SetToolTip(this.chkFaaFormat, "Add or subtract the specified number of degrees from the wind direction.");
-            this.chkFaaFormat.UseVisualStyleBackColor = true;
-            this.chkFaaFormat.CheckedChanged += new System.EventHandler(this.chkFaaFormat_CheckedChanged);
+            this.pageGeneral.Controls.Add(this.label3);
+            this.pageGeneral.Controls.Add(this.vhfFrequency);
+            this.pageGeneral.Controls.Add(this.flowLayoutPanel2);
+            this.pageGeneral.Controls.Add(this.txtIdsEndpoint);
+            this.pageGeneral.Controls.Add(this.label2);
+            this.pageGeneral.Controls.Add(this.radioVoiceRecorded);
+            this.pageGeneral.Controls.Add(this.observationTime);
+            this.pageGeneral.Controls.Add(this.radioTextToSpeech);
+            this.pageGeneral.Controls.Add(this.ddlVoices);
+            this.pageGeneral.Controls.Add(this.label4);
+            this.pageGeneral.Controls.Add(this.chkObservationTime);
+            this.pageGeneral.Controls.Add(this.chkMagneticVar);
+            this.pageGeneral.Controls.Add(this.magneticVar);
+            this.pageGeneral.Location = new System.Drawing.Point(4, 24);
+            this.pageGeneral.Name = "pageGeneral";
+            this.pageGeneral.Padding = new System.Windows.Forms.Padding(3);
+            this.pageGeneral.Size = new System.Drawing.Size(670, 304);
+            this.pageGeneral.TabIndex = 0;
+            this.pageGeneral.Text = "General";
+            this.pageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(40, 41);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 15);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Frequency:";
+            // 
+            // vhfFrequency
+            // 
+            this.vhfFrequency.Location = new System.Drawing.Point(112, 37);
+            this.vhfFrequency.Mask = "000.000";
+            this.vhfFrequency.Name = "vhfFrequency";
+            this.vhfFrequency.PromptChar = '#';
+            this.vhfFrequency.Size = new System.Drawing.Size(114, 23);
+            this.vhfFrequency.TabIndex = 15;
+            this.vhfFrequency.TextChanged += new System.EventHandler(this.vhfFrequency_TextChanged);
             // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.typeCombined);
             this.flowLayoutPanel2.Controls.Add(this.typeDeparture);
             this.flowLayoutPanel2.Controls.Add(this.typeArrival);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(89, 73);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(112, 76);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(235, 23);
             this.flowLayoutPanel2.TabIndex = 40;
@@ -294,63 +323,29 @@
             this.typeArrival.UseVisualStyleBackColor = true;
             this.typeArrival.CheckedChanged += new System.EventHandler(this.typeArrival_CheckedChanged);
             // 
-            // label4
+            // txtIdsEndpoint
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 77);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 15);
-            this.label4.TabIndex = 39;
-            this.label4.Text = "ATIS Type:";
+            this.txtIdsEndpoint.Location = new System.Drawing.Point(127, 244);
+            this.txtIdsEndpoint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtIdsEndpoint.Name = "txtIdsEndpoint";
+            this.txtIdsEndpoint.Size = new System.Drawing.Size(438, 23);
+            this.txtIdsEndpoint.TabIndex = 7;
+            this.txtIdsEndpoint.TextChanged += new System.EventHandler(this.txtIdsEndpoint_TextChanged);
             // 
-            // vhfFrequency
+            // label2
             // 
-            this.vhfFrequency.Location = new System.Drawing.Point(95, 38);
-            this.vhfFrequency.Mask = "000.000";
-            this.vhfFrequency.Name = "vhfFrequency";
-            this.vhfFrequency.PromptChar = '#';
-            this.vhfFrequency.Size = new System.Drawing.Size(114, 23);
-            this.vhfFrequency.TabIndex = 15;
-            this.vhfFrequency.TextChanged += new System.EventHandler(this.vhfFrequency_TextChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 42);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 15);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Frequency:";
-            // 
-            // observationTime
-            // 
-            this.observationTime.Enabled = false;
-            this.observationTime.Location = new System.Drawing.Point(201, 188);
-            this.observationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.observationTime.Name = "observationTime";
-            this.observationTime.Size = new System.Drawing.Size(74, 23);
-            this.observationTime.TabIndex = 13;
-            this.observationTime.ValueChanged += new System.EventHandler(this.observationTime_ValueChanged);
-            this.observationTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.observationTime_KeyUp);
-            // 
-            // chkObservationTime
-            // 
-            this.chkObservationTime.AutoSize = true;
-            this.chkObservationTime.Location = new System.Drawing.Point(27, 190);
-            this.chkObservationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.chkObservationTime.Name = "chkObservationTime";
-            this.chkObservationTime.Size = new System.Drawing.Size(160, 19);
-            this.chkObservationTime.TabIndex = 12;
-            this.chkObservationTime.Text = "Offical Observation Time:";
-            this.chkObservationTime.UseVisualStyleBackColor = true;
-            this.chkObservationTime.CheckedChanged += new System.EventHandler(this.chkObservationTime_CheckedChanged);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(40, 248);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 15);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "IDS Endpoint:";
             // 
             // radioVoiceRecorded
             // 
             this.radioVoiceRecorded.AutoSize = true;
-            this.radioVoiceRecorded.Location = new System.Drawing.Point(439, 268);
+            this.radioVoiceRecorded.Location = new System.Drawing.Point(433, 205);
             this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.radioVoiceRecorded.Name = "radioVoiceRecorded";
             this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
@@ -359,11 +354,22 @@
             this.radioVoiceRecorded.UseVisualStyleBackColor = true;
             this.radioVoiceRecorded.CheckedChanged += new System.EventHandler(this.radioVoiceRecorded_CheckedChanged);
             // 
+            // observationTime
+            // 
+            this.observationTime.Enabled = false;
+            this.observationTime.Location = new System.Drawing.Point(210, 117);
+            this.observationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.observationTime.Name = "observationTime";
+            this.observationTime.Size = new System.Drawing.Size(74, 23);
+            this.observationTime.TabIndex = 13;
+            this.observationTime.ValueChanged += new System.EventHandler(this.observationTime_ValueChanged);
+            this.observationTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.observationTime_KeyUp);
+            // 
             // radioTextToSpeech
             // 
             this.radioTextToSpeech.AutoSize = true;
             this.radioTextToSpeech.Checked = true;
-            this.radioTextToSpeech.Location = new System.Drawing.Point(27, 268);
+            this.radioTextToSpeech.Location = new System.Drawing.Point(43, 205);
             this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.radioTextToSpeech.Name = "radioTextToSpeech";
             this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
@@ -383,36 +389,39 @@
             "US Female",
             "UK Male",
             "UK Female"});
-            this.ddlVoices.Location = new System.Drawing.Point(146, 266);
+            this.ddlVoices.Location = new System.Drawing.Point(158, 203);
             this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ddlVoices.Name = "ddlVoices";
             this.ddlVoices.Size = new System.Drawing.Size(264, 23);
             this.ddlVoices.TabIndex = 9;
             this.ddlVoices.SelectedIndexChanged += new System.EventHandler(this.ddlVoices_SelectedIndexChanged);
             // 
-            // txtIdsEndpoint
+            // label4
             // 
-            this.txtIdsEndpoint.Location = new System.Drawing.Point(119, 306);
-            this.txtIdsEndpoint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.txtIdsEndpoint.Name = "txtIdsEndpoint";
-            this.txtIdsEndpoint.Size = new System.Drawing.Size(438, 23);
-            this.txtIdsEndpoint.TabIndex = 7;
-            this.txtIdsEndpoint.TextChanged += new System.EventHandler(this.txtIdsEndpoint_TextChanged);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(40, 80);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 15);
+            this.label4.TabIndex = 39;
+            this.label4.Text = "ATIS Type:";
             // 
-            // label2
+            // chkObservationTime
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 307);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 15);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "IDS Endpoint:";
+            this.chkObservationTime.AutoSize = true;
+            this.chkObservationTime.Location = new System.Drawing.Point(43, 119);
+            this.chkObservationTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkObservationTime.Name = "chkObservationTime";
+            this.chkObservationTime.Size = new System.Drawing.Size(160, 19);
+            this.chkObservationTime.TabIndex = 12;
+            this.chkObservationTime.Text = "Offical Observation Time:";
+            this.chkObservationTime.UseVisualStyleBackColor = true;
+            this.chkObservationTime.CheckedChanged += new System.EventHandler(this.chkObservationTime_CheckedChanged);
             // 
             // chkMagneticVar
             // 
             this.chkMagneticVar.AutoSize = true;
-            this.chkMagneticVar.Location = new System.Drawing.Point(27, 229);
+            this.chkMagneticVar.Location = new System.Drawing.Point(43, 162);
             this.chkMagneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkMagneticVar.Name = "chkMagneticVar";
             this.chkMagneticVar.Size = new System.Drawing.Size(128, 19);
@@ -424,7 +433,7 @@
             // magneticVar
             // 
             this.magneticVar.Enabled = false;
-            this.magneticVar.Location = new System.Drawing.Point(173, 227);
+            this.magneticVar.Location = new System.Drawing.Point(178, 160);
             this.magneticVar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.magneticVar.Maximum = new decimal(new int[] {
             360,
@@ -441,6 +450,121 @@
             this.magneticVar.TabIndex = 1;
             this.magneticVar.ValueChanged += new System.EventHandler(this.magneticVar_ValueChanged);
             this.magneticVar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.magneticVar_KeyUp);
+            // 
+            // pageFormatting
+            // 
+            this.pageFormatting.Controls.Add(this.chkVisibilitySuffix);
+            this.pageFormatting.Controls.Add(this.chkSurfaceWindPrefix);
+            this.pageFormatting.Controls.Add(this.chkConvertMetric);
+            this.pageFormatting.Controls.Add(this.chkTransitionLevelPrefix);
+            this.pageFormatting.Controls.Add(this.chkPrefixNotams);
+            this.pageFormatting.Controls.Add(this.chkFaaFormat);
+            this.pageFormatting.Controls.Add(this.chkExternalAtisGenerator);
+            this.pageFormatting.Location = new System.Drawing.Point(4, 24);
+            this.pageFormatting.Name = "pageFormatting";
+            this.pageFormatting.Padding = new System.Windows.Forms.Padding(3);
+            this.pageFormatting.Size = new System.Drawing.Size(670, 304);
+            this.pageFormatting.TabIndex = 1;
+            this.pageFormatting.Text = "Formatting";
+            this.pageFormatting.UseVisualStyleBackColor = true;
+            // 
+            // chkVisibilitySuffix
+            // 
+            this.chkVisibilitySuffix.AutoSize = true;
+            this.chkVisibilitySuffix.Enabled = false;
+            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 217);
+            this.chkVisibilitySuffix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkVisibilitySuffix.Name = "chkVisibilitySuffix";
+            this.chkVisibilitySuffix.Size = new System.Drawing.Size(333, 19);
+            this.chkVisibilitySuffix.TabIndex = 53;
+            this.chkVisibilitySuffix.Text = "Append \"meters/kilometers\" to spoken prevailing visibility";
+            this.compositeTooltip.SetToolTip(this.chkVisibilitySuffix, "Appends \"meters/kilometers\" to the spoken prevailing visibility value (e.g. \"visi" +
+        "bility more than one zero kilometers\")");
+            this.chkVisibilitySuffix.UseVisualStyleBackColor = true;
+            this.chkVisibilitySuffix.CheckedChanged += new System.EventHandler(this.chkVisibilitySuffix_CheckedChanged);
+            // 
+            // chkSurfaceWindPrefix
+            // 
+            this.chkSurfaceWindPrefix.AutoSize = true;
+            this.chkSurfaceWindPrefix.Enabled = false;
+            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 180);
+            this.chkSurfaceWindPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkSurfaceWindPrefix.Name = "chkSurfaceWindPrefix";
+            this.chkSurfaceWindPrefix.Size = new System.Drawing.Size(234, 19);
+            this.chkSurfaceWindPrefix.TabIndex = 52;
+            this.chkSurfaceWindPrefix.Text = "Prepend \"surface wind\" to spoken wind";
+            this.compositeTooltip.SetToolTip(this.chkSurfaceWindPrefix, "Prepends \"surface wind\" to the spoken wind (e.g. \"surface wind 270 degrees at 10\"" +
+        ").");
+            this.chkSurfaceWindPrefix.UseVisualStyleBackColor = true;
+            this.chkSurfaceWindPrefix.CheckedChanged += new System.EventHandler(this.chkSurfaceWindPrefix_CheckedChanged);
+            // 
+            // chkConvertMetric
+            // 
+            this.chkConvertMetric.AutoSize = true;
+            this.chkConvertMetric.Location = new System.Drawing.Point(40, 254);
+            this.chkConvertMetric.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkConvertMetric.Name = "chkConvertMetric";
+            this.chkConvertMetric.Size = new System.Drawing.Size(217, 19);
+            this.chkConvertMetric.TabIndex = 51;
+            this.chkConvertMetric.Text = "Convert cloud layer height to metric";
+            this.compositeTooltip.SetToolTip(this.chkConvertMetric, "Converts the cloud layer height from feet to meters.");
+            this.chkConvertMetric.UseVisualStyleBackColor = true;
+            this.chkConvertMetric.CheckedChanged += new System.EventHandler(this.chkConvertMetric_CheckedChanged);
+            // 
+            // chkTransitionLevelPrefix
+            // 
+            this.chkTransitionLevelPrefix.AutoSize = true;
+            this.chkTransitionLevelPrefix.Enabled = false;
+            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 143);
+            this.chkTransitionLevelPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkTransitionLevelPrefix.Name = "chkTransitionLevelPrefix";
+            this.chkTransitionLevelPrefix.Size = new System.Drawing.Size(316, 19);
+            this.chkTransitionLevelPrefix.TabIndex = 50;
+            this.chkTransitionLevelPrefix.Text = "Prepend \"flight level\" to spoken transition level altitude";
+            this.compositeTooltip.SetToolTip(this.chkTransitionLevelPrefix, "Prepends \"flight level\" to the spoken transition level altitude (e.g. \"transition" +
+        " level, flight level 70\")");
+            this.chkTransitionLevelPrefix.UseVisualStyleBackColor = true;
+            this.chkTransitionLevelPrefix.CheckedChanged += new System.EventHandler(this.chkTransitionLevelPrefix_CheckedChanged);
+            // 
+            // chkPrefixNotams
+            // 
+            this.chkPrefixNotams.AutoSize = true;
+            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 106);
+            this.chkPrefixNotams.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkPrefixNotams.Name = "chkPrefixNotams";
+            this.chkPrefixNotams.Size = new System.Drawing.Size(352, 19);
+            this.chkPrefixNotams.TabIndex = 49;
+            this.chkPrefixNotams.Text = "Prepend \"Notices to Airmen/Air Missions\" to spoken NOTAMs";
+            this.compositeTooltip.SetToolTip(this.chkPrefixNotams, "Prepends \"Notices to Airmen\" or \"Notices to Air Missions\" (FAA) to the spoken NOT" +
+        "AM text.");
+            this.chkPrefixNotams.UseVisualStyleBackColor = true;
+            this.chkPrefixNotams.CheckedChanged += new System.EventHandler(this.chkPrefixNotams_CheckedChanged);
+            // 
+            // chkFaaFormat
+            // 
+            this.chkFaaFormat.AutoSize = true;
+            this.chkFaaFormat.Location = new System.Drawing.Point(40, 69);
+            this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkFaaFormat.Name = "chkFaaFormat";
+            this.chkFaaFormat.Size = new System.Drawing.Size(184, 19);
+            this.chkFaaFormat.TabIndex = 41;
+            this.chkFaaFormat.Text = "Format ATIS using FAA format";
+            this.compositeTooltip.SetToolTip(this.chkFaaFormat, "Add or subtract the specified number of degrees from the wind direction.");
+            this.chkFaaFormat.UseVisualStyleBackColor = true;
+            this.chkFaaFormat.CheckedChanged += new System.EventHandler(this.chkFaaFormat_CheckedChanged);
+            // 
+            // chkExternalAtisGenerator
+            // 
+            this.chkExternalAtisGenerator.AutoSize = true;
+            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 32);
+            this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
+            this.chkExternalAtisGenerator.Size = new System.Drawing.Size(310, 19);
+            this.chkExternalAtisGenerator.TabIndex = 44;
+            this.chkExternalAtisGenerator.Text = "Use external source to produce ATIS text (e.g. UniATIS)";
+            this.compositeTooltip.SetToolTip(this.chkExternalAtisGenerator, "Use an external source for producing the ATIS text (e.g. UniATIS).");
+            this.chkExternalAtisGenerator.UseVisualStyleBackColor = true;
+            this.chkExternalAtisGenerator.CheckedChanged += new System.EventHandler(this.chkExternalAtisGenerator_CheckedChanged);
             // 
             // pagePresets
             // 
@@ -950,8 +1074,8 @@
             // 
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Controls.Add(this.btnDeleteTransitionLevel, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.gridTransitionLevels, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.panel6, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -965,7 +1089,7 @@
             // 
             // btnDeleteTransitionLevel
             // 
-            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(560, 306);
+            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(560, 4);
             this.btnDeleteTransitionLevel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnDeleteTransitionLevel.Name = "btnDeleteTransitionLevel";
             this.btnDeleteTransitionLevel.Size = new System.Drawing.Size(120, 27);
@@ -1190,6 +1314,27 @@
             this.compositeTooltip.InitialDelay = 250;
             this.compositeTooltip.ReshowDelay = 50;
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.label13);
+            this.panel6.Controls.Add(this.btnDeleteTransitionLevel);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 303);
+            this.panel6.Margin = new System.Windows.Forms.Padding(0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(684, 35);
+            this.panel6.TabIndex = 3;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 10);
+            this.label13.Name = "label13";
+            this.label13.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label13.Size = new System.Drawing.Size(244, 15);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Both Low and High QNH values are required.\r\n";
+            // 
             // ProfileEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1208,11 +1353,15 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.mainTabControl.ResumeLayout(false);
             this.pageConfiguration.ResumeLayout(false);
-            this.pageConfiguration.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.pageGeneral.ResumeLayout(false);
+            this.pageGeneral.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).EndInit();
+            this.pageFormatting.ResumeLayout(false);
+            this.pageFormatting.PerformLayout();
             this.pagePresets.ResumeLayout(false);
             this.pagePresets.PerformLayout();
             this.panel5.ResumeLayout(false);
@@ -1237,6 +1386,8 @@
             this.panel3.ResumeLayout(false);
             this.ctxOptions.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1334,5 +1485,15 @@
         private System.Windows.Forms.TextBox txtExternalUrl;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox chkExternalAtisGenerator;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage pageGeneral;
+        private System.Windows.Forms.TabPage pageFormatting;
+        private System.Windows.Forms.CheckBox chkVisibilitySuffix;
+        private System.Windows.Forms.CheckBox chkSurfaceWindPrefix;
+        private System.Windows.Forms.CheckBox chkConvertMetric;
+        private System.Windows.Forms.CheckBox chkTransitionLevelPrefix;
+        private System.Windows.Forms.CheckBox chkPrefixNotams;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Label label13;
     }
 }
