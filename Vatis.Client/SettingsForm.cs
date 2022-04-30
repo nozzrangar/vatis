@@ -37,6 +37,12 @@ namespace Vatsim.Vatis.Client
             }
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            mEventBroker?.Unregister(this);
+        }
+
         private void LoadNetworkServers()
         {
             ddlServerName.Items.Clear();
