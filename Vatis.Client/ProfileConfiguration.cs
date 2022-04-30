@@ -2090,5 +2090,11 @@ namespace Vatsim.Vatis.Client
             var pattern = new Regex(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$");
             return pattern.IsMatch(value.Trim());
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            mEventBroker?.Unregister(this);
+        }
     }
 }
