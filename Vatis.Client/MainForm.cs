@@ -164,8 +164,8 @@ namespace Vatsim.Vatis.Client
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-
             RaiseSessionEnded?.Invoke(this, EventArgs.Empty);
+            mEventBroker?.Unregister(this);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -257,9 +257,7 @@ namespace Vatsim.Vatis.Client
         private void RefreshAtisComposites()
         {
             if (mAppConfig.CurrentProfile == null)
-            {
                 return;
-            }
 
             foreach (var composite in mAppConfig.CurrentProfile.Composites.OrderBy(x => x.Identifier).Take(Constants.MAX_COMPOSITES))
             {
@@ -339,7 +337,7 @@ namespace Vatsim.Vatis.Client
                             connection.Connect();
                         }
                     };
-                    tabPage.Connection.MetarResponseReceived += (sender, args) =>
+                    tabPage.Connection.MetarResponseReceived += async (sender, args) =>
                     {
                         var metar = MetarDecoder.MetarDecoder.ParseWithMode(args.Metar);
                         metar.IsInternational = !composite.UseFaaFormat;
@@ -367,14 +365,17 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
-                                {
-                                    tabPage.Connection.SendSubscriberNotification();
-                                }, cancellationToken.Token);
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
                             }
+                            catch (TaskCanceledException) { }
                             catch (AggregateException ex)
                             {
                                 tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
+                                connection.Disconnect();
+                            }
+                            catch (Exception ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + ex.Message;
                                 connection.Disconnect();
                             }
                         }
@@ -390,7 +391,6 @@ namespace Vatsim.Vatis.Client
                         if (args.IsUpdated)
                         {
                             tabPage.CompositeMeta.IncrementAtisLetter();
-                            tabPage.Connection.SendSubscriberNotification();
 
                             composite.NewAtisUpdate?.Invoke(this, EventArgs.Empty); // update mini display
 
@@ -406,7 +406,7 @@ namespace Vatsim.Vatis.Client
                             }, null);
                         }
                     };
-                    tabPage.CompositeMeta.PresetChanged += (sender, args) =>
+                    tabPage.CompositeMeta.PresetChanged += async (sender, args) =>
                     {
                         if (composite.DecodedMetar == null)
                             return;
@@ -424,11 +424,17 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
                             }
+                            catch (TaskCanceledException) { }
                             catch (AggregateException ex)
                             {
                                 tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
+                                connection.Disconnect();
+                            }
+                            catch (Exception ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + ex.Message;
                                 connection.Disconnect();
                             }
                         }
@@ -437,7 +443,7 @@ namespace Vatsim.Vatis.Client
                             mAtisBuilder.GenerateAcarsText(composite);
                         }
                     };
-                    tabPage.CompositeMeta.AtisLetterChanged += (sender, args) =>
+                    tabPage.CompositeMeta.AtisLetterChanged += async (sender, args) =>
                     {
                         if (connection.IsConnected && composite.DecodedMetar != null && composite.AtisVoice.UseTextToSpeech)
                         {
@@ -449,19 +455,26 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token)
+                                .ContinueWith(t =>
                                 {
                                     tabPage.Connection.SendSubscriberNotification();
                                 }, cancellationToken.Token);
                             }
+                            catch (TaskCanceledException) { }
                             catch (AggregateException ex)
                             {
                                 tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
                                 connection.Disconnect();
                             }
+                            catch (Exception ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + ex.Message;
+                                connection.Disconnect();
+                            }
                         }
                     };
-                    tabPage.CompositeMeta.RecordedAtisMemoryStreamChanged += (sender, args) =>
+                    tabPage.CompositeMeta.RecordedAtisMemoryStreamChanged += async (sender, args) =>
                     {
                         if (!connection.IsConnected)
                             return;
@@ -476,7 +489,7 @@ namespace Vatsim.Vatis.Client
 
                             composite.MemoryStream = args.AtisMemoryStream;
 
-                            mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
+                            await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token).ContinueWith(t =>
                             {
                                 mSyncContext.Post(o =>
                                 {
@@ -485,9 +498,15 @@ namespace Vatsim.Vatis.Client
                                 }, null);
                             }, cancellationToken.Token);
                         }
+                        catch (TaskCanceledException) { }
                         catch (AggregateException ex)
                         {
                             tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
+                            connection.Disconnect();
+                        }
+                        catch (Exception ex)
+                        {
+                            tabPage.CompositeMeta.Error = "Error: " + ex.Message;
                             connection.Disconnect();
                         }
                     };
