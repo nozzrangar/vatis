@@ -44,6 +44,7 @@ namespace Vatsim.Vatis.Client.TextToSpeech
                         }
                     }
                 }
+                catch (TaskCanceledException) { }
                 catch (OperationCanceledException) { }
             }
 
@@ -67,6 +68,7 @@ namespace Vatsim.Vatis.Client.TextToSpeech
                     return client.DownloadData(request);
                 }
             }
+            catch (TaskCanceledException) { }
             catch (OperationCanceledException) { }
 
             return null;
