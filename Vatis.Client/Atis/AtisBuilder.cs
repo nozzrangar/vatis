@@ -59,65 +59,125 @@ namespace Vatsim.Vatis.Client.Atis
             List<Variable> variables;
             ParseMetar(composite, out metar, out atisLetter, out variables);
 
-            // Build voice string
+            GenerateAcarsText(composite);
 
-            var voiceString = new StringBuilder(composite.CurrentPreset.Template);
+            var voiceString = new StringBuilder();
 
-            foreach (var variable in variables)
+            if (composite.UseExternalAtisGenerator)
             {
-                voiceString.Replace($"[{variable.Find}]", variable.VoiceReplace);
-                voiceString.Replace($"${variable.Find}", variable.VoiceReplace);
+                var result = BuildExternalAtis(composite, metar, variables);
 
-                if (variable.Aliases != null)
+                if (result == null)
+                    throw new Exception("Failed to create external ATIS");
+
+                voiceString = new StringBuilder(result);
+            }
+            else
+            {
+                voiceString = new StringBuilder(composite.CurrentPreset.Template);
+
+                foreach (var variable in variables)
                 {
-                    foreach (var alias in variable.Aliases)
+                    voiceString.Replace($"[{variable.Find}]", variable.VoiceReplace);
+                    voiceString.Replace($"${variable.Find}", variable.VoiceReplace);
+
+                    if (variable.Aliases != null)
                     {
-                        voiceString.Replace($"[{alias}]", variable.VoiceReplace);
-                        voiceString.Replace($"${alias}", variable.VoiceReplace);
+                        foreach (var alias in variable.Aliases)
+                        {
+                            voiceString.Replace($"[{alias}]", variable.VoiceReplace);
+                            voiceString.Replace($"${alias}", variable.VoiceReplace);
+                        }
                     }
                 }
-            }
 
-            if (composite.UseFaaFormat)
-            {
-                voiceString.Append($"ADVISE ON INITIAL CONTACT, YOU HAVE INFORMATION {atisLetter}.");
+                if (composite.UseFaaFormat)
+                {
+                    voiceString.Append($"ADVISE ON INITIAL CONTACT, YOU HAVE INFORMATION {atisLetter}.");
+                }
             }
-
-            GenerateAcarsText(composite);
 
             if (composite.AtisVoice.UseTextToSpeech)
             {
                 var tts = FormatForTextToSpeech(voiceString.ToString().ToUpper(), composite);
-                System.Diagnostics.Debug.WriteLine(tts);
-                try
-                {
-                    await Task.Run(async () =>
-                    {
-                        await Task.Delay(5000, cancellationToken);
-                        var response = mTextToSpeechRequest.RequestSynthesizedText(tts, cancellationToken);
-                        if (response.Result != null)
-                        {
-                            await mAudioManager.AddOrUpdateBot(response.Result, composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
 
-                            PostIdsUpdate(composite, cancellationToken);
-                        }
-                    }, cancellationToken);
-                }
-                catch (OperationCanceledException) { }
-            }
-            else
-            {
-                try
+                System.Diagnostics.Debug.WriteLine(tts);
+
+                await Task.Run(() =>
                 {
-                    if (composite.MemoryStream != null)
+                    Task.Delay(5000, cancellationToken); // catches multiple atis letter button presses in quick succession
+
+                    var response = mTextToSpeechRequest.RequestSynthesizedText(tts, cancellationToken);
+
+                    if (response.Result != null)
                     {
-                        await mAudioManager.AddOrUpdateBot(composite.MemoryStream.ToArray(), composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
+                        mAudioManager.AddOrUpdateBot(response.Result, composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
 
                         PostIdsUpdate(composite, cancellationToken);
                     }
-                }
-                catch (OperationCanceledException) { }
+                }, cancellationToken);
             }
+            else
+            {
+                if (composite.MemoryStream != null)
+                {
+                    await mAudioManager.AddOrUpdateBot(composite.MemoryStream.ToArray(), composite.AtisCallsign, composite.AfvFrequency, mAirport.Latitude, mAirport.Longitude);
+
+                    PostIdsUpdate(composite, cancellationToken);
+                }
+            }
+        }
+
+        private string BuildExternalAtis(AtisComposite composite, DecodedMetar metar, List<Variable> variables)
+        {
+            var preset = composite.CurrentPreset;
+            var data = preset.ExternalGenerator;
+
+            if (data == null)
+                return null;
+
+            var url = data.Url;
+
+            if (!string.IsNullOrEmpty(url))
+            {
+                url = url.Replace("$metar", System.Web.HttpUtility.UrlEncode(metar.RawMetar));
+                url = url.Replace("$arrrwy", data.Arrival);
+                url = url.Replace("$deprwy", data.Departure);
+                url = url.Replace("$app", data.Approaches);
+                url = url.Replace("$remarks", data.Remarks);
+                url = url.Replace("$atiscode", composite.CurrentAtisLetter);
+
+                var aptcond = variables.FirstOrDefault(x => x.Find == "ARPT_COND");
+                if (aptcond != null)
+                {
+                    url = url.Replace("$aptcond", aptcond.TextReplace);
+                }
+
+                var notams = variables.FirstOrDefault(x => x.Find == "NOTAMS");
+                if (notams != null)
+                {
+                    url = url.Replace("$notams", notams.TextReplace);
+                }
+
+                var result = "";
+
+                System.Diagnostics.Debug.WriteLine(url);
+
+                var client = new RestClient();
+                var request = new RestRequest(url);
+                var response = client.Get<string>(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    result = Regex.Replace(response.Content, @"\[(.*?)\]", " $1 ");
+                    result = Regex.Replace(result, @"\s+", " ");
+                    return result;
+                }
+
+                throw new Exception("External ATIS Error: " + response.StatusDescription);
+            }
+
+            return null;
         }
 
         public void GenerateAcarsText(AtisComposite composite)
@@ -288,6 +348,8 @@ namespace Vatsim.Vatis.Client.Atis
 
         private string FormatForTextToSpeech(string input, AtisComposite composite)
         {
+            System.Diagnostics.Debug.WriteLine(input);
+
             // parse zulu times
             input = Regex.Replace(input, @"([0-9])([0-9])([0-9])([0-8])Z",
               m => string.Format($"{ int.Parse(m.Groups[1].Value).NumberToSingular() } " +
@@ -299,12 +361,12 @@ namespace Vatsim.Vatis.Client.Atis
             input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value)
             .DecimalToWordString(!composite.UseFaaFormat));
 
-            // read numbers as singular (serial) format, prefixed by # or surrounded by {}
-            input = Regex.Replace(input, @"\#(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
-            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumberToSingular());
-
-            // format numbers to singluar words
+            // read numbers in group format, prefixed with # or surrounded with {}
             input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
+            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
+
+            // read numbers in serial format
+            input = Regex.Replace(input, @"[0-9,]+(?![^{]*\})", m => m.Value.Replace(",", "").NumberToSingular());
 
             // letters
             input = Regex.Replace(input, @"\*([A-Z]{1,2}[0-9]{0,2})", m => string.Format("{0}", m.Value.ConvertAlphaNumericToWordGroup())).Trim();
@@ -434,7 +496,10 @@ namespace Vatsim.Vatis.Client.Atis
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
                 await client.ExecuteAsync(request, token);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                throw new Exception("PostIdsUpdate Error: " + ex.Message);
+            }
         }
 
         private Dictionary<string, string> Translations => new Dictionary<string, string>
