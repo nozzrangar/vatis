@@ -37,6 +37,18 @@ namespace Vatsim.Vatis.Client
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
+        [EventSubscription(EventTopics.SessionStarted, typeof(OnUserInterfaceAsync))]
+        public void OnSessionProfileLoaded(object sender, EventArgs e)
+        {
+            Hide();
+        }
+
+        [EventSubscription(EventTopics.SessionEnded, typeof(OnUserInterfaceAsync))]
+        public void OnSessionEnded(object sender, EventArgs e)
+        {
+            Show();
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -55,18 +67,6 @@ namespace Vatsim.Vatis.Client
             {
                 ScreenUtils.SaveWindowProperties(mAppConfig.ProfileListWindowProperties, this);
             }
-        }
-
-        [EventSubscription(EventTopics.SessionStarted, typeof(OnUserInterfaceAsync))]
-        public void OnSessionProfileLoaded(object sender, EventArgs e)
-        {
-            Hide();
-        }
-
-        [EventSubscription(EventTopics.SessionEnded, typeof(OnUserInterfaceAsync))]
-        public void OnSessionEnded(object sender, EventArgs e)
-        {
-            Show();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -92,25 +92,21 @@ namespace Vatsim.Vatis.Client
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             base.OnFormClosed(e);
-            mEventBroker.Unregister(this);
+            mEventBroker?.Unregister(this);
         }
 
-        protected override void OnPaint(PaintEventArgs paintEventArgs)
+        protected override void OnPaint(PaintEventArgs pe)
         {
-            base.OnPaint(paintEventArgs);
+            base.OnPaint(pe);
             Rectangle rect = new Rectangle(ClientRectangle.Left, ClientRectangle.Top, ClientRectangle.Width - 1, 23);
             Rectangle rect2 = new Rectangle(ClientRectangle.Left, ClientRectangle.Top, ClientRectangle.Width - 1, ClientRectangle.Height - 1);
             Rectangle rect3 = new Rectangle(ClientRectangle.Left, ClientRectangle.Top, ClientRectangle.Width - 1, ClientRectangle.Height - 24);
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100)))
-            {
-                using (Brush brush = new SolidBrush(ForeColor))
-                {
-                    paintEventArgs.Graphics.DrawRectangle(pen, rect);
-                    paintEventArgs.Graphics.DrawRectangle(pen, rect2);
-                    paintEventArgs.Graphics.DrawRectangle(pen, rect3);
-                    paintEventArgs.Graphics.DrawString(Text, Font, brush, 5f, 5f);
-                }
-            }
+            using Pen pen = new Pen(Color.FromArgb(100, 100, 100));
+            using Brush brush = new SolidBrush(ForeColor);
+            pe.Graphics.DrawRectangle(pen, rect);
+            pe.Graphics.DrawRectangle(pen, rect2);
+            pe.Graphics.DrawRectangle(pen, rect3);
+            pe.Graphics.DrawString(Text, Font, brush, 5f, 5f);
         }
 
         private void btnExit_Click(object sender, EventArgs e)
