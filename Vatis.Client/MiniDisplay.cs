@@ -155,12 +155,15 @@ namespace Vatsim.Vatis.Client
         {
             base.OnLoad(e);
 
+            TopMost = true;
+
             if (mAppConfig.MiniDisplayWindowProperties == null)
             {
                 mAppConfig.MiniDisplayWindowProperties = new WindowProperties();
                 mAppConfig.MiniDisplayWindowProperties.Location = ScreenUtils.CenterOnScreen(this);
                 mAppConfig.SaveConfig();
             }
+
             ScreenUtils.ApplyWindowProperties(mAppConfig.MiniDisplayWindowProperties, this);
             mInitializing = false;
         }
