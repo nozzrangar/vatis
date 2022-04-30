@@ -103,7 +103,14 @@ namespace Vatsim.Vatis.Client
                 btnApply.Enabled = false;
                 if (mAppConfig.CurrentProfile != null)
                 {
-                    mCurrentComposite = mAppConfig.CurrentProfile.Composites.FirstOrDefault(x => x.Identifier == (TreeMenu.SelectedNode.Tag as AtisComposite).Identifier && x.AtisType == (TreeMenu.SelectedNode.Tag as AtisComposite).AtisType);
+                    var composite = TreeMenu.SelectedNode.Tag as AtisComposite;
+
+                    if (composite == null)
+                        return;
+
+                    mCurrentComposite = mAppConfig.CurrentProfile.Composites
+                        .FirstOrDefault(x => x.Identifier == composite.Identifier && x.AtisType == composite.AtisType);
+
                     LoadComposite();
                     RefreshPresetList();
                 }
@@ -308,7 +315,7 @@ namespace Vatsim.Vatis.Client
                         Identifier = dlg.Identifier,
                         Name = dlg.CompositeName,
                         AtisType = dlg.Type,
-                        UseFaaFormat = dlg.Identifier.StartsWith("K") && dlg.Identifier.StartsWith("P"),
+                        UseFaaFormat = dlg.Identifier.StartsWith("K") || dlg.Identifier.StartsWith("P"),
                     };
 
                     mAppConfig.CurrentProfile.Composites.Add(composite);
