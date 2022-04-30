@@ -4,7 +4,6 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Vatsim.Vatis.Client.Args;
 using Vatsim.Vatis.Client.Common;
 using Vatsim.Vatis.Client.Config;
 using Vatsim.Vatis.Client.Core;
