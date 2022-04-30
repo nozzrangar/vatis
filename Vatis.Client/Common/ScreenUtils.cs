@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using Vatsim.Vatis.Client.Config;
+using Vatsim.Vatis.Client.Core;
 
 namespace Vatsim.Vatis.Client.Common
 {
@@ -36,6 +38,12 @@ namespace Vatsim.Vatis.Client.Common
         {
             form.Location = properties.Location;
             form.TopMost = properties.TopMost;
+
+            if (form.GetType().IsDefined(typeof(ResizableForm)))
+            {
+                form.Size = properties.Size ?? new Size();
+            }
+
             EnsureOnScreen(form);
         }
 
@@ -43,6 +51,11 @@ namespace Vatsim.Vatis.Client.Common
         {
             properties.Location = form.Location;
             properties.TopMost = form.TopMost;
+
+            if (form.GetType().IsDefined(typeof(ResizableForm)))
+            {
+                properties.Size = form.Size;
+            }
         }
     }
 }

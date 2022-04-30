@@ -47,6 +47,8 @@ namespace Vatsim.Vatis.Client.Config
 
         public WindowProperties ProfileListWindowProperties { get; set; }
 
+        public WindowProperties MiniDisplayWindowProperties { get; set; }
+
         public List<Profile> Profiles { get; set; }
 
         public string MicrophoneDevice { get; set; }

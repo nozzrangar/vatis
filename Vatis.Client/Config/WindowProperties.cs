@@ -6,6 +6,7 @@ namespace Vatsim.Vatis.Client.Config
     {
         public Point Location { get; set; }
         public bool TopMost { get; set; }
+        public Size? Size { get; set; }
 
         public WindowProperties()
         {

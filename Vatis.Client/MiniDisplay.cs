@@ -5,12 +5,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Vatsim.Vatis.Client.Args;
+using Vatsim.Vatis.Client.Common;
 using Vatsim.Vatis.Client.Config;
 using Vatsim.Vatis.Client.Core;
 using Vatsim.Vatis.Client.UI;
 
 namespace Vatsim.Vatis.Client
 {
+    [ResizableForm]
     public partial class MiniDisplay : Form
     {
         [EventPublication(EventTopics.MinifiedWindowClosed)]
@@ -19,6 +21,7 @@ namespace Vatsim.Vatis.Client
         private readonly IEventBroker mEventBroker;
         private readonly IAppConfig mAppConfig;
         private readonly Timer mUtcClock;
+        private bool mInitializing = true;
 
         public MiniDisplay(IEventBroker eventBroker, IAppConfig appConfig)
         {
@@ -129,6 +132,37 @@ namespace Vatsim.Vatis.Client
             RefreshDisplay();
             utcClock.Visible = ClientSize.Width > 120;
             Invalidate();
+
+            if (!mInitializing)
+            {
+                ScreenUtils.SaveWindowProperties(mAppConfig.MiniDisplayWindowProperties, this);
+                mAppConfig.SaveConfig();
+            }
+        }
+
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+
+            if (!mInitializing)
+            {
+                ScreenUtils.SaveWindowProperties(mAppConfig.MiniDisplayWindowProperties, this);
+                mAppConfig.SaveConfig();
+            }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (mAppConfig.MiniDisplayWindowProperties == null)
+            {
+                mAppConfig.MiniDisplayWindowProperties = new WindowProperties();
+                mAppConfig.MiniDisplayWindowProperties.Location = ScreenUtils.CenterOnScreen(this);
+                mAppConfig.SaveConfig();
+            }
+            ScreenUtils.ApplyWindowProperties(mAppConfig.MiniDisplayWindowProperties, this);
+            mInitializing = false;
         }
 
         [EventSubscription(EventTopics.RefreshMinifiedWindow, typeof(OnUserInterfaceAsync))]

@@ -16,6 +16,7 @@ namespace Vatsim.Vatis.Client.Config
         bool ConfigRequired { get; }
         WindowProperties WindowProperties { get; set; }
         WindowProperties ProfileListWindowProperties { get; set; }
+        WindowProperties MiniDisplayWindowProperties { get; set; }
         List<Profile> Profiles { get; set; }
         Profile CurrentProfile { get; set; }
         AtisComposite CurrentComposite { get; set; }
