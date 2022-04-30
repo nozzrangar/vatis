@@ -168,9 +168,13 @@ namespace Vatsim.Vatis.Client
                     break;
             }
 
-            chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
-
             chkExternalAtisGenerator.Checked = mCurrentComposite.UseExternalAtisGenerator;
+            chkFaaFormat.Checked = mCurrentComposite.UseFaaFormat;
+            chkPrefixNotams.Checked = mCurrentComposite.UseNotamPrefix;
+            chkTransitionLevelPrefix.Checked = mCurrentComposite.UseTransitionLevelPrefix;
+            chkSurfaceWindPrefix.Checked = mCurrentComposite.UseSurfaceWindPrefix;
+            chkVisibilitySuffix.Checked = mCurrentComposite.UseVisibilitySuffix;
+            chkConvertMetric.Checked = mCurrentComposite.UseMetricUnits;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -993,13 +997,13 @@ namespace Vatsim.Vatis.Client
 
                 if (mCurrentPreset != null)
                 {
+                    txtAtisTemplate.Text = mCurrentPreset.Template;
+                    txtNotams.Text = mCurrentPreset.Notams;
+                    txtAirportCond.Text = mCurrentPreset.AirportConditions;
+
                     if (mCurrentComposite.UseExternalAtisGenerator)
                     {
                         txtAtisTemplate.Enabled = false;
-                        txtAirportCond.Enabled = false;
-                        txtNotams.Enabled = false;
-                        notams.Enabled = false;
-                        airportConditions.Enabled = false;
 
                         txtSelectedPreset.Text = mCurrentPreset.Name;
                         txtExternalUrl.Enabled = ddlPresets.SelectedItem != null;
@@ -1017,12 +1021,7 @@ namespace Vatsim.Vatis.Client
                     }
                     else
                     {
-                        txtAtisTemplate.Text = mCurrentPreset.Template;
                         txtAtisTemplate.Enabled = true;
-                        txtAirportCond.Enabled = true;
-                        txtNotams.Enabled = true;
-                        notams.Enabled = true;
-                        airportConditions.Enabled = true;
                     }
                 }
             }
