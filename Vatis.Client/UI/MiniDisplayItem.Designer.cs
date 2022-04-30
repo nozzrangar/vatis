@@ -29,10 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.metarTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.txtIcao = new System.Windows.Forms.Label();
             this.txtAtisLetter = new System.Windows.Forms.Label();
-            this.metarTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
+            // 
+            // metarTooltip
+            // 
+            this.metarTooltip.AutomaticDelay = 1000;
             // 
             // txtIcao
             // 
@@ -58,10 +62,6 @@
             this.txtAtisLetter.Text = "X";
             this.txtAtisLetter.Click += new System.EventHandler(this.txtAtisLetter_Click);
             // 
-            // metarTooltip
-            // 
-            this.metarTooltip.AutomaticDelay = 1000;
-            // 
             // MiniDisplayItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -69,6 +69,8 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.Controls.Add(this.txtAtisLetter);
             this.Controls.Add(this.txtIcao);
+            this.MaximumSize = new System.Drawing.Size(70, 30);
+            this.MinimumSize = new System.Drawing.Size(70, 30);
             this.Name = "MiniDisplayItem";
             this.Size = new System.Drawing.Size(70, 30);
             this.ResumeLayout(false);
@@ -77,9 +79,8 @@
         }
 
         #endregion
-
+        private System.Windows.Forms.ToolTip metarTooltip;
         private System.Windows.Forms.Label txtIcao;
         private System.Windows.Forms.Label txtAtisLetter;
-        private System.Windows.Forms.ToolTip metarTooltip;
     }
 }

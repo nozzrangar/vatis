@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Vatsim.Vatis.Client.Args;
 using Vatsim.Vatis.Client.Config;
 using Vatsim.Vatis.Client.Core;
 using Vatsim.Vatis.Client.UI;
@@ -17,9 +18,7 @@ namespace Vatsim.Vatis.Client
 
         private readonly IEventBroker mEventBroker;
         private readonly IAppConfig mAppConfig;
-        private readonly System.Windows.Forms.Timer mUtcClock;
-        private const int WM_NCLBUTTONDOWN = 0xA1;
-        private const int HT_CAPTION = 0x2;
+        private readonly Timer mUtcClock;
 
         public MiniDisplay(IEventBroker eventBroker, IAppConfig appConfig)
         {
@@ -41,11 +40,6 @@ namespace Vatsim.Vatis.Client
             mUtcClock.Start();
         }
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
         protected override CreateParams CreateParams
         {
             get
@@ -58,72 +52,54 @@ namespace Vatsim.Vatis.Client
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x84)
+            const int RESIZE_HANDLE_SIZE = 10;
+
+            switch (m.Msg)
             {
-                int x = ((short)((long)m.LParam));
-                int y = ((short)((long)m.LParam >> 16));
-                Point point = PointToClient(new Point(x, y));
-                if (point.X >= ClientSize.Width - 6 && point.Y >= ClientSize.Height - 5)
-                {
-                    m.Result = (IntPtr)(IsMirrored ? 16 : 17);
-                }
-                else if (point.X <= 6 && point.Y >= ClientSize.Height - 5)
-                {
-                    m.Result = (IntPtr)(IsMirrored ? 17 : 16);
-                }
-                else if (point.X <= 6 && point.Y <= 5)
-                {
-                    m.Result = (IntPtr)(IsMirrored ? 14 : 13);
-                }
-                else if (point.X >= ClientSize.Width - 6 && point.Y <= 5)
-                {
-                    m.Result = (IntPtr)(IsMirrored ? 13 : 14);
-                }
-                else if (point.Y <= 5)
-                {
-                    m.Result = (IntPtr)12;
-                }
-                else if (point.Y >= ClientSize.Height - 5)
-                {
-                    m.Result = (IntPtr)15;
-                }
-                else if (point.X <= 6)
-                {
-                    m.Result = (IntPtr)10;
-                }
-                else if (point.X >= ClientSize.Width - 6)
-                {
-                    m.Result = (IntPtr)11;
-                }
-                else
-                {
+                case 0x0084/*NCHITTEST*/ :
                     base.WndProc(ref m);
-                    if ((int)m.Result == 1)
+
+                    if ((int)m.Result == 0x01/*HTCLIENT*/)
                     {
-                        m.Result = (IntPtr)2;
+                        Point screenPoint = new Point(m.LParam.ToInt32());
+                        Point clientPoint = this.PointToClient(screenPoint);
+                        if (clientPoint.Y <= RESIZE_HANDLE_SIZE)
+                        {
+                            if (clientPoint.X <= RESIZE_HANDLE_SIZE)
+                                m.Result = (IntPtr)13/*HTTOPLEFT*/ ;
+                            else if (clientPoint.X < (Size.Width - RESIZE_HANDLE_SIZE))
+                                m.Result = (IntPtr)12/*HTTOP*/ ;
+                            else
+                                m.Result = (IntPtr)14/*HTTOPRIGHT*/ ;
+                        }
+                        else if (clientPoint.Y <= (Size.Height - RESIZE_HANDLE_SIZE))
+                        {
+                            if (clientPoint.X <= RESIZE_HANDLE_SIZE)
+                                m.Result = (IntPtr)10/*HTLEFT*/ ;
+                            else if (clientPoint.X < (Size.Width - RESIZE_HANDLE_SIZE))
+                                m.Result = (IntPtr)2/*HTCAPTION*/ ;
+                            else
+                                m.Result = (IntPtr)11/*HTRIGHT*/ ;
+                        }
+                        else
+                        {
+                            if (clientPoint.X <= RESIZE_HANDLE_SIZE)
+                                m.Result = (IntPtr)16/*HTBOTTOMLEFT*/ ;
+                            else if (clientPoint.X < (Size.Width - RESIZE_HANDLE_SIZE))
+                                m.Result = (IntPtr)15/*HTBOTTOM*/ ;
+                            else
+                                m.Result = (IntPtr)17/*HTBOTTOMRIGHT*/ ;
+                        }
                     }
-                }
+                    return;
             }
-            else
-            {
-                base.WndProc(ref m);
-            }
+            base.WndProc(ref m);
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
             RefreshDisplay();
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
@@ -140,11 +116,11 @@ namespace Vatsim.Vatis.Client
             Close();
         }
 
-        protected override void OnClosed(EventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            base.OnClosed(e);
+            base.OnFormClosing(e);
             MinifiedWindowClosed?.Invoke(this, EventArgs.Empty);
-            Close();
+            mEventBroker?.Unregister(this);
         }
 
         protected override void OnResize(EventArgs e)
@@ -164,6 +140,11 @@ namespace Vatsim.Vatis.Client
         private void RefreshDisplay()
         {
             tlpMain.Controls.Clear();
+            tlpMain.RowStyles.Clear();
+            tlpMain.ColumnStyles.Clear();
+
+            while (tlpMain.Controls.Count > 0)
+                tlpMain.Controls[0].Dispose();
 
             if (mAppConfig == null || !mAppConfig.CurrentProfile.Composites.Any(x => x.Connection.IsConnected))
             {
@@ -183,7 +164,7 @@ namespace Vatsim.Vatis.Client
             int colWidth = 75;
             int colCount = ClientSize.Width / colWidth;
 
-            int rowHeight = 40;
+            int rowHeight = 35;
             int rowCount = ClientSize.Height / rowHeight;
 
             tlpMain.RowCount = rowCount;
@@ -210,8 +191,12 @@ namespace Vatsim.Vatis.Client
             {
                 int row = 0;
                 int col = 0;
+
                 foreach (var composite in mAppConfig.CurrentProfile.Composites)
                 {
+                    composite.MetarReceived = null;
+                    composite.NewAtisUpdate = null;
+
                     if (composite.Connection.IsConnected)
                     {
                         var item = new MiniDisplayItem
@@ -219,18 +204,11 @@ namespace Vatsim.Vatis.Client
                             Icao = composite.Identifier,
                             AtisLetter = composite.CurrentAtisLetter,
                             Metar = composite?.DecodedMetar?.RawMetar ?? "",
-                            Composite = composite,
-                            Dock = DockStyle.Fill
+                            Composite = composite
                         };
 
-                        composite.MetarReceived += (sender, args) =>
-                        {
-                            item.Metar = args.Value;
-                        };
-                        composite.NewAtisUpdate += (sender, args) =>
-                        {
-                            item.IsNewAtis = true;
-                        };
+                        composite.MetarReceived += (x, y) => item.Metar = y.Value;
+                        composite.NewAtisUpdate += (x, y) => item.IsNewAtis = true;
 
                         tlpMain.Controls.Add(item, col, row);
 
