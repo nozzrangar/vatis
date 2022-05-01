@@ -343,8 +343,8 @@ namespace Vatsim.Vatis.Client
                     {
                         var metar = MetarDecoder.MetarDecoder.ParseWithMode(args.Metar);
                         metar.IsInternational = !composite.UseFaaFormat;
+                        
                         composite.DecodedMetar = metar;
-
                         composite.MetarReceived?.Invoke(this, new ClientEventArgs<string>(args.Metar));
 
                         tabPage.CompositeMeta.Error = null;
@@ -410,14 +410,14 @@ namespace Vatsim.Vatis.Client
                     };
                     tabPage.CompositeMeta.PresetChanged += async (sender, args) =>
                     {
+                        if (!connection.IsConnected)
+                            return;
+
                         if (composite.DecodedMetar == null)
                             return;
 
                         if (composite.AtisVoice.UseTextToSpeech)
                         {
-                            if (!connection.IsConnected)
-                                return;
-
                             try
                             {
                                 // If there's a previous request, cancel it.
@@ -447,7 +447,13 @@ namespace Vatsim.Vatis.Client
                     };
                     tabPage.CompositeMeta.AtisLetterChanged += async (sender, args) =>
                     {
-                        if (connection.IsConnected && composite.DecodedMetar != null && composite.AtisVoice.UseTextToSpeech)
+                        if (!connection.IsConnected)
+                            return;
+
+                        if (composite.DecodedMetar == null)
+                            return;
+
+                        if (composite.AtisVoice.UseTextToSpeech)
                         {
                             try
                             {
@@ -474,6 +480,40 @@ namespace Vatsim.Vatis.Client
                                 tabPage.CompositeMeta.Error = "Error: " + ex.Message;
                                 connection.Disconnect();
                             }
+                        }
+                    };
+                    tabPage.CompositeMeta.GenerateNewAtis += async (sender, args) =>
+                    {
+                        if (!connection.IsConnected)
+                            return;
+
+                        if (composite.AtisVoice.UseTextToSpeech)
+                        {
+                            try
+                            {
+                                // If there's a previous request, cancel it.
+                                if (cancellationToken != null)
+                                    cancellationToken.Cancel();
+
+                                cancellationToken = new CancellationTokenSource();
+
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
+                            }
+                            catch (TaskCanceledException) { }
+                            catch (AggregateException ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + string.Join(", ", ex.Flatten().InnerExceptions.Select(t => t.Message));
+                                connection.Disconnect();
+                            }
+                            catch (Exception ex)
+                            {
+                                tabPage.CompositeMeta.Error = "Error: " + ex.Message;
+                                connection.Disconnect();
+                            }
+                        }
+                        else
+                        {
+                            mAtisBuilder.GenerateAcarsText(composite);
                         }
                     };
                     tabPage.CompositeMeta.RecordedAtisMemoryStreamChanged += async (sender, args) =>

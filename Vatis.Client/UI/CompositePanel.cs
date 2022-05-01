@@ -30,6 +30,7 @@ namespace Vatsim.Vatis.Client.UI
         public event EventHandler<EventArgs> ConnectButtonClicked;
         public event EventHandler<EventArgs> AtisLetterChanged;
         public event EventHandler<EventArgs> PresetChanged;
+        public event EventHandler<EventArgs> GenerateNewAtis;
         public event EventHandler<RecordedAtisChangedEventArgs> RecordedAtisMemoryStreamChanged; 
 
         public bool VoiceRecordEnabled
@@ -347,6 +348,8 @@ namespace Vatsim.Vatis.Client.UI
                 mSelectedPreset.AirportConditions = txtArptCond.Text;
                 mAppConfig.SaveConfig();
                 saveAirportConditions.Visible = false;
+
+                GenerateNewAtis?.Invoke(this, EventArgs.Empty); // force ATIS text/voice to refresh
             }
         }
 
@@ -358,6 +361,8 @@ namespace Vatsim.Vatis.Client.UI
                 mSelectedPreset.Notams = txtNotams.Text;
                 mAppConfig.SaveConfig();
                 saveNotams.Visible = false;
+
+                GenerateNewAtis?.Invoke(this, EventArgs.Empty); // force ATIS text/voice to refresh
             }
         }
 
@@ -398,6 +403,8 @@ namespace Vatsim.Vatis.Client.UI
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     mAppConfig.SaveConfig();
+
+                    GenerateNewAtis?.Invoke(this, EventArgs.Empty); // force ATIS text/voice to refresh
                 }
             }
         }
@@ -410,6 +417,8 @@ namespace Vatsim.Vatis.Client.UI
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     mAppConfig.SaveConfig();
+
+                    GenerateNewAtis?.Invoke(this, EventArgs.Empty); // force ATIS text/voice to refresh
                 }
             }
         }
