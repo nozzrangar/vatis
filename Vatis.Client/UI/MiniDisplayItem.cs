@@ -7,6 +7,8 @@ namespace Vatsim.Vatis.Client.UI
 {
     public partial class MiniDisplayItem : UserControl
     {
+        public EventHandler<EventArgs> AtisUpdateAcknowledged;
+
         private readonly System.Threading.SynchronizationContext mSyncContext;
         private bool mAlternateColor;
         private bool mIsNewAtis;
@@ -56,7 +58,7 @@ namespace Vatsim.Vatis.Client.UI
         private void txtAtisLetter_Click(object sender, EventArgs e)
         {
             IsNewAtis = false;
-            Composite.AtisUpdateAcknowledged?.Invoke(this, EventArgs.Empty);
+            AtisUpdateAcknowledged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

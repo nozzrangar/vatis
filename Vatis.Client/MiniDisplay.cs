@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Vatsim.Vatis.Client.Args;
 using Vatsim.Vatis.Client.Common;
 using Vatsim.Vatis.Client.Config;
 using Vatsim.Vatis.Client.Core;
@@ -16,6 +17,9 @@ namespace Vatsim.Vatis.Client
     {
         [EventPublication(EventTopics.MinifiedWindowClosed)]
         public event EventHandler<EventArgs> MinifiedWindowClosed;
+
+        [EventPublication(EventTopics.AtisUpdateAcknowledged)]
+        public event EventHandler<ClientEventArgs<AtisComposite>> AtisUpdateAcknowledged;
 
         private readonly IEventBroker mEventBroker;
         private readonly IAppConfig mAppConfig;
@@ -245,6 +249,8 @@ namespace Vatsim.Vatis.Client
 
                         composite.MetarReceived += (x, y) => item.Metar = y.Value;
                         composite.NewAtisUpdate += (x, y) => item.IsNewAtis = true;
+
+                        item.AtisUpdateAcknowledged += (x, y) => AtisUpdateAcknowledged?.Invoke(this, new ClientEventArgs<AtisComposite>(composite));
 
                         tlpMain.Controls.Add(item, col, row);
 

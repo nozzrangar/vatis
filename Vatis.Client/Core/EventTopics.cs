@@ -10,5 +10,6 @@
         public const string PerformVersionCheck = "PerformVersionCheck";
         public const string MinifiedWindowClosed = "MinifiedWindowClosed";
         public const string RefreshMinifiedWindow = "RefreshMinifiedWindow";
+        public const string AtisUpdateAcknowledged = "AtisUpdateAcknowledged";
     }
 }

@@ -254,6 +254,16 @@ namespace Vatsim.Vatis.Client
             }
         }
 
+        [EventSubscription(EventTopics.AtisUpdateAcknowledged, typeof(OnUserInterfaceAsync))]
+        public void OnAtisUpdateAcknowledged(object sender, ClientEventArgs<AtisComposite> e)
+        {
+            var tab = atisTabs.TabPages.Cast<AtisTabPage>().FirstOrDefault(x => x.Composite == e.Value);
+            if (tab != null)
+            {
+                tab.CompositeMeta.IsNewAtis = false;
+            }
+        }
+
         private void RefreshAtisComposites()
         {
             if (mAppConfig.CurrentProfile == null)
@@ -299,14 +309,6 @@ namespace Vatsim.Vatis.Client
                         Name = composite.Id.ToString(),
                         Text = tabId,
                         Tag = composite
-                    };
-
-                    composite.AtisUpdateAcknowledged += (sender, args) =>
-                    {
-                        if (tabPage != null)
-                        {
-                            tabPage.CompositeMeta.IsNewAtis = false;
-                        }
                     };
 
                     tabPage.CompositeMeta.ConnectButtonClicked += (sender, args) =>

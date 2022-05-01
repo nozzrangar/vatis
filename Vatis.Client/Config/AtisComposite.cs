@@ -71,7 +71,6 @@ namespace Vatsim.Vatis.Client.Config
 
         [JsonIgnore] public EventHandler<ClientEventArgs<string>> MetarReceived;
         [JsonIgnore] public EventHandler<EventArgs> NewAtisUpdate;
-        [JsonIgnore] public EventHandler<EventArgs> AtisUpdateAcknowledged;
     }
 
     [Serializable]
