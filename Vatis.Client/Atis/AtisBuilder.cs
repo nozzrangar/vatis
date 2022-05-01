@@ -294,7 +294,7 @@ namespace Vatsim.Vatis.Client.Atis
             }
 
             notamText = Regex.Replace(notamText, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
-            if (composite.UseFaaFormat)
+            if (!string.IsNullOrEmpty(notamText) && composite.UseFaaFormat)
             {
                 notamText = "NOTAMS... " + notamText;
             }
