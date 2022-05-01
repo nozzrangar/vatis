@@ -37,13 +37,14 @@ namespace Vatsim.Vatis.Client
             this.pageConfiguration = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.pageGeneral = new System.Windows.Forms.TabPage();
+            this.groupVoiceOption = new System.Windows.Forms.Panel();
+            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
+            this.ddlVoices = new System.Windows.Forms.ComboBox();
+            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
             this.label3 = new System.Windows.Forms.Label();
             this.vhfFrequency = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.radioVoiceRecorded = new System.Windows.Forms.RadioButton();
             this.observationTime = new System.Windows.Forms.NumericUpDown();
-            this.radioTextToSpeech = new System.Windows.Forms.RadioButton();
-            this.ddlVoices = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.typeCombined = new System.Windows.Forms.RadioButton();
             this.typeDeparture = new System.Windows.Forms.RadioButton();
@@ -134,6 +135,7 @@ namespace Vatsim.Vatis.Client
             this.pageConfiguration.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.pageGeneral.SuspendLayout();
+            this.groupVoiceOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.magneticVar)).BeginInit();
@@ -235,13 +237,11 @@ namespace Vatsim.Vatis.Client
             // 
             // pageGeneral
             // 
+            this.pageGeneral.Controls.Add(this.groupVoiceOption);
             this.pageGeneral.Controls.Add(this.label3);
             this.pageGeneral.Controls.Add(this.vhfFrequency);
             this.pageGeneral.Controls.Add(this.label4);
-            this.pageGeneral.Controls.Add(this.radioVoiceRecorded);
             this.pageGeneral.Controls.Add(this.observationTime);
-            this.pageGeneral.Controls.Add(this.radioTextToSpeech);
-            this.pageGeneral.Controls.Add(this.ddlVoices);
             this.pageGeneral.Controls.Add(this.flowLayoutPanel2);
             this.pageGeneral.Controls.Add(this.txtIdsEndpoint);
             this.pageGeneral.Controls.Add(this.chkObservationTime);
@@ -255,6 +255,61 @@ namespace Vatsim.Vatis.Client
             this.pageGeneral.TabIndex = 1;
             this.pageGeneral.Text = "General";
             this.pageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // groupVoiceOption
+            // 
+            this.groupVoiceOption.Controls.Add(this.radioTextToSpeech);
+            this.groupVoiceOption.Controls.Add(this.ddlVoices);
+            this.groupVoiceOption.Controls.Add(this.radioVoiceRecorded);
+            this.groupVoiceOption.Location = new System.Drawing.Point(40, 194);
+            this.groupVoiceOption.Name = "groupVoiceOption";
+            this.groupVoiceOption.Size = new System.Drawing.Size(534, 25);
+            this.groupVoiceOption.TabIndex = 38;
+            // 
+            // radioTextToSpeech
+            // 
+            this.radioTextToSpeech.AutoSize = true;
+            this.radioTextToSpeech.Checked = true;
+            this.radioTextToSpeech.Location = new System.Drawing.Point(4, 3);
+            this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioTextToSpeech.Name = "radioTextToSpeech";
+            this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
+            this.radioTextToSpeech.TabIndex = 10;
+            this.radioTextToSpeech.TabStop = true;
+            this.radioTextToSpeech.Text = "Text to Speech:";
+            this.compositeTooltip.SetToolTip(this.radioTextToSpeech, "Use synthesized text to speech to generate the ATIS voice.");
+            this.radioTextToSpeech.UseVisualStyleBackColor = true;
+            this.radioTextToSpeech.CheckedChanged += new System.EventHandler(this.radioTextToSpeech_CheckedChanged);
+            // 
+            // ddlVoices
+            // 
+            this.ddlVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlVoices.FormattingEnabled = true;
+            this.ddlVoices.Items.AddRange(new object[] {
+            "Default",
+            "US Male",
+            "US Female",
+            "UK Male",
+            "UK Female"});
+            this.ddlVoices.Location = new System.Drawing.Point(130, 1);
+            this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ddlVoices.Name = "ddlVoices";
+            this.ddlVoices.Size = new System.Drawing.Size(264, 23);
+            this.ddlVoices.TabIndex = 9;
+            this.ddlVoices.SelectedIndexChanged += new System.EventHandler(this.ddlVoices_SelectedIndexChanged);
+            // 
+            // radioVoiceRecorded
+            // 
+            this.radioVoiceRecorded.AutoSize = true;
+            this.radioVoiceRecorded.Location = new System.Drawing.Point(416, 3);
+            this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioVoiceRecorded.Name = "radioVoiceRecorded";
+            this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
+            this.radioVoiceRecorded.TabIndex = 11;
+            this.radioVoiceRecorded.Text = "Voice Recorded";
+            this.compositeTooltip.SetToolTip(this.radioVoiceRecorded, "Manually voice record the ATIS using a microphone device.");
+            this.radioVoiceRecorded.UseVisualStyleBackColor = true;
+            this.radioVoiceRecorded.CheckedChanged += new System.EventHandler(this.radioVoiceRecorded_CheckedChanged);
             // 
             // label3
             // 
@@ -287,19 +342,6 @@ namespace Vatsim.Vatis.Client
             this.label4.TabIndex = 35;
             this.label4.Text = "ATIS Type:";
             // 
-            // radioVoiceRecorded
-            // 
-            this.radioVoiceRecorded.AutoSize = true;
-            this.radioVoiceRecorded.Location = new System.Drawing.Point(455, 199);
-            this.radioVoiceRecorded.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.radioVoiceRecorded.Name = "radioVoiceRecorded";
-            this.radioVoiceRecorded.Size = new System.Drawing.Size(106, 19);
-            this.radioVoiceRecorded.TabIndex = 11;
-            this.radioVoiceRecorded.Text = "Voice Recorded";
-            this.compositeTooltip.SetToolTip(this.radioVoiceRecorded, "Manually voice record the ATIS using a microphone device.");
-            this.radioVoiceRecorded.UseVisualStyleBackColor = true;
-            this.radioVoiceRecorded.CheckedChanged += new System.EventHandler(this.radioVoiceRecorded_CheckedChanged);
-            // 
             // observationTime
             // 
             this.observationTime.Enabled = false;
@@ -309,38 +351,6 @@ namespace Vatsim.Vatis.Client
             this.observationTime.Size = new System.Drawing.Size(74, 23);
             this.observationTime.TabIndex = 13;
             this.observationTime.ValueChanged += new System.EventHandler(this.observationTime_ValueChanged);
-            // 
-            // radioTextToSpeech
-            // 
-            this.radioTextToSpeech.AutoSize = true;
-            this.radioTextToSpeech.Checked = true;
-            this.radioTextToSpeech.Location = new System.Drawing.Point(43, 199);
-            this.radioTextToSpeech.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.radioTextToSpeech.Name = "radioTextToSpeech";
-            this.radioTextToSpeech.Size = new System.Drawing.Size(104, 19);
-            this.radioTextToSpeech.TabIndex = 10;
-            this.radioTextToSpeech.TabStop = true;
-            this.radioTextToSpeech.Text = "Text to Speech:";
-            this.compositeTooltip.SetToolTip(this.radioTextToSpeech, "Use synthesized text to speech to generate the ATIS voice.");
-            this.radioTextToSpeech.UseVisualStyleBackColor = true;
-            this.radioTextToSpeech.CheckedChanged += new System.EventHandler(this.radioTextToSpeech_CheckedChanged);
-            // 
-            // ddlVoices
-            // 
-            this.ddlVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlVoices.FormattingEnabled = true;
-            this.ddlVoices.Items.AddRange(new object[] {
-            "Default",
-            "US Male",
-            "US Female",
-            "UK Male",
-            "UK Female"});
-            this.ddlVoices.Location = new System.Drawing.Point(169, 197);
-            this.ddlVoices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ddlVoices.Name = "ddlVoices";
-            this.ddlVoices.Size = new System.Drawing.Size(264, 23);
-            this.ddlVoices.TabIndex = 9;
-            this.ddlVoices.SelectedIndexChanged += new System.EventHandler(this.ddlVoices_SelectedIndexChanged);
             // 
             // flowLayoutPanel2
             // 
@@ -1348,6 +1358,8 @@ namespace Vatsim.Vatis.Client
             this.tabControl1.ResumeLayout(false);
             this.pageGeneral.ResumeLayout(false);
             this.pageGeneral.PerformLayout();
+            this.groupVoiceOption.ResumeLayout(false);
+            this.groupVoiceOption.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.observationTime)).EndInit();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
@@ -1481,5 +1493,6 @@ namespace Vatsim.Vatis.Client
         private System.Windows.Forms.CheckBox chkVisibilitySuffix;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Panel groupVoiceOption;
     }
 }

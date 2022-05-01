@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -155,6 +156,8 @@ namespace Vatsim.Vatis.Client
                 magneticVar.Value = mCurrentComposite.MagneticVariation.MagneticDegrees;
                 magneticVar.Enabled = chkMagneticVar.Checked;
             }
+
+            groupVoiceOption.Enabled = !mCurrentComposite.Connection.IsConnected;
 
             if (mCurrentComposite.AtisVoice != null)
             {
