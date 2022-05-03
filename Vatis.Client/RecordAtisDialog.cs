@@ -173,7 +173,7 @@ namespace Vatsim.Vatis.Client
 
             btnRecord.Enabled = ddlInputDeviceName.SelectedIndex != -1;
 
-            if (ddlOutputDeviceName.SelectedValue != null && ddlInputDeviceName.SelectedValue.ToString() != mAppConfig.MicrophoneDevice)
+            if (ddlInputDeviceName.SelectedValue != null && ddlInputDeviceName.SelectedValue.ToString() != mAppConfig.MicrophoneDevice)
             {
                 mAppConfig.MicrophoneDevice = ddlInputDeviceName.SelectedValue.ToString();
                 mAppConfig.SaveConfig();
