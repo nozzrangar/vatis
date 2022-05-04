@@ -357,16 +357,12 @@ namespace Vatsim.Vatis.Client.Atis
                 $"{ int.Parse(m.Groups[3].Value).NumberToSingular() } " +
                 $"{ int.Parse(m.Groups[4].Value).NumberToSingular() } zulu"));
 
-            // format vhf frequencies
-            input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value)
-            .DecimalToWordString(!composite.UseFaaFormat));
-
             // read numbers in group format, prefixed with # or surrounded with {}
             input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
             input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
 
             // read numbers in serial format
-            input = Regex.Replace(input, @"[0-9,]+(?![^{]*\})", m => m.Value.Replace(",", "").NumberToSingular());
+            input = Regex.Replace(input, @"([+-])?([0-9]+\.?[0-9]*|\.[0-9]+)(?![^{]*\})", m => m.Value.NumberToSingular(composite.UseDecimalTerminology));
 
             // letters
             input = Regex.Replace(input, @"\*([A-Z]{1,2}[0-9]{0,2})", m => string.Format("{0}", m.Value.ConvertAlphaNumericToWordGroup())).Trim();

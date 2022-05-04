@@ -55,6 +55,7 @@ namespace Vatsim.Vatis.Client
             this.chkMagneticVar = new System.Windows.Forms.CheckBox();
             this.magneticVar = new System.Windows.Forms.NumericUpDown();
             this.pageFormat = new System.Windows.Forms.TabPage();
+            this.chkDecimalTerminology = new System.Windows.Forms.CheckBox();
             this.chkVisibilitySuffix = new System.Windows.Forms.CheckBox();
             this.chkSurfaceWindPrefix = new System.Windows.Forms.CheckBox();
             this.chkConvertMetric = new System.Windows.Forms.CheckBox();
@@ -467,6 +468,7 @@ namespace Vatsim.Vatis.Client
             // 
             // pageFormat
             // 
+            this.pageFormat.Controls.Add(this.chkDecimalTerminology);
             this.pageFormat.Controls.Add(this.chkVisibilitySuffix);
             this.pageFormat.Controls.Add(this.chkSurfaceWindPrefix);
             this.pageFormat.Controls.Add(this.chkConvertMetric);
@@ -482,11 +484,24 @@ namespace Vatsim.Vatis.Client
             this.pageFormat.Text = "Formatting";
             this.pageFormat.UseVisualStyleBackColor = true;
             // 
+            // chkDecimalTerminology
+            // 
+            this.chkDecimalTerminology.AutoSize = true;
+            this.chkDecimalTerminology.Location = new System.Drawing.Point(40, 262);
+            this.chkDecimalTerminology.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkDecimalTerminology.Name = "chkDecimalTerminology";
+            this.chkDecimalTerminology.Size = new System.Drawing.Size(245, 19);
+            this.chkDecimalTerminology.TabIndex = 49;
+            this.chkDecimalTerminology.Text = "Use \"decimal\" terminology in spoken text";
+            this.compositeTooltip.SetToolTip(this.chkDecimalTerminology, "Use the word \"decimal\" when speaking decimal numbers or frequencies. For example," +
+        " 121.1 would be spoken as \"one two one decimal one\".");
+            this.chkDecimalTerminology.UseVisualStyleBackColor = true;
+            this.chkDecimalTerminology.CheckedChanged += new System.EventHandler(this.chkDecimalTerminology_CheckedChanged);
+            // 
             // chkVisibilitySuffix
             // 
             this.chkVisibilitySuffix.AutoSize = true;
-            this.chkVisibilitySuffix.Enabled = false;
-            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 215);
+            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 194);
             this.chkVisibilitySuffix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkVisibilitySuffix.Name = "chkVisibilitySuffix";
             this.chkVisibilitySuffix.Size = new System.Drawing.Size(333, 19);
@@ -500,8 +515,7 @@ namespace Vatsim.Vatis.Client
             // chkSurfaceWindPrefix
             // 
             this.chkSurfaceWindPrefix.AutoSize = true;
-            this.chkSurfaceWindPrefix.Enabled = false;
-            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 179);
+            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 160);
             this.chkSurfaceWindPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkSurfaceWindPrefix.Name = "chkSurfaceWindPrefix";
             this.chkSurfaceWindPrefix.Size = new System.Drawing.Size(234, 19);
@@ -515,7 +529,7 @@ namespace Vatsim.Vatis.Client
             // chkConvertMetric
             // 
             this.chkConvertMetric.AutoSize = true;
-            this.chkConvertMetric.Location = new System.Drawing.Point(40, 251);
+            this.chkConvertMetric.Location = new System.Drawing.Point(40, 228);
             this.chkConvertMetric.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkConvertMetric.Name = "chkConvertMetric";
             this.chkConvertMetric.Size = new System.Drawing.Size(217, 19);
@@ -528,8 +542,7 @@ namespace Vatsim.Vatis.Client
             // chkTransitionLevelPrefix
             // 
             this.chkTransitionLevelPrefix.AutoSize = true;
-            this.chkTransitionLevelPrefix.Enabled = false;
-            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 143);
+            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 126);
             this.chkTransitionLevelPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkTransitionLevelPrefix.Name = "chkTransitionLevelPrefix";
             this.chkTransitionLevelPrefix.Size = new System.Drawing.Size(316, 19);
@@ -543,7 +556,7 @@ namespace Vatsim.Vatis.Client
             // chkPrefixNotams
             // 
             this.chkPrefixNotams.AutoSize = true;
-            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 107);
+            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 92);
             this.chkPrefixNotams.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkPrefixNotams.Name = "chkPrefixNotams";
             this.chkPrefixNotams.Size = new System.Drawing.Size(352, 19);
@@ -557,7 +570,7 @@ namespace Vatsim.Vatis.Client
             // chkFaaFormat
             // 
             this.chkFaaFormat.AutoSize = true;
-            this.chkFaaFormat.Location = new System.Drawing.Point(40, 71);
+            this.chkFaaFormat.Location = new System.Drawing.Point(40, 58);
             this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkFaaFormat.Name = "chkFaaFormat";
             this.chkFaaFormat.Size = new System.Drawing.Size(184, 19);
@@ -570,7 +583,7 @@ namespace Vatsim.Vatis.Client
             // chkExternalAtisGenerator
             // 
             this.chkExternalAtisGenerator.AutoSize = true;
-            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 35);
+            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 24);
             this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
             this.chkExternalAtisGenerator.Size = new System.Drawing.Size(310, 19);
@@ -1494,5 +1507,6 @@ namespace Vatsim.Vatis.Client
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Panel groupVoiceOption;
+        private System.Windows.Forms.CheckBox chkDecimalTerminology;
     }
 }

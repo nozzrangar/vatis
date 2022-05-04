@@ -31,5 +31,6 @@ namespace Vatsim.Vatis.Client.Config
         bool UseMetricUnits { get; set; }
         bool UseSurfaceWindPrefix { get; set; }
         bool UseVisibilitySuffix { get; set; }
+        bool UseDecimalTerminology { get; set; }
     }
 }

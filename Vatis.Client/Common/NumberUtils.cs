@@ -128,15 +128,31 @@ namespace Vatsim.Vatis.Client.Common
         /// </summary>
         /// <param name="number">String number</param>
         /// <returns></returns>
-        public static string NumberToSingular(this string number)
+        public static string NumberToSingular(this string input, bool useDecimalTerminology = false)
         {
-            number = Regex.Replace(number, @"[^\d]", "");
-            List<string> temp = new List<string>();
-            foreach (var x in number.ToString().Select(q => new string(q, 1)).ToArray())
+            var group = new List<string>();
+
+            var punctuationMatch = Regex.Match(input, @"[.!?\\-]");
+            var numberMatch = Regex.Match(input, @"[1-9]\d*(\.\d+)?");
+
+            if (numberMatch.Success)
             {
-                temp.Add(int.Parse(x).NumbersToWords());
+                foreach (var number in numberMatch.Value.Split('.'))
+                {
+                    var temp = new List<string>();
+                    foreach (var digit in number.ToString().Select(q => new string(q, 1)).ToArray())
+                    {
+                        temp.Add(int.Parse(digit).NumbersToWords());
+                    }
+                    group.Add(string.Join(" ", temp).Trim(' '));
+                }
+
+                return punctuationMatch.Success
+                    ? string.Join(useDecimalTerminology ? " decimal " : " point ", group) + punctuationMatch.Value
+                    : string.Join(useDecimalTerminology ? " decimal " : " point ", group);
             }
-            return string.Join(" ", temp).Trim(' ');
+
+            return input;
         }
 
         /// <summary>

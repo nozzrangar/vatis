@@ -51,6 +51,7 @@ namespace Vatsim.Vatis.Client
         private bool mConvertMetricChanged = false;
         private bool mSurfaceWindPrefixChanged = false;
         private bool mVisibilitySuffixChanged = false;
+        private bool mUseDecimalTerminologyChanged = false;
 
         [EventPublication(EventTopics.RefreshAtisComposites)]
         public event EventHandler RefreshAtisComposites;
@@ -142,6 +143,7 @@ namespace Vatsim.Vatis.Client
             chkConvertMetric.Checked = mCurrentComposite.UseMetricUnits;
             chkVisibilitySuffix.Checked = mCurrentComposite.UseVisibilitySuffix;
             chkSurfaceWindPrefix.Checked = mCurrentComposite.UseSurfaceWindPrefix;
+            chkDecimalTerminology.Checked = mCurrentComposite.UseDecimalTerminology;
 
             if (mCurrentComposite.ObservationTime != null)
             {
@@ -782,6 +784,12 @@ namespace Vatsim.Vatis.Client
             {
                 mCurrentComposite.UseVisibilitySuffix = chkVisibilitySuffix.Checked;
                 mVisibilitySuffixChanged = false;
+            }
+
+            if (mUseDecimalTerminologyChanged)
+            {
+                mCurrentComposite.UseDecimalTerminology = chkDecimalTerminology.Checked;
+                mUseDecimalTerminologyChanged = false;
             }
 
             mTransitionLevelsChanged = false;
@@ -2059,6 +2067,26 @@ namespace Vatsim.Vatis.Client
             }
         }
 
+        private void chkDecimalTerminology_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mCurrentComposite == null)
+                return;
+
+            if (!chkDecimalTerminology.Focused)
+                return;
+
+            if (chkDecimalTerminology.Checked != mCurrentComposite.UseDecimalTerminology)
+            {
+                mUseDecimalTerminologyChanged = true;
+                btnApply.Enabled = true;
+            }
+            else
+            {
+                mUseDecimalTerminologyChanged = false;
+                btnApply.Enabled = false;
+            }
+        }
+
         private void ToggleNonFaaOptions()
         {
             if (chkFaaFormat.Checked)
@@ -2078,6 +2106,10 @@ namespace Vatsim.Vatis.Client
                 chkVisibilitySuffix.Checked = false;
                 chkVisibilitySuffix.Enabled = false;
                 mVisibilitySuffixChanged = true;
+
+                chkDecimalTerminology.Checked = false;
+                chkDecimalTerminology.Enabled = false;
+                mUseDecimalTerminologyChanged = true;
             }
             else
             {
@@ -2085,6 +2117,7 @@ namespace Vatsim.Vatis.Client
                 chkTransitionLevelPrefix.Enabled = true;
                 chkSurfaceWindPrefix.Enabled = true;
                 chkVisibilitySuffix.Enabled = true;
+                chkDecimalTerminology.Enabled = true;
             }
         }
 

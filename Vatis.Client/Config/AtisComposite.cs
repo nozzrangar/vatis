@@ -33,6 +33,7 @@ namespace Vatsim.Vatis.Client.Config
         public bool UseMetricUnits { get; set; }
         public bool UseSurfaceWindPrefix { get; set; }
         public bool UseVisibilitySuffix { get; set; }
+        public bool UseDecimalTerminology { get; set; }
 
         internal AtisComposite Clone()
         {
@@ -53,6 +54,9 @@ namespace Vatsim.Vatis.Client.Config
                 UseNotamPrefix = UseNotamPrefix,
                 UseTransitionLevelPrefix = UseTransitionLevelPrefix,
                 UseMetricUnits = UseMetricUnits,
+                UseSurfaceWindPrefix = UseSurfaceWindPrefix,
+                UseVisibilitySuffix = UseVisibilitySuffix,
+                UseDecimalTerminology = UseDecimalTerminology,
                 AtisVoice = AtisVoice,
                 IDSEndpoint = IDSEndpoint
             };

@@ -103,11 +103,13 @@
             this.label6 = new System.Windows.Forms.Label();
             this.pageTransitionLevel = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnDeleteTransitionLevel = new System.Windows.Forms.Button();
             this.gridTransitionLevels = new System.Windows.Forms.DataGridView();
             this.low = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.high = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.transitionLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnDeleteTransitionLevel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.listComposites = new System.Windows.Forms.ListBox();
@@ -128,8 +130,7 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.compositeTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.label13 = new System.Windows.Forms.Label();
+            this.chkDecimalTerminology = new System.Windows.Forms.CheckBox();
             this.TlpMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.mainTabControl.SuspendLayout();
@@ -153,11 +154,11 @@
             this.pageTransitionLevel.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridTransitionLevels)).BeginInit();
+            this.panel6.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.ctxOptions.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // TlpMain
@@ -453,6 +454,7 @@
             // 
             // pageFormatting
             // 
+            this.pageFormatting.Controls.Add(this.chkDecimalTerminology);
             this.pageFormatting.Controls.Add(this.chkVisibilitySuffix);
             this.pageFormatting.Controls.Add(this.chkSurfaceWindPrefix);
             this.pageFormatting.Controls.Add(this.chkConvertMetric);
@@ -472,7 +474,7 @@
             // 
             this.chkVisibilitySuffix.AutoSize = true;
             this.chkVisibilitySuffix.Enabled = false;
-            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 217);
+            this.chkVisibilitySuffix.Location = new System.Drawing.Point(40, 195);
             this.chkVisibilitySuffix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkVisibilitySuffix.Name = "chkVisibilitySuffix";
             this.chkVisibilitySuffix.Size = new System.Drawing.Size(333, 19);
@@ -487,7 +489,7 @@
             // 
             this.chkSurfaceWindPrefix.AutoSize = true;
             this.chkSurfaceWindPrefix.Enabled = false;
-            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 180);
+            this.chkSurfaceWindPrefix.Location = new System.Drawing.Point(40, 160);
             this.chkSurfaceWindPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkSurfaceWindPrefix.Name = "chkSurfaceWindPrefix";
             this.chkSurfaceWindPrefix.Size = new System.Drawing.Size(234, 19);
@@ -501,7 +503,7 @@
             // chkConvertMetric
             // 
             this.chkConvertMetric.AutoSize = true;
-            this.chkConvertMetric.Location = new System.Drawing.Point(40, 254);
+            this.chkConvertMetric.Location = new System.Drawing.Point(40, 230);
             this.chkConvertMetric.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkConvertMetric.Name = "chkConvertMetric";
             this.chkConvertMetric.Size = new System.Drawing.Size(217, 19);
@@ -515,7 +517,7 @@
             // 
             this.chkTransitionLevelPrefix.AutoSize = true;
             this.chkTransitionLevelPrefix.Enabled = false;
-            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 143);
+            this.chkTransitionLevelPrefix.Location = new System.Drawing.Point(40, 125);
             this.chkTransitionLevelPrefix.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkTransitionLevelPrefix.Name = "chkTransitionLevelPrefix";
             this.chkTransitionLevelPrefix.Size = new System.Drawing.Size(316, 19);
@@ -529,7 +531,7 @@
             // chkPrefixNotams
             // 
             this.chkPrefixNotams.AutoSize = true;
-            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 106);
+            this.chkPrefixNotams.Location = new System.Drawing.Point(40, 90);
             this.chkPrefixNotams.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkPrefixNotams.Name = "chkPrefixNotams";
             this.chkPrefixNotams.Size = new System.Drawing.Size(352, 19);
@@ -543,7 +545,7 @@
             // chkFaaFormat
             // 
             this.chkFaaFormat.AutoSize = true;
-            this.chkFaaFormat.Location = new System.Drawing.Point(40, 69);
+            this.chkFaaFormat.Location = new System.Drawing.Point(40, 55);
             this.chkFaaFormat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkFaaFormat.Name = "chkFaaFormat";
             this.chkFaaFormat.Size = new System.Drawing.Size(184, 19);
@@ -556,7 +558,7 @@
             // chkExternalAtisGenerator
             // 
             this.chkExternalAtisGenerator.AutoSize = true;
-            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 32);
+            this.chkExternalAtisGenerator.Location = new System.Drawing.Point(40, 20);
             this.chkExternalAtisGenerator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkExternalAtisGenerator.Name = "chkExternalAtisGenerator";
             this.chkExternalAtisGenerator.Size = new System.Drawing.Size(310, 19);
@@ -1087,16 +1089,6 @@
             this.tableLayoutPanel5.Size = new System.Drawing.Size(684, 338);
             this.tableLayoutPanel5.TabIndex = 3;
             // 
-            // btnDeleteTransitionLevel
-            // 
-            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(560, 4);
-            this.btnDeleteTransitionLevel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnDeleteTransitionLevel.Name = "btnDeleteTransitionLevel";
-            this.btnDeleteTransitionLevel.Size = new System.Drawing.Size(120, 27);
-            this.btnDeleteTransitionLevel.TabIndex = 1;
-            this.btnDeleteTransitionLevel.Text = "Delete Selected";
-            this.btnDeleteTransitionLevel.UseVisualStyleBackColor = true;
-            // 
             // gridTransitionLevels
             // 
             this.gridTransitionLevels.AllowUserToResizeColumns = false;
@@ -1132,6 +1124,37 @@
             // 
             this.transitionLevel.HeaderText = "Transition Level";
             this.transitionLevel.Name = "transitionLevel";
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.label13);
+            this.panel6.Controls.Add(this.btnDeleteTransitionLevel);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 303);
+            this.panel6.Margin = new System.Windows.Forms.Padding(0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(684, 35);
+            this.panel6.TabIndex = 3;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 10);
+            this.label13.Name = "label13";
+            this.label13.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label13.Size = new System.Drawing.Size(244, 15);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Both Low and High QNH values are required.\r\n";
+            // 
+            // btnDeleteTransitionLevel
+            // 
+            this.btnDeleteTransitionLevel.Location = new System.Drawing.Point(560, 4);
+            this.btnDeleteTransitionLevel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnDeleteTransitionLevel.Name = "btnDeleteTransitionLevel";
+            this.btnDeleteTransitionLevel.Size = new System.Drawing.Size(120, 27);
+            this.btnDeleteTransitionLevel.TabIndex = 1;
+            this.btnDeleteTransitionLevel.Text = "Delete Selected";
+            this.btnDeleteTransitionLevel.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -1314,26 +1337,19 @@
             this.compositeTooltip.InitialDelay = 250;
             this.compositeTooltip.ReshowDelay = 50;
             // 
-            // panel6
+            // chkDecimalTerminology
             // 
-            this.panel6.Controls.Add(this.label13);
-            this.panel6.Controls.Add(this.btnDeleteTransitionLevel);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 303);
-            this.panel6.Margin = new System.Windows.Forms.Padding(0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(684, 35);
-            this.panel6.TabIndex = 3;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(4, 10);
-            this.label13.Name = "label13";
-            this.label13.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label13.Size = new System.Drawing.Size(244, 15);
-            this.label13.TabIndex = 3;
-            this.label13.Text = "Both Low and High QNH values are required.\r\n";
+            this.chkDecimalTerminology.AutoSize = true;
+            this.chkDecimalTerminology.Location = new System.Drawing.Point(40, 265);
+            this.chkDecimalTerminology.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.chkDecimalTerminology.Name = "chkDecimalTerminology";
+            this.chkDecimalTerminology.Size = new System.Drawing.Size(245, 19);
+            this.chkDecimalTerminology.TabIndex = 54;
+            this.chkDecimalTerminology.Text = "Use \"decimal\" terminology in spoken text";
+            this.compositeTooltip.SetToolTip(this.chkDecimalTerminology, "Use the word \"decimal\" when speaking decimal numbers or frequencies. For example," +
+        " 121.1 would be spoken as \"one two one decimal one\".");
+            this.chkDecimalTerminology.UseVisualStyleBackColor = true;
+            this.chkDecimalTerminology.CheckedChanged += new System.EventHandler(this.chkDecimalTerminology_CheckedChanged);
             // 
             // ProfileEditor
             // 
@@ -1382,12 +1398,12 @@
             this.pageTransitionLevel.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridTransitionLevels)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.ctxOptions.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1495,5 +1511,6 @@
         private System.Windows.Forms.CheckBox chkPrefixNotams;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox chkDecimalTerminology;
     }
 }
