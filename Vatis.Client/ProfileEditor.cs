@@ -500,7 +500,7 @@ namespace Vatsim.Vatis.Client
 
             if (mAppConfig.Composites.Any(x => x.Identifier == profile.ID))
             {
-                if (MessageBox.Show(this, $"A composite with that identifier already exists: {profile}\r\n\r\nWould you like to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show(this, $"A composite already exists for {profile.Name} ({profile.ID}). Do you want to overwrite it?", "Duplicate Composite", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == DialogResult.No)
                 {
                     return;
                 }
