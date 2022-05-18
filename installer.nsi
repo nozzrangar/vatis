@@ -12,7 +12,6 @@ Name "vATIS"
 BrandingText "vATIS ${Version}"
 OutFile ".\vATIS-Setup-${Version}.exe"
 InstallDir "$LOCALAPPDATA\vATIS-4.0"
-RequestExecutionLevel Admin
 
 !define MUI_ABORTWARNING
 
