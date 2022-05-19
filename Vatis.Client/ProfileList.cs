@@ -327,44 +327,48 @@ namespace Vatsim.Vatis.Client
                 Filter = "vATIS Profile (*.json)|*.json",
                 FilterIndex = 1,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Multiselect = true,
                 ShowHelp = false
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                try
+                foreach (var file in openFileDialog.FileNames)
                 {
-                    var profile = new Profile();
-
-                    using var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (var sr = new StreamReader(fs))
+                    try
                     {
-                        profile = JsonConvert.DeserializeObject<Profile>(sr.ReadToEnd(), new JsonSerializerSettings
-                        {
-                            MissingMemberHandling = MissingMemberHandling.Error
-                        });
-                    }
+                        var profile = new Profile();
 
-                    if (mAppConfig.Profiles.Any(x => x.Name == profile.Name))
-                    {
-                        if (MessageBox.Show(this, string.Format($"You already have a profile for {profile.Name}. Would you like to overwrite it?"), "Overwrite Existing Profile?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                        using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        using (var sr = new StreamReader(fs))
                         {
-                            mAppConfig.Profiles.RemoveAll(x => x.Name == profile.Name);
+                            profile = JsonConvert.DeserializeObject<Profile>(sr.ReadToEnd(), new JsonSerializerSettings
+                            {
+                                MissingMemberHandling = MissingMemberHandling.Error
+                            });
+                        }
+
+                        if (mAppConfig.Profiles.Any(x => x.Name == profile.Name))
+                        {
+                            if (MessageBox.Show(this, string.Format($"You already have a profile for {profile.Name}. Would you like to overwrite it?"), "Overwrite Existing Profile?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                            {
+                                mAppConfig.Profiles.RemoveAll(x => x.Name == profile.Name);
+                                mAppConfig.Profiles.Add(profile);
+                                mAppConfig.SaveConfig();
+                            }
+                        }
+                        else
+                        {
                             mAppConfig.Profiles.Add(profile);
                             mAppConfig.SaveConfig();
                         }
-                    }
-                    else
-                    {
-                        mAppConfig.Profiles.Add(profile);
-                        mAppConfig.SaveConfig();
-                    }
 
-                    RefreshList();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, ex.Message, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        RefreshList();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.Message, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    }
                 }
             }
         }
