@@ -680,7 +680,7 @@ namespace Vatsim.Vatis.Client.Atis
             {"MI", "MILE" },
             {"UFN", "UNTIL FURTHER NOTICE" },
             {"SFC", "SURFACE" },
-            {"TODA", "TAKE-OFF DISTANCE" },
+            {"TODA", "TAKE-OFF DISTANCE AVAILABLE" },
             {"VC", "VICINITY" },
             {"INSTR", "INSTRUMENT" },
             {"CNTD", "CONDUCTED" },
