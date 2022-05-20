@@ -13,6 +13,7 @@ namespace Vatsim.Vatis.Client.Config
         [JsonIgnore] public string ConfigPath { get; }
 
         public List<AtisComposite> Composites { get; set; } = new List<AtisComposite>();
+        public string WorkingDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
         public ProfileEditorConfig()
         {

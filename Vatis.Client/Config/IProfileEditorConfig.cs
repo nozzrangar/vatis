@@ -6,6 +6,7 @@ namespace Vatsim.Vatis.Client.Config
     {
         string AppPath { get; }
         List<AtisComposite> Composites { get; set; }
+        string WorkingDirectory { get; set; }
         void LoadConfig(string path);
         void SaveConfig();
     }
