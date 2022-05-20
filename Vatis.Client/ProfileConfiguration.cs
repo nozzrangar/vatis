@@ -284,6 +284,7 @@ namespace Vatsim.Vatis.Client
                 dlg.Identifier = previousIdentifer;
                 dlg.CompositeName = previousName;
                 dlg.Type = previousType;
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                 DialogResult result = dlg.ShowDialog(this);
                 if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
@@ -358,6 +359,7 @@ namespace Vatsim.Vatis.Client
                     dlg.Identifier = previousIdentifer;
                     dlg.CompositeName = previousName;
                     dlg.Type = previousType;
+                    dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                     DialogResult result = dlg.ShowDialog(this);
                     if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Identifier))
@@ -422,6 +424,7 @@ namespace Vatsim.Vatis.Client
                         dlg.ErrorMessage = "Invalid composite name. It must consist of only letters, numbers, underscores and spaces.";
                         dlg.RegexExpression = "^[a-zA-Z0-9_ ]*$";
                         dlg.InitialValue = previousValue;
+                        dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                         DialogResult result2 = dlg.ShowDialog(this);
                         if (result2 == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
@@ -1141,6 +1144,7 @@ namespace Vatsim.Vatis.Client
                 dlg.WindowTitle = "New Preset";
                 dlg.InitialValue = previousValue;
                 dlg.TextUppercase = true;
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                 DialogResult result = dlg.ShowDialog(this);
                 if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
@@ -1186,6 +1190,7 @@ namespace Vatsim.Vatis.Client
                 dlg.WindowTitle = "Rename Preset";
                 dlg.InitialValue = previousValue;
                 dlg.TextUppercase = true;
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                 DialogResult result = dlg.ShowDialog(this);
                 if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
@@ -1227,6 +1232,7 @@ namespace Vatsim.Vatis.Client
                 dlg.WindowTitle = "Copy Preset";
                 dlg.InitialValue = previousValue;
                 dlg.TextUppercase = true;
+                dlg.TopMost = mAppConfig.WindowProperties.TopMost;
 
                 DialogResult result = dlg.ShowDialog(this);
                 if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.Value))
