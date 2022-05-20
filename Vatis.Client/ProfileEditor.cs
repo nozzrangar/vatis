@@ -1659,7 +1659,7 @@ namespace Vatsim.Vatis.Client
                     Filter = "Legacy vATIS Profile (*.gz)|*.gz",
                     FilterIndex = 1,
                     DefaultExt = "gz",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    InitialDirectory = mAppConfig.WorkingDirectory,
                     ShowHelp = false
                 };
                 if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -1668,6 +1668,8 @@ namespace Vatsim.Vatis.Client
                     {
                         ImportLegacyProfile(file);
                     }
+                    mAppConfig.WorkingDirectory = Path.GetDirectoryName(dialog.FileName);
+                    mAppConfig.SaveConfig();
                 }
             }
             catch (Exception ex)
@@ -1690,7 +1692,7 @@ namespace Vatsim.Vatis.Client
                     Filter = "vATIS Composite (*.json)|*.json",
                     FilterIndex = 1,
                     DefaultExt = "gz",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    InitialDirectory = mAppConfig.WorkingDirectory,
                     ShowHelp = false
                 };
                 if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -1699,6 +1701,8 @@ namespace Vatsim.Vatis.Client
                     {
                         ImportComposite(file);
                     }
+                    mAppConfig.WorkingDirectory = Path.GetDirectoryName(dialog.FileName);
+                    mAppConfig.SaveConfig();
                 }
             }
             catch (Exception ex)
@@ -1746,7 +1750,7 @@ namespace Vatsim.Vatis.Client
                         FilterIndex = 1,
                         CheckPathExists = true,
                         DefaultExt = "json",
-                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                        InitialDirectory = mAppConfig.WorkingDirectory,
                         OverwritePrompt = true,
                         ShowHelp = false,
                         SupportMultiDottedExtensions = true,
@@ -1759,6 +1763,8 @@ namespace Vatsim.Vatis.Client
                         flag = true;
                         File.WriteAllText(saveDialog.FileName, JsonConvert.SerializeObject(profile, Formatting.Indented));
                         MessageBox.Show(this, "Profile exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        mAppConfig.WorkingDirectory = Path.GetDirectoryName(saveDialog.FileName);
+                        mAppConfig.SaveConfig();
                     }
                 }
                 else
@@ -1779,7 +1785,7 @@ namespace Vatsim.Vatis.Client
                     FilterIndex = 1,
                     CheckPathExists = true,
                     DefaultExt = "json",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    InitialDirectory = mAppConfig.WorkingDirectory,
                     OverwritePrompt = true,
                     ShowHelp = false,
                     SupportMultiDottedExtensions = true,
@@ -1791,6 +1797,8 @@ namespace Vatsim.Vatis.Client
                 {
                     File.WriteAllText(saveDialog.FileName, JsonConvert.SerializeObject(mCurrentComposite, Formatting.Indented));
                     MessageBox.Show(this, "Composite exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    mAppConfig.WorkingDirectory = Path.GetDirectoryName(saveDialog.FileName);
+                    mAppConfig.SaveConfig();
                 }
             }
         }
