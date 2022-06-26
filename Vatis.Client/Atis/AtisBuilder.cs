@@ -270,7 +270,7 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
-            airportConditions = Regex.Replace(airportConditions, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
+            airportConditions = Regex.Replace(airportConditions, @"[!?.]*([!?.])", "$1 "); // remove duplicate punctuation
 
             var notamVoice = "";
             var notamText = "";
@@ -293,6 +293,7 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
+            notamVoice = Regex.Replace(notamVoice, @"[!?.]*([!?.])", ""); // remove duplicate punctuation
             notamText = Regex.Replace(notamText, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
             if (!string.IsNullOrEmpty(notamText) && composite.UseFaaFormat)
             {
@@ -357,13 +358,6 @@ namespace Vatsim.Vatis.Client.Atis
                 $"{ int.Parse(m.Groups[3].Value).NumberToSingular() } " +
                 $"{ int.Parse(m.Groups[4].Value).NumberToSingular() } zulu"));
 
-            // read numbers in group format, prefixed with # or surrounded with {}
-            input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
-            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
-
-            // read numbers in serial format
-            input = Regex.Replace(input, @"([+-])?([0-9]+\.?[0-9]*|\.[0-9]+)(?![^{]*\})", m => m.Value.NumberToSingular(composite.UseDecimalTerminology));
-
             // letters
             input = Regex.Replace(input, @"\*([A-Z]{1,2}[0-9]{0,2})", m => string.Format("{0}", m.Value.ConvertAlphaNumericToWordGroup())).Trim();
 
@@ -377,6 +371,13 @@ namespace Vatsim.Vatis.Client.Atis
                 prefix: !string.IsNullOrEmpty(m.Groups[1].Value),
                 plural: !string.IsNullOrEmpty(m.Groups[1].Value) && m.Groups[1].Value == "RWYS",
                 leadingZero: !composite.UseFaaFormat));
+
+            // read numbers in group format, prefixed with # or surrounded with {}
+            input = Regex.Replace(input, @"\*(-?[\,0-9]+)", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
+            input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", m => int.Parse(m.Groups[1].Value.Replace(",", "")).NumbersToWordsGroup());
+
+            // read numbers in serial format
+            input = Regex.Replace(input, @"([+-])?([0-9]+\.?[0-9]*|\.[0-9]+)(?![^{]*\})", m => m.Value.NumberToSingular(composite.UseDecimalTerminology));
 
             // user defined contractions
             foreach (var x in composite.Contractions)
@@ -441,9 +442,7 @@ namespace Vatsim.Vatis.Client.Atis
             input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{3})", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{4})", "$1");
-            input = Regex.Replace(input, @"\s+(?=[.,?!])", ""); // remove extra spaces before punctuation
             input = Regex.Replace(input, @"\s+", " ");
-            input = Regex.Replace(input, @"\.+", ".");
             input = Regex.Replace(input, @"\s\,", ",");
             input = Regex.Replace(input, @"\&", "and");
             input = Regex.Replace(input, @"\*", "");
