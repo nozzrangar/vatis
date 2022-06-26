@@ -365,6 +365,9 @@ namespace Vatsim.Vatis.Client.Atis
                 $"{ int.Parse(m.Groups[3].Value).NumberToSingular() } " +
                 $"{ int.Parse(m.Groups[4].Value).NumberToSingular() } zulu"));
 
+            // vhf frequencies
+            input = Regex.Replace(input, @"(1\d\d\.\d\d?\d?)", m => Convert.ToDouble(m.Groups[1].Value).DecimalToWordString(composite.UseDecimalTerminology));
+
             // letters
             input = Regex.Replace(input, @"\*([A-Z]{1,2}[0-9]{0,2})", m => string.Format("{0}", m.Value.ConvertAlphaNumericToWordGroup())).Trim();
 
