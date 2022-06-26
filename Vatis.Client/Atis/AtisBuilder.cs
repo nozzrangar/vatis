@@ -101,6 +101,9 @@ namespace Vatsim.Vatis.Client.Atis
             {
                 var tts = FormatForTextToSpeech(voiceString.ToString().ToUpper(), composite);
 
+                tts = Regex.Replace(tts, @"[!?.]*([!?.])", "$1"); // clean up duplicate punctuation one last time
+                tts = Regex.Replace(tts, "\\s+([.,!\":])", "$1");
+
                 System.Diagnostics.Debug.WriteLine(tts);
 
                 await Task.Run(() =>
@@ -270,7 +273,8 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
-            airportConditions = Regex.Replace(airportConditions, @"[!?.]*([!?.])", "$1 "); // remove duplicate punctuation
+            airportConditions = Regex.Replace(airportConditions, @"[!?.]*([!?.])", "$1"); // clean up duplicate punctuation
+            airportConditions = Regex.Replace(airportConditions, "\\s+([.,!\":])", "$1");
 
             var notamVoice = "";
             var notamText = "";
@@ -293,8 +297,11 @@ namespace Vatsim.Vatis.Client.Atis
                 }
             }
 
-            notamVoice = Regex.Replace(notamVoice, @"[!?.]*([!?.])", ""); // remove duplicate punctuation
-            notamText = Regex.Replace(notamText, @"[!?.]*([!?.])", "$1"); // remove duplicate punctuation
+            notamVoice = Regex.Replace(notamVoice, @"[!?.]*([!?.])", "$1"); // clean up duplicate punctuation
+            notamVoice = Regex.Replace(notamVoice, "\\s+([.,!\":])", "$1");
+            notamText = Regex.Replace(notamText, @"[!?.]*([!?.])", "$1"); // clean up duplicate punctuation
+            notamText = Regex.Replace(notamText, "\\s+([.,!\":])", "$1");
+
             if (!string.IsNullOrEmpty(notamText) && composite.UseFaaFormat)
             {
                 notamText = "NOTAMS... " + notamText;
@@ -442,6 +449,8 @@ namespace Vatsim.Vatis.Client.Atis
             input = Regex.Replace(input, @"\{(-?[\,0-9]+)\}", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{3})", "$1");
             input = Regex.Replace(input, @"(?<=\+)([A-Z]{4})", "$1");
+            input = Regex.Replace(input, @"[!?.]*([!?.])", "$1 "); // clean up duplicate punctuation
+            input = Regex.Replace(input, "\\s+([.,!\":])", "$1 ");
             input = Regex.Replace(input, @"\s+", " ");
             input = Regex.Replace(input, @"\s\,", ",");
             input = Regex.Replace(input, @"\&", "and");
