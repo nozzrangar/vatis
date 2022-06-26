@@ -491,6 +491,7 @@ namespace Vatsim.Vatis.Client.Atis
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
                 await client.ExecuteAsync(request, token);
             }
+            catch (TaskCanceledException) { }
             catch (Exception ex)
             {
                 throw new Exception("PostIdsUpdate Error: " + ex.Message);
