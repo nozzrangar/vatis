@@ -87,8 +87,9 @@ namespace Vatsim.Vatis.Client.Atis
                             {
                                 tts.Add($"Wind { metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } at {metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular()}");
                             }
-                            acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}KT");
                         }
+
+                        acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}KT");
                     }
                 }
 
