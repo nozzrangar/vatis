@@ -1,5 +1,6 @@
 ﻿using GeoVR.Connection;
 using GeoVR.Shared;
+using System.Reflection;
 using System.Threading.Tasks;
 using Vatsim.Vatis.Client.Common;
 using Vatsim.Vatis.Client.Config;
@@ -23,7 +24,7 @@ namespace Vatsim.Vatis.Client.AudioForVatsim
             if (!mApiServerConnection.Authenticated)
             {
                 await mApiServerConnection.Connect(mAppConfig.VatsimId, 
-                    mAppConfig.VatsimPasswordDecrypted, "vATIS");
+                    mAppConfig.VatsimPasswordDecrypted, "vATIS " + Assembly.GetExecutingAssembly().GetName().Version);
             }
 
             await mApiServerConnection.RemoveBot(callsign).AwaitTimeout(5000);
