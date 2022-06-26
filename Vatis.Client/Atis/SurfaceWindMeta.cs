@@ -58,7 +58,7 @@ namespace Vatsim.Vatis.Client.Atis
                                     break;
                             }
 
-                            tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "")}{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } degrees, { metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular() } { speedUnit } gusts { metar.SurfaceWind.SpeedVariations.ActualValue.NumberToSingular() }");
+                            tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "Wind ")}{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } degrees, { metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular() } { speedUnit } gusts { metar.SurfaceWind.SpeedVariations.ActualValue.NumberToSingular() }");
                         }
                         else
                         {
@@ -75,7 +75,7 @@ namespace Vatsim.Vatis.Client.Atis
                     {
                         if (metar.IsInternational)
                         {
-                            tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "")}{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } degrees, {metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular()} {metar.SurfaceWind.MeanSpeed.ActualUnit.PrintUnit(metar.SurfaceWind.MeanSpeed.ActualValue)}");
+                            tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "Wind ")}{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } degrees, {metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular()} {metar.SurfaceWind.MeanSpeed.ActualUnit.PrintUnit(metar.SurfaceWind.MeanSpeed.ActualValue)}");
                         }
                         else
                         {
@@ -111,7 +111,7 @@ namespace Vatsim.Vatis.Client.Atis
                                 speedUnit = metar.SurfaceWind.MeanSpeed.ActualValue > 1 ? "knots" : "knot";
                                 break;
                         }
-                        tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "")}variable at { metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular() } {speedUnit}");
+                        tts.Add($"{(mComposite.UseSurfaceWindPrefix ? "Surface Wind " : "Wind ")}variable at { metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular() } {speedUnit}");
                     }
                     else
                     {
