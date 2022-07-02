@@ -362,7 +362,11 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token)
+                                .ContinueWith(t =>
+                                {
+                                    tabPage.Connection.SendSubscriberNotification();
+                                }, cancellationToken.Token);
                             }
                             catch (TaskCanceledException) { }
                             catch (AggregateException ex)
