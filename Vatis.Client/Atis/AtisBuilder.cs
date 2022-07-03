@@ -323,8 +323,8 @@ namespace Vatsim.Vatis.Client.Atis
 
                     if (tlValue != null)
                     {
-                        transitionLevelText = $"Transition level" +
-                            $"{(composite.UseTransitionLevelPrefix ? " TL " : "")}" +
+                        transitionLevelText = $"Transition level " +
+                            $"{(composite.UseTransitionLevelPrefix ? "FL " : "")}" +
                             $"{tlValue.Altitude}";
 
                         transitionLevelVoice = composite.UseTransitionLevelPrefix
