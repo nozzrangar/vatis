@@ -14,7 +14,6 @@ namespace Vatsim.Vatis.Client
 {
     internal partial class ProfileList : Form
     {
-
         [EventPublication(EventTopics.PerformVersionCheck)]
         public event EventHandler<EventArgs> RaisePerformVersionCheck;
 
