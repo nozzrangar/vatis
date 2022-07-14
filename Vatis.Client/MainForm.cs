@@ -27,9 +27,6 @@ namespace Vatsim.Vatis.Client
         [EventPublication(EventTopics.SessionEnded)]
         public event EventHandler<EventArgs> RaiseSessionEnded;
 
-        [EventPublication(EventTopics.PerformVersionCheck)]
-        public event EventHandler<EventArgs> RaisePerformVersionCheck;
-
         [EventPublication(EventTopics.RefreshMinifiedWindow)]
         public event EventHandler<EventArgs> RefreshMinifiedWindow;
 
@@ -147,8 +144,6 @@ namespace Vatsim.Vatis.Client
             {
                 mAppConfig.CurrentComposite = (atisTabs.TabPages[0].Tag as AtisComposite);
             }
-
-            RaisePerformVersionCheck?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void OnMove(EventArgs e)
@@ -367,7 +362,11 @@ namespace Vatsim.Vatis.Client
 
                                 cancellationToken = new CancellationTokenSource();
 
-                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token);
+                                await mAtisBuilder.BuildAtisAsync(composite, cancellationToken.Token)
+                                .ContinueWith(t =>
+                                {
+                                    tabPage.Connection.SendSubscriberNotification();
+                                }, cancellationToken.Token);
                             }
                             catch (TaskCanceledException) { }
                             catch (AggregateException ex)
