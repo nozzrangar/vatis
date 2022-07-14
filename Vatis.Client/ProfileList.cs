@@ -14,6 +14,9 @@ namespace Vatsim.Vatis.Client
 {
     internal partial class ProfileList : Form
     {
+        [EventPublication(EventTopics.PerformVersionCheck)]
+        public event EventHandler<EventArgs> RaisePerformVersionCheck;
+
         private readonly IEventBroker mEventBroker;
         private readonly IUserInterface mUserInterface;
         private readonly IAppConfig mAppConfig;
@@ -87,6 +90,8 @@ namespace Vatsim.Vatis.Client
             lblVersion.Text = $"Version { Application.ProductVersion }";
 
             RefreshList();
+
+            RaisePerformVersionCheck?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
