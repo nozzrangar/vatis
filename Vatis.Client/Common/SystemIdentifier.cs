@@ -6,10 +6,15 @@ namespace Vatsim.Vatis.Client.Common
 {
     public static class SystemIdentifier
     {
+        private static string mSystemDriveVolumeId = "";
         public static string GetSystemDriveVolumeId()
         {
-            string environmentVariable = Environment.GetEnvironmentVariable("SystemDrive");
-            return int.Parse(new ManagementObject($"win32_logicaldisk.deviceid=\"{environmentVariable.ToUpper()}\"").Properties["VolumeSerialNumber"].Value.ToString(), NumberStyles.HexNumber).ToString();
+            if (mSystemDriveVolumeId == "")
+            {
+                string environmentVariable = Environment.GetEnvironmentVariable("SystemDrive");
+                mSystemDriveVolumeId = int.Parse(new ManagementObject($"win32_logicaldisk.deviceid=\"{environmentVariable.ToUpper()}\"").Properties["VolumeSerialNumber"].Value.ToString(), NumberStyles.HexNumber).ToString();
+            }
+            return mSystemDriveVolumeId;
         }
     }
 }
