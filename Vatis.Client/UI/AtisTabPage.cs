@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using Vatsim.Vatis.Client.Config;
 using Vatsim.Vatis.Client.Network;
@@ -52,6 +53,18 @@ namespace Vatsim.Vatis.Client.UI
                 mAlternateColor = !mAlternateColor;
                 Parent?.Invalidate();
             };
+        }
+    }
+
+
+    internal class TabPageComparer : IComparer<AtisTabPage>
+    {
+        public int Compare(AtisTabPage x, AtisTabPage y)
+        {
+            if (x.Connection.IsConnected && !y.Connection.IsConnected) return -1;
+            if (!x.Connection.IsConnected && y.Connection.IsConnected) return 1;
+
+            return string.Compare(x.Composite.Identifier, y.Composite.Identifier);
         }
     }
 }
