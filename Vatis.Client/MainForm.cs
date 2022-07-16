@@ -1,4 +1,4 @@
-﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker;
 using Appccelerate.EventBroker.Handlers;
 using System;
 using System.Collections.Generic;
@@ -610,6 +610,8 @@ namespace Vatsim.Vatis.Client
                     mConnections.Add(connection);
                 }
             }
+
+            atisTabs.Sort();
         }
 
         private void atisTabs_SelectedIndexChanged(object sender, EventArgs e)

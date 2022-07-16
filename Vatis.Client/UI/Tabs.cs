@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Vatsim.Vatis.Client.Config;
 
@@ -112,5 +113,14 @@ namespace Vatsim.Vatis.Client.UI
                 g.DrawString(tabPage.CompositeMeta.AtisLetter, Font, brush, layoutRect, stringFormat);
             }
         }
+
+        public void Sort()
+        {
+            var tabList = TabPages.Cast<AtisTabPage>().ToList();
+            tabList.Sort(new TabPageComparer());
+            TabPages.Clear();
+            TabPages.AddRange(tabList.ToArray());
+        }
+
     }
 }
