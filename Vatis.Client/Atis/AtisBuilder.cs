@@ -1,5 +1,6 @@
 ﻿using MetarDecoder;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -498,7 +499,8 @@ namespace Vatsim.Vatis.Client.Atis
                     AirportConditions = composite.CurrentPreset.AirportConditions,
                     Notams = composite.CurrentPreset.Notams,
                     Timestamp = DateTime.UtcNow,
-                    Version = "4.0.0"
+                    Version = "4.0.0",
+                    AtisType = composite.AtisType
                 };
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
                 await client.ExecuteAsync(request, token);
@@ -712,6 +714,8 @@ namespace Vatsim.Vatis.Client.Atis
         public string Notams { get; set; }
         public DateTime Timestamp { get; set; }
         public string Version { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AtisType AtisType { get; set; }
     }
 
     internal class Variable
