@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -499,7 +500,7 @@ namespace Vatsim.Vatis.Client.Atis
                     AirportConditions = composite.CurrentPreset.AirportConditions,
                     Notams = composite.CurrentPreset.Notams,
                     Timestamp = DateTime.UtcNow,
-                    Version = "4.0.0",
+                    Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                     AtisType = composite.AtisType
                 };
                 request.AddParameter("application/json", JsonConvert.SerializeObject(json), ParameterType.RequestBody);
