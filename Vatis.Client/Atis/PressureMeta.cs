@@ -13,7 +13,14 @@ namespace Vatsim.Vatis.Client.Atis
                 if (metar.Pressure.ActualUnit == Value.Unit.MercuryInch)
                 {
                     TextToSpeech = $"Altimeter {Convert.ToInt32(metar.Pressure.ActualValue).NumberToSingular()}";
-                    Acars = $"A{ metar.Pressure.ActualValue } ({ metar.Pressure.ActualValue.ToString("0000").NumberToSingular().ToUpper() })";
+                    if (!metar.IsInternational)
+                    {
+                        Acars = $"A{ metar.Pressure.ActualValue } ({ metar.Pressure.ActualValue.ToString("0000").NumberToSingular().ToUpper() })";
+                    }
+                    else
+                    {
+                        Acars = $"A{ metar.Pressure.ActualValue }";
+                    }
                 }
                 else
                 {
