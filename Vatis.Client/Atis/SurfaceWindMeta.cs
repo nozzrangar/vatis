@@ -37,7 +37,7 @@ namespace Vatsim.Vatis.Client.Atis
                             tts.Add($"Wind variable at { metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular() } gusts { metar.SurfaceWind.SpeedVariations.ActualValue.NumberToSingular() }");
                         }
 
-                        acars.Add($"VRB{ metar.SurfaceWind.MeanSpeed.ActualValue:00}G{ metar.SurfaceWind.SpeedVariations.ActualValue:00}{metar.SurfaceWind.SpeedVariations.ActualUnit}");
+                        acars.Add($"VRB{ metar.SurfaceWind.MeanSpeed.ActualValue:00}G{ metar.SurfaceWind.SpeedVariations.ActualValue:00}{metar.SurfaceWind.MeanSpeed.ActualUnit.PrintUnitShort()}");
                     }
                     // 25010G16KT
                     else
@@ -65,7 +65,7 @@ namespace Vatsim.Vatis.Client.Atis
                             tts.Add($"Wind { metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar).ToString("000").NumberToSingular() } at {metar.SurfaceWind.MeanSpeed.ActualValue.NumberToSingular()} gusts {metar.SurfaceWind.SpeedVariations.ActualValue.NumberToSingular()}");
                         }
 
-                        acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}G{ metar.SurfaceWind.SpeedVariations.ActualValue:00}{metar.SurfaceWind.SpeedVariations.ActualUnit}");
+                        acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}G{ metar.SurfaceWind.SpeedVariations.ActualValue:00}{metar.SurfaceWind.MeanSpeed.ActualUnit.PrintUnitShort()}");
                     }
                 }
                 // 25010KT
@@ -89,7 +89,7 @@ namespace Vatsim.Vatis.Client.Atis
                             }
                         }
 
-                        acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}KT");
+                        acars.Add($"{ metar.SurfaceWind.MeanDirection.ActualValue.ApplyMagVar(magvar):000}{ metar.SurfaceWind.MeanSpeed.ActualValue:00}{metar.SurfaceWind.MeanSpeed.ActualUnit.PrintUnitShort()}");
                     }
                 }
 
