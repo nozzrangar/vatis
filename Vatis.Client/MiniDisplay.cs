@@ -158,8 +158,6 @@ namespace Vatsim.Vatis.Client
         {
             base.OnLoad(e);
 
-            //TopMost = true;
-
             if (mAppConfig.MiniDisplayWindowProperties == null)
             {
                 mAppConfig.MiniDisplayWindowProperties = new WindowProperties();
@@ -170,7 +168,6 @@ namespace Vatsim.Vatis.Client
             if (mAppConfig.MiniDisplayWindowProperties.TopMost != mAppConfig.WindowProperties.TopMost)
             {
                 mAppConfig.MiniDisplayWindowProperties.TopMost = mAppConfig.WindowProperties.TopMost;
-                //mAppConfig.SaveConfig();
             }
 
             ScreenUtils.ApplyWindowProperties(mAppConfig.MiniDisplayWindowProperties, this);
